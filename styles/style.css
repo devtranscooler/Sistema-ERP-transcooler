@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding-left: 60px;
+  margin-top: 50px;
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
@@ -19,7 +20,7 @@ body {
   z-index: 998;
 }
 .logo {
-  height: 30px;
+  height: 0px;
 }
 .user-info span {
   font-size: 18px;
@@ -34,7 +35,7 @@ body {
 .sidebar {
   background-color: #063a61;
   color: white;
-  width: 60px;
+  width: 55px;
   height: 100vh;
   transition: width 0.3s;
   overflow: hidden;
@@ -45,7 +46,7 @@ body {
 }
 
 .sidebar.open {
-  width: 250px;
+  width: 225px;
 }
 
 .sidebar ul {
@@ -260,15 +261,8 @@ body {
   margin-top: 10px;
 }
 
-.modal-xl {
-  max-width: 82%;
-}
 
-.btn-success {
-  background-color: #063a61 !important;
-  border-color: #063a61 !important;
-  color: white !important;
-}
+s
 #updateButton {
   background-color: #063a61;
   border-color: #063a61;

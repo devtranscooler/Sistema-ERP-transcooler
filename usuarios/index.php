@@ -13,7 +13,6 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 
     <?php include_once($_SERVER['DOCUMENT_ROOT'] . '/utilities/head.php'); ?>
 
-
     <script>
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
@@ -26,94 +25,42 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
                 sidebar.classList.remove('open');
             }
         }
-
-        function editPassword(_counter) {
-            document.getElementById('tdPassword' + _counter).style.display = 'none';
-            document.getElementById('inputPassword' + _counter).style.display = 'block';
-
-            var inputs = document.getElementById('inputPassword' + _counter).getElementsByTagName('input');
-
-            for (j = 0; j < inputs.length; j++) {
-                inputs[j].select();
-            }
-        }
-
-
-        function getList(page) {
-            window.location.href = './index.php?page=' + page;
-        }
-
-        function getBulkUsuario() {
-            var url = './getBulkUsuario.php';
-            var param = "";
-
-            new Ajax.Request(url, {
-                parameters: param,
-                method: 'POST',
-                onComplete: function(_request) {
-                    document.getElementById('result').innerHTML = _request.responseText;
-                }.bind(this)
-            });
-        }
-
-        function getSingleUsuario() {
-            var url = './getSingleUsuario.php';
-            var param = "";
-
-            new Ajax.Request(url, {
-                parameters: param,
-                method: 'POST',
-                onComplete: function(_request) {
-                    document.getElementById('result').innerHTML = _request.responseText;
-                }.bind(this)
-            });
-        }
-
-        //// CARGA MASIVA DE USUARIO
-
-        function cargarUsuarios() {
-            var formulario = document.getElementById('alta');
-            formulario.action = "./cargarUsuarios.php";
-
-            //Validamos archivo
-            let fileInput = jQuery('#documento')[0].files[0];
-
-            if (!fileInput) {
-                alert('Por favor seleccione un archivo .csv');
-                return;
-            }
-
-            formulario.submit();
-            /*  
-            
-
-            var url='./cargarUsuarios.php';
-            var param = "";
-
-            let formData = new FormData();
-            formData.append( 'file', fileInput );
-            formData.append("image_name", "googlelogo");
-            formData.append("image_type", "csv");
-
-            new Ajax.Request(url,{
-              type: 'POST',
-              data: formData,
-              processData: false,
-              contentType: false,
-              mimeType: "multipart/form-data",
-              onFailure: function(){
-                alert('Ocurrio un error');
-              },
-              onComplete:function(_request){     
-                alert(_request.responseText);
-                  //document.getElementById('result').innerHTML = _request.responseText;
-              }.bind(this)
-            });   
-
-              */
-        }
-        /////
     </script>
+
+    <style>
+        /* Mejora visual de la tabla con sombras sutiles */
+        .table-responsive {
+            border-radius: 5px;
+        }
+
+        /* Header de la tabla con mejor contraste */
+        .table thead th {
+            background-color: #063a61;
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 15px;
+        }
+
+        /* Filas de la tabla con mejor hover */
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        /* Card para los filtros */
+        .filter-card {
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        /* Badge personalizado para roles */
+        .role-badge {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+    </style>
 </head>
 
 <body onclick="closeMenu(event)">
@@ -124,234 +71,463 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
     Sidebar::render("Usuarios");
     ?>
 
-    <div class="content">
-        <h1>Usuarios</h1>
-        <table class="table table-hover">
-            <thead class="thead-light ">
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Contraseña</th>
-                    <th scope="col">Rol</th>
-                    <th scope="col">Correo</th>
-                    <th scope="col">Acciones</th>
-                </tr>
-            </thead>
-            <?php
+    <div class="container-fluid">
 
-            $db = new MySQL();
+        <!-- 📍 Breadcrumb mejorado con íconos -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb ">
+                <li class="breadcrumb-item">
+                    <i class="bi bi-house-door me-1"></i>Inicio
+                </li>
+                <li class="breadcrumb-item active">
+                    <i class="bi bi-people me-1"></i>Usuarios
+                </li>
+            </ol>
+        </nav>
 
-            $counter = 1;
-            $fieldnumber = 20;
+        <!-- 🎯 Encabezado con mejor espaciado y diseño -->
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="fw-bold mb-0">
+                    <i class="bi bi-people-fill text-primary"></i>
+                    Gestión de Usuarios
+                </h2>
+            </div>
 
-            $q = "";
-            $q = $q . " select u.id";
-            $q = $q . "     ,u.nombre, u.apellidoP, u.apellidoM ";
-            $q = $q . "     ,CONCAT(u.nombre,' ',u.apellidoP,' ',u.apellidoM) as nombreCompleto";
-            $q = $q . "     ,u.idRol";
-            $q = $q . "     ,u.email";
-            $q = $q . "     ,cr.rol_descripcion";
-            $q = $q . " from usuarios u ";
-            $q = $q . " LEFT JOIN cat_rol cr ON u.idRol = cr.id_rol ";
-            $q = $q . "WHERE (u.estatus IS NULL OR u.estatus != 'eliminado')";
-
-            //echo $q;
-
-
-            $totalRow = $db->num_rows($rs);
-
-            $q = $q . " LIMIT " . (($page - 1) * $fieldnumber) . ", " . ($page * $fieldnumber) . " ";
-
-            $rs = $db->consulta($q);
-
-            if ($db->num_rows($rs) > 0) {
-            ?>
-                <tbody>
-                    <tr>
-
-                        <?php
-                        while ($fields = $db->fetch_array($rs)) {
-                        ?>
-
-
-                            <th scope="row"><?= $fields['id'] ?></th>
-                            <td><?= $fields['nombreCompleto'] ?></td>
-
-
-                            <form action="./dao/updatePassword.php" method="POST" target="_self">
-                                <input type="hidden" id="ID_USUARIO" name="ID_USUARIO" value="<?php echo $fields['id'] ?>">
-                                <td class="tdCenter">
-
-                                    <span name="tdPassword<?= $counter ?>" id="tdPassword<?= $counter ?>" style="display:block;cursor:pointer;" onClick="editPassword(<?= $counter ?>);">
-                                        <strong>&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</strong>
-                                    </span>
-                                    <span name="inputPassword<?= $counter ?>" id="inputPassword<?= $counter ?>" style="display:none" ;>
-                                        <input type="text" name="PASSWORD" id="PASSWORD" value="********" onChange="if(this.value != '') this.form.submit();" maxlength="50">
-                                    </span>
-
-                                </td>
-                            </form>
-
-                            <td><?= $fields['rol_descripcion'] ?></td>
-                            <td><?= $fields['email'] ?></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <img src="../img/editing.png" width="20" onClick="window.open('./dao/setPrivilegios.php?idUsuario=<?= $fields['id'] ?>&name=<?= $fields['nombreCompleto'] ?>', '_blank', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=500px,height=680px');" style="cursor:pointer">
-                                    <a href="#" class="edit-btn" data-usuario='<?= json_encode($fields) ?>' title="Editar">
-                                        <img src="https://cdn-icons-png.flaticon.com/512/10336/10336582.png" width="20" alt="Edit">
-                                    </a>
-                                    <a href="#" class="delete-btn" data-id="<?= $fields['id'] ?>" title="Eliminar">
-                                        <img src="https://cdn-icons-png.flaticon.com//512/5028/5028066.png" width="20" alt="Delete">
-                                    </a>
-                                </div>
-                            </td>
-                    </tr>
-                    </tr>
-            <?php
-                            $counter++;
-                        }
-                    }
-            ?>
-                </tbody>
-        </table>
-
-        <!--Paginado bootstrap-->
-
-        <?php
-        $totalPage = ceil($totalRow / $fieldnumber);
-        if ($totalPage > 1) {
-            $disabledPrevious = "";
-            $disabledNext = "";
-            if ($page == 1)
-                $disabledPrevious = "disabled";
-            if ($page == $totalPage)
-                $disabledNext = "disabled";
-        ?>
-
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-
-                    <li class="page-item <?= $disabledPrevious ?>">
-                        <a class="page-link" onclick="return getList(<?= ($page - 1) ?>);" tabindex="-1" style="cursor:pointer;">Previous</a>
-                    </li>
-                    <?php
-
-                    $i = 1;
-                    while ($i < ($totalPage + 1)) {
-                        if ($page == $i)
-                            echo '<li class="page-item"><a class="page-link" onclick="return getList(' . $i . ');" style="cursor:pointer;text-decoration:underline;">' . $i . '</a></li>';
-                        else
-                            echo '<li class="page-item"><a class="page-link" onclick="return getList(' . $i . ');" style="cursor:pointer;">' . $i . '</a></li>';
-
-                        $i++;
-                    }
-
-                    ?>
-                    <li class="page-item <?= $disabledNext ?>">
-                        <a class="page-link" onclick="return getList(<?= ($page + 1) ?>);" style="cursor:pointer;">Next</a>
-                    </li>
-
-                </ul>
-            </nav>
-        <?php
-        }
-        ?>
-
-        <!--Paginado old-->
-        <table width="99%" border=0 align="center" cellspacing=2>
-            <tr>
-                <td class="Center" width="90%">&nbsp;</td>
-                <td class="Right" width="10%">
-                    <?php echo "Página " . $page . " de " . $totalPage . "." ?>
-                </td>
-            </tr>
-        </table>
-        <div class="fab-container">
-            <button type="button" class="btn btn-primary btn-lg rounded-circle fab-btn" id="mainFabBtn">
-                <i class="bi bi-plus"></i>
-            </button>
-            <button type="button" class="btn btn-secondary rounded-circle fab-option fab-option-1" data-bs-toggle="modal" data-bs-target="#addModal" onClick="getSingleUsuario()">
-                <i class="bi bi-person-plus"></i>
-            </button>
-            <button type="button" class="btn btn-secondary rounded-circle fab-option fab-option-2" data-bs-toggle="modal" data-bs-target="#addModal" onClick="getBulkUsuario()">
-                <i class="bi-file-earmark-arrow-up-fill"></i>
-            </button>
+            <div class="col-md-6 text-md-end">
+                <!-- Botones con mejor diseño y spacing -->
+                <button class="btn btn-primary  shadow-sm" onclick="abrirModal('formUsuario.php')">
+                    <i class="bi bi-plus-circle me-2"></i>Nuevo Usuario
+                </button>
+                <button class="btn btn-success shadow-sm ms-2">
+                    <i class="bi bi-file-earmark-excel me-2"></i>Exportar
+                </button>
+            </div>
         </div>
 
-        <!-- Formulario -->
-        <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
-                    <div id="result"></div>
+        <!-- Filtros dentro de un card con mejor organización -->
+        <div class="filter-card">
+            <div class="row">
+                <!-- Campo de búsqueda por nombre -->
+                <div class="col-md-5">
+                    <label for="filtroNombre" class="form-label small text-muted">
+                        <i class="bi bi-person-square"></i> Buscar por nombre
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text"
+                            name="nombre"
+                            id="filtroNombre"
+                            class="form-control border-start-0 ps-0"
+                            placeholder="Escribe el nombre del usuario...">
+                    </div>
+                </div>
+
+                <!-- Filtro por rol -->
+                <div class="col-md-3">
+                    <label for="filtroRol" class="form-label small text-muted">
+                        <i class="bi bi-person-vcard"></i> Rol
+                    </label>
+                    <select class="form-select" id="filtroRol">
+                        <option value="">Todos los roles</option>
+                        <option value="1">Administrador</option>
+                        <option value="2">Usuario</option>
+                        <option value="3">Supervisor</option>
+                    </select>
+                </div>
+
+                <!-- Filtro por fecha -->
+                <div class="col-md-4">
+                    <label for="filtroFecha" class="form-label small text-muted">
+                        <i class="bi bi-calendar-day"></i> Fecha de contratación
+                    </label>
+                    <input type="date"
+                        name="fecContratacion"
+                        id="filtroFecha"
+                        class="form-control">
                 </div>
             </div>
         </div>
 
-        <script>
-            jQuery(document).ready(function() {
+        <div class="table-responsive mb-0">
+            <table class="table table-hover align-middle mb-0" id="tablaUsuarios">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Movil</th>
+                        <th>CEDIS</th>
+                        <th>Puesto</th>
+                        <th class="text-center">Rol</th>
+                        <th class="text-center" style="width: 200px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargan -->
+                </tbody>
+            </table>
+        </div>
 
-                //<!--AJAX to Submit Form Without Refresh -->
-                const fabContainer = document.querySelector('.fab-container');
-                const mainFabBtn = document.getElementById('mainFabBtn');
+        <div class="row mt-2 align-items-center">
+            <div class="col-md-6">
+                <div id="info-paginacion" class="text-muted"></div>
+            </div>
+            <div class="col-md-6">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-md-end justify-content-center mb-0" id="paginacion"></ul>
+                </nav>
+            </div>
+        </div>
 
-                mainFabBtn.addEventListener('click', () => {
-                    fabContainer.classList.toggle('show-options');
-                });
+        <!-- MODAL GLOBAL -->
+        <div class="modal fade" id="globalModal" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content shadow-lg" id="globalModalContent">
+                    <!-- Aquí se inyecta el contenido dinámico -->
+                </div>
+            </div>
+        </div>
 
-                jQuery(document).on("click", ".edit-btn", function() {
-                    isEditMode = true;
-                    const data = jQuery(this).data("usuario");
-                    const usuario = typeof data === "string" ? JSON.parse(data) : data;
+    </div>
 
-                    jQuery("#addModalLabel").text("Editar Usuario");
-                    jQuery("#mode").val("update");
-                    jQuery("#nombre").val(usuario.nombre || '');
-                    jQuery("#apellidoP").val(usuario.apellidoP || '');
-                    jQuery("#apellidoM").val(usuario.apellidoM || '');
-                    jQuery("#idRol").val(usuario.idRol || '');
-                    jQuery("#email").val(usuario.email || '');
-                    jQuery("#fecNac").val(usuario.fecNac || '');
-                    jQuery("#noEmpleado").val(usuario.noEmpleado || '');
-                    jQuery("#movil").val(usuario.movil || '');
-                    jQuery("#fecContratacion").val(usuario.fecContratacion || '');
-                    jQuery("#diasVacaciones").val(usuario.diasVacaciones || '');
-                    jQuery("#diasVacDisfrutados").val(usuario.diasVacDisfrutados || '');
-                    jQuery("#estatus").val(usuario.estatus || '');
-                    jQuery("#puesto").val(usuario.puesto || '');
-                    jQuery("#area").val(usuario.area || '');
-                    jQuery("#cedis").val(usuario.cedis || '');
-                    jQuery("#telefono").val(usuario.telefono || '');
-                    jQuery("#jefeInmediato").val(usuario.jefeInmediato || '');
-                    jQuery("#id").val(usuario.id);
-
-                    jQuery("#saveButton").hide();
-                    jQuery("#updateButton").show();
-
-
-                    const modalInstance = new bootstrap.Modal(document.getElementById('addModal'));
-                    modalInstance.show();
-                });
-
-
-                jQuery(document).on("click", ".delete-btn", function(e) {
-                    e.preventDefault();
-                    const id = jQuery(this).data("id");
-
-                    if (confirm("¿Estás seguro de que deseas eliminar este Usuario?")) {
-                        jQuery.post("./dao/deleteUsuario.php", {
-                            id: id
-                        }, function(response) {
-                            alert(response);
-                            location.reload();
-                        }).fail(function(xhr, status, error) {
-                            alert("Error al eliminar.");
-                            console.log(error);
-                        });
-                    }
-                });
-
-            });
-        </script>
 </body>
+
+<script>
+    // Variables globales para control de paginación
+    let paginaActual = 1;
+    const registrosPorPagina = 15;
+    let timeout = null;
+
+    // Inicialización al cargar el documento
+    document.addEventListener("DOMContentLoaded", () => {
+        cargarUsuarios();
+    });
+
+    //  Event listeners para filtros con debouncing en el nombre
+    document.getElementById("filtroNombre").addEventListener("keyup", function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            cargarUsuarios()
+        }, 300)
+    });
+
+    // Filtros instantáneos para rol y fecha
+    document.getElementById("filtroRol").addEventListener("change", () => cargarUsuarios());
+    document.getElementById("filtroFecha").addEventListener("change", () => cargarUsuarios());
+
+    /**
+     * Función para cargar usuarios con filtros
+     * @param {number} page - Número de página a cargar
+     */
+    function cargarUsuarios(page = 1) {
+
+        paginaActual = page;
+
+        // Obtener valores de los filtros
+        const nombre = document.getElementById("filtroNombre").value;
+        const rol = document.getElementById("filtroRol").value;
+        const fecha = document.getElementById("filtroFecha").value;
+
+        // Preparar datos para enviar
+        const formData = new FormData();
+        formData.append('action', 'listar');
+        formData.append('page', page);
+        formData.append('limit', registrosPorPagina);
+        formData.append('nombre', nombre);
+        formData.append('rol', rol);
+        formData.append('fecContratacion', fecha);
+
+        // Petición AJAX para obtener usuarios
+        fetch("usuarios.api.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(response => {
+                pintarTabla(response.data);
+                pintarPaginacion(response.total);
+            })
+            .catch(error => {
+                console.error("Error al cargar usuarios:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudieron cargar los usuarios'
+                });
+            });
+    }
+
+    /**
+     *  Función para pintar la tabla con los datos
+     * @param {Array} data - Array de usuarios
+     */
+    function pintarTabla(data) {
+
+        let html = "";
+
+        //  Si no hay datos, mostrar mensaje
+        if (data.length === 0) {
+            html = `
+                <tr>
+                    <td colspan="8" class="text-center py-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <p class="text-muted mt-3">No se encontraron usuarios</p>
+                    </td>
+                </tr>
+            `;
+        } else {
+            // Construir filas de la tabla
+            data.forEach(usuario => {
+                //  Determinar color del badge según el rol
+                let rolClass = 'bg-secondary';
+                if (usuario.rol_descripcion === 'Administrador') rolClass = 'bg-danger';
+                else if (usuario.rol_descripcion === 'Supervisor') rolClass = 'bg-warning';
+                else if (usuario.rol_descripcion === 'Usuario') rolClass = 'bg-info';
+
+                html += `
+                <tr>
+                    <td class="text-center fw-bold">#${usuario.id}</td>
+                    <td>${usuario.nombreCompleto}</td>
+                    <td>${usuario.email}</td>
+                    <td>${usuario.movil}</td>
+                    <td>${usuario.cedis}</td>
+                    <td>${usuario.puesto}</td>
+                    <td class="text-center">
+                        <span class="badge ${rolClass} role-badge">
+                            ${usuario.rol_descripcion ?? 'Sin rol'}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div>
+                            <button type="button" 
+                                    class="btn btn-primary" 
+                                    onclick="editar(${usuario.id})"
+                                    title="Editar usuario">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-success"
+                                    title="Ver detalles">
+                                <i class="bi bi-eye-fill"></i>
+                            </button>
+                            <button type="button" 
+                                    class="btn  btn-warning"
+                                    title="Cambiar estado">
+                                <i class="bi bi-toggles"></i>
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-danger" 
+                                    onclick="eliminar(${usuario.id})"
+                                    title="Eliminar usuario">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            });
+        }
+
+        // Insertar HTML en la tabla
+        document.querySelector("#tablaUsuarios tbody").innerHTML = html;
+    }
+
+    /**
+     * Función para pintar la paginación
+     * @param {number} totalRegistros - Total de registros
+     */
+    function pintarPaginacion(totalRegistros) {
+
+        const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
+        let html = "";
+
+        // 🔢 Cálculo de rango mostrado
+        const inicio = (paginaActual - 1) * registrosPorPagina + 1;
+        let fin = paginaActual * registrosPorPagina;
+
+        if (fin > totalRegistros) {
+            fin = totalRegistros;
+        }
+
+        // 📝 Texto informativo
+        let info = `
+        <p>
+            <i class="bi bi-info-circle me-1"></i>
+            Mostrando <strong>${inicio}</strong> - <strong>${fin}</strong> de <strong>${totalRegistros}</strong> registros
+        </p>`;
+
+        // 🔢 Botones de paginación
+        for (let i = 1; i <= totalPaginas; i++) {
+            html += `
+            <li class="page-item ${i === paginaActual ? "active" : ""}" onclick="cargarUsuarios(${i})">
+                <span class="page-link">${i}</span>
+            </li>
+        `;
+        }
+
+        document.getElementById("info-paginacion").innerHTML = info;
+        document.getElementById("paginacion").innerHTML = html;
+    }
+
+    /**
+     * Función para abrir modal dinámico
+     * @param {string} url - URL del contenido del modal
+     * @param {object} data - Datos a enviar (opcional)
+     */
+    function abrirModal(url, data = {}) {
+
+        fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams(data)
+            })
+            .then(res => res.text())
+            .then(html => {
+                // Inyectar contenido en el modal
+                document.getElementById("globalModalContent").innerHTML = html;
+
+                // Mostrar modal
+                const modal = new bootstrap.Modal(
+                    document.getElementById("globalModal")
+                );
+                modal.show();
+            })
+            .catch(error => {
+                console.error("Error cargando modal:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo cargar el formulario'
+                });
+            });
+    }
+
+    /**
+     * Función para editar un usuario
+     * @param {number} id - ID del usuario a editar
+     */
+    function editar(id) {
+        fetch("usuarios.api.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `action=find&id=${id}`
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    abrirModal('formUsuario.php', response.data);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo cargar el usuario'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error al editar:", error);
+            });
+    }
+
+    /**
+     *  Función para guardar usuario (crear o actualizar)
+     */
+    function guardarUsuario() {
+
+        const form = document.getElementById("formUsuario");
+        const formData = new FormData(form);
+
+        fetch("usuarios.api.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    // Cerrar modal
+                    const modal = bootstrap.Modal.getInstance(
+                        document.getElementById("globalModal")
+                    );
+                    modal.hide();
+
+                    //  Recargar tabla
+                    cargarUsuarios();
+
+                    //  Mostrar mensaje de éxito
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: 'Usuario guardado correctamente',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'No se pudo guardar el usuario'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error al guardar:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error al guardar'
+                });
+            });
+    }
+
+    /**
+     * Función para eliminar usuario
+     * @param {number} id - ID del usuario a eliminar
+     */
+    function eliminar(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción no se puede revertir",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("usuarios.api.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `action=eliminar&id=${id}`
+                    })
+                    .then(res => res.json())
+                    .then(response => {
+                        if (response.success) {
+                            cargarUsuarios();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se pudo cargar el usuario'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error al editar:", error);
+                    });
+
+            }
+        });
+    }
+</script>
 
 </html>
