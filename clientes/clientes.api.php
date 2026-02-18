@@ -1,68 +1,61 @@
 <?php
-require_once 'UsuarioControlador.php';
+require_once "ClientesControlador.php";
 
 header('Content-Type: application/json');
 
-$controlador = new UsuarioControlador();
+$controlador = new ClientesControlador();
 $action = $_POST['action'] ?? '';
 
 switch ($action) {
-
     case 'listar':
-
         $page  = $_POST['page'] ?? 1;
         $limit = $_POST['limit']  ?? 10;
         $filtros = [
-            'nombre' => $_POST['nombre'] ?? null,
-            'rol' => $_POST['rol'] ?? null,
-            'fecContratacion' => $_POST['fecContratacion'] ?? null 
+            'razon_social' => $_POST['razon_social'] ?? null,
         ];
 
         echo json_encode([
-            "data" => $controlador->listar($page, $limit, $filtros),
-            "total" => $controlador->totalRegistros($filtros)
+            'data' => $controlador->listar($page, $limit, $filtros),
+            'total' => $controlador->totalRegistros($filtros),
         ]);
+
         break;
 
     case 'find':
         $id = $_POST['id'];
-        $usuario = $controlador->show($id);
-
-        // Validamos si se encontró el usuario
-        if ($usuario) {
+        $cliente = $controlador->show($id);
+        if ($cliente) {
             echo json_encode([
-                'data' => $usuario,
-                'success' => true
+                'data' => $cliente,
+                'success' => true,
             ]);
         } else {
             echo json_encode([
-                'data' => null,
+                'data' => $null,
                 'success' => false,
-                'message' => 'usuario no encontrado'
+                'messague' => 'Cliente no encontrado'
             ]);
         }
         break;
 
     case 'crear':
-
         echo json_encode([
-            "success" => $controlador->crear($_POST)
+            'success' => $controlador->crear($_POST),
         ]);
         break;
 
-    case 'actualizar':
 
+    case 'actualizar':
         $id = $_POST['id'];
         echo json_encode([
-            "success" => $controlador->actualizar($id, $_POST)
+            'success' => $controlador->actualizar($id, $_POST),
         ]);
         break;
 
     case 'eliminar':
-
         $id = $_POST['id'];
         echo json_encode([
-            "success" => $controlador->eliminar($id)
+            'success' => $controlador->eliminar($id),
         ]);
         break;
 

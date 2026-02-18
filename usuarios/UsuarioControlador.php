@@ -3,7 +3,6 @@ require_once '../system/connection.php';
 
 class UsuarioControlador
 {
-
     private $db;
 
     public function __construct()
@@ -42,20 +41,19 @@ class UsuarioControlador
             $types .= "s";
         }
 
-        $sql = "
-        SELECT u.id,
-        CONCAT(u.nombre,' ',u.apellidoP,' ',u.apellidoM) AS nombreCompleto,
-        u.email,
-        u.movil,
-        u.cedis,
-        u.puesto,
-        cr.rol_descripcion
-        FROM usuarios u
-        LEFT JOIN cat_rol cr ON u.idRol = cr.id_rol
-        $where
-        ORDER BY u.id DESC
-        LIMIT ?, ?
-    ";
+        $sql = " SELECT u.id,
+            CONCAT(u.nombre,' ',u.apellidoP,' ',u.apellidoM) AS nombreCompleto,
+            u.email,
+            u.movil,
+            u.cedis,
+            u.puesto,
+            cr.rol_descripcion
+            FROM usuarios u
+            LEFT JOIN cat_rol cr ON u.idRol = cr.id_rol
+            $where
+            ORDER BY u.id DESC
+            LIMIT ?, ?
+        ";
 
         $params[] = $offset;
         $params[] = $limit;
@@ -82,8 +80,6 @@ class UsuarioControlador
 
         return $data;
     }
-
-
     public function show($id)
     {
         $conexion = $this->db->getConexion();
@@ -103,7 +99,6 @@ class UsuarioControlador
 
         return $usuario;
     }
-
     public function totalRegistros($filtros = [])
     {
         $conexion = $this->db->getConexion();
@@ -182,7 +177,6 @@ class UsuarioControlador
             $data['estatus'],            //19
         ]);
     }
-
     public function actualizar($id, $data)
     {
         $campos = [
@@ -237,7 +231,6 @@ class UsuarioControlador
 
         return $this->db->execute($sql, $params);
     }
-
     public function eliminar($id)
     {
         $sql = "UPDATE usuarios SET estatus='eliminado' WHERE id=?";

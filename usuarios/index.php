@@ -1,12 +1,8 @@
-<?php
-require '../system/connection.php';
-require '../system/constants.php';
+<?php require '../system/connection.php';
+require '../system/constants.php';; ?>
 
-$page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
-?>
-
+<!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,56 +22,15 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
             }
         }
     </script>
-
-    <style>
-        /* Mejora visual de la tabla con sombras sutiles */
-        .table-responsive {
-            border-radius: 5px;
-        }
-
-        /* Header de la tabla con mejor contraste */
-        .table thead th {
-            background-color: #063a61;
-            color: white;
-            font-weight: 600;
-            border: none;
-            padding: 15px;
-        }
-
-        /* Filas de la tabla con mejor hover */
-        .table tbody tr {
-            transition: all 0.3s ease;
-        }
-
-        /* Card para los filtros */
-        .filter-card {
-            padding: 10px;
-            margin-bottom: 5px;
-        }
-
-        /* Badge personalizado para roles */
-        .role-badge {
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-    </style>
 </head>
 
 <body onclick="closeMenu(event)">
-
-    <?php
-    //Cambiar Ruta;
-    require_once '../utilities/sidebar.php';
-    Sidebar::render("Usuarios");
-    ?>
+    <?php require_once '../utilities/sidebar.php'; Sidebar::render("Gestión de Usuarios"); ?>
 
     <div class="container-fluid">
-
-        <!-- 📍 Breadcrumb mejorado con íconos -->
+        <!-- Breadcrumb mejorado con íconos -->
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb ">
+            <ol class="breadcrumb mb-1">
                 <li class="breadcrumb-item">
                     <i class="bi bi-house-door me-1"></i>Inicio
                 </li>
@@ -85,7 +40,7 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
             </ol>
         </nav>
 
-        <!-- 🎯 Encabezado con mejor espaciado y diseño -->
+        <!-- Encabezado con mejor espaciado y diseño -->
         <div class="row align-items-center">
             <div class="col-md-6">
                 <h2 class="fw-bold mb-0">
@@ -185,8 +140,7 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
         <!-- MODAL GLOBAL -->
         <div class="modal fade" id="globalModal" tabindex="-1">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content shadow-lg" id="globalModalContent">
-                    <!-- Aquí se inyecta el contenido dinámico -->
+                <div class="modal-content" id="globalModalContent" style="overflow-y: auto;">
                 </div>
             </div>
         </div>
@@ -303,23 +257,24 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
                     <td class="text-center">
                         <div>
                             <button type="button" 
-                                    class="btn btn-primary" 
+                                    class="btn btn-sm btn-primary" 
                                     onclick="editar(${usuario.id})"
                                     title="Editar usuario">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button type="button" 
-                                    class="btn btn-success"
-                                    title="Ver detalles">
+                                    class="btn btn-sm btn-success"
+                                    title="Ver detalles"
+                                    onclick="ver(${usuario.id})">
                                 <i class="bi bi-eye-fill"></i>
                             </button>
                             <button type="button" 
-                                    class="btn  btn-warning"
+                                    class="btn btn-sm btn-warning"
                                     title="Cambiar estado">
                                 <i class="bi bi-toggles"></i>
                             </button>
                             <button type="button" 
-                                    class="btn btn-danger" 
+                                    class="btn btn-sm btn-danger" 
                                     onclick="eliminar(${usuario.id})"
                                     title="Eliminar usuario">
                                 <i class="bi bi-trash-fill"></i>
@@ -362,7 +317,7 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
         // 🔢 Botones de paginación
         for (let i = 1; i <= totalPaginas; i++) {
             html += `
-            <li class="page-item ${i === paginaActual ? "active" : ""}" onclick="cargarUsuarios(${i})">
+            <li class="page-item ${i === paginaActual ? "active" : ""}" onclick="cargarUsuarios(${i})" style="cursor: pointer" >
                 <span class="page-link">${i}</span>
             </li>
         `;
@@ -423,6 +378,31 @@ $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
             .then(response => {
                 if (response.success) {
                     abrirModal('formUsuario.php', response.data);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo cargar el usuario'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error al editar:", error);
+            });
+    }
+
+    function ver(id) {
+        fetch("usuarios.api.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `action=find&id=${id}`
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    abrirModal('verUsuario.php', response.data);
                 } else {
                     Swal.fire({
                         icon: 'error',

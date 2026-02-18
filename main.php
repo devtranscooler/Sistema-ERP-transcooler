@@ -20,7 +20,7 @@ require './system/constants.php';
     Sidebar::render();
     ?>
 
-    <div class="content">
+    <div class="container-fluid">
         <h1>Contenido Principal</h1>
     </div>
 
