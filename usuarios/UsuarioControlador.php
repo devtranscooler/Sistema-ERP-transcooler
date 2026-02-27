@@ -41,7 +41,7 @@ class UsuarioControlador
             $types .= "s";
         }
 
-        $sql = " SELECT u.id,
+        $sql = "SELECT u.id,
             CONCAT(u.nombre,' ',u.apellidoP,' ',u.apellidoM) AS nombreCompleto,
             u.email,
             u.movil,
@@ -49,7 +49,7 @@ class UsuarioControlador
             u.puesto,
             cr.rol_descripcion
             FROM usuarios u
-            LEFT JOIN cat_rol cr ON u.idRol = cr.id_rol
+            LEFT JOIN cat_rol cr ON u.idRol = cr.id
             $where
             ORDER BY u.id DESC
             LIMIT ?, ?
@@ -128,10 +128,9 @@ class UsuarioControlador
             $types .= "s";
         }
 
-        $sql = "
-        SELECT COUNT(*) as total
+        $sql = "SELECT COUNT(*) as total
         FROM usuarios u
-        LEFT JOIN cat_rol cr ON u.idRol = cr.id_rol
+        LEFT JOIN cat_rol cr ON u.idRol = cr.id
         $where
     ";
 

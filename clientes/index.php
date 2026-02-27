@@ -87,7 +87,7 @@ require '../system/constants.php';
         </div>
 
         <div class="table-responsive mb-0">
-            <table class="table table-hover align-middle mb-0" id="tablaClientes">
+            <table class="table table-hover aligmiddle mb-0" id="tablaClientes">n-
                 <thead>
                     <tr>
                         <th class="text-center">ID</th>

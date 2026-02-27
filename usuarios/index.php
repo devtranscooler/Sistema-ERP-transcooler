@@ -1,5 +1,4 @@
-<?php require '../system/connection.php';
-require '../system/constants.php';; ?>
+<?php require '../system/connection.php'; require '../system/constants.php';; ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -164,8 +163,8 @@ require '../system/constants.php';; ?>
     document.getElementById("filtroNombre").addEventListener("keyup", function() {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            cargarUsuarios()
-        }, 300)
+            cargarUsuarios();
+        }, 500)
     });
 
     // Filtros instantáneos para rol y fecha
@@ -299,7 +298,7 @@ require '../system/constants.php';; ?>
         const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
         let html = "";
 
-        // 🔢 Cálculo de rango mostrado
+        // Cálculo de rango mostrado
         const inicio = (paginaActual - 1) * registrosPorPagina + 1;
         let fin = paginaActual * registrosPorPagina;
 
@@ -307,14 +306,14 @@ require '../system/constants.php';; ?>
             fin = totalRegistros;
         }
 
-        // 📝 Texto informativo
+        // Texto informativo
         let info = `
         <p>
             <i class="bi bi-info-circle me-1"></i>
             Mostrando <strong>${inicio}</strong> - <strong>${fin}</strong> de <strong>${totalRegistros}</strong> registros
         </p>`;
 
-        // 🔢 Botones de paginación
+        // Botones de paginación
         for (let i = 1; i <= totalPaginas; i++) {
             html += `
             <li class="page-item ${i === paginaActual ? "active" : ""}" onclick="cargarUsuarios(${i})" style="cursor: pointer" >

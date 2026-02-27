@@ -1,7 +1,7 @@
 <?php
 require_once "../system/connection.php";
 
-class ClientesControlador
+class RolesControlador
 {
     private $db;
 
@@ -17,27 +17,24 @@ class ClientesControlador
 
         $offset = ($page - 1)  * $limit;
 
-        $where = "WHERE (c.fecha_baja IS NULL OR c.status != 'eliminado')";
+        $where = "WHERE (r.fecha_baja IS NULL OR r.status != 'eliminado')";
 
         $params = [];
         $types = "";
 
         // Filtro nombre
-        if (!empty($filtros['razon_social'])) {
-            $where .= " AND c.nombre_razon LIKE ?";
-            $params[] = "%" . $filtros['razon_social'] . "%";
+        if (!empty($filtros['nombre_rol'])) {
+            $where .= " AND r.rol_descripcion LIKE ?";
+            $params[] = "%" . $filtros['nombre_rol'] . "%";
             $types .= "s";
         }
 
-        $SQL = " SELECT c.id, 
-            c.nombre_razon,
-            c.RFC,
-            c.correo,
-            c.telefono,
-            c.tipo_operacion
-            FROM clientes c
+        $SQL = " SELECT r.id, 
+            r.rol_descripcion,
+            r.status
+            FROM cat_rol r
             $where
-            ORDER BY c.id DESC
+            ORDER BY r.id DESC
             LIMIT ?, ?
         ";
 
@@ -56,11 +53,8 @@ class ClientesControlador
         while ($row = $result->fetch_assoc()) {
             $data[] = [
                 'id' => $row['id'],
-                'razon_social' => $row['nombre_razon'] ?? 'N/A',
-                'RFC' => $row['RFC'] ?? 'N/A',
-                'correo' => $row['correo'] ?? 'N/A',
-                'telefono' => $row['telefono'] ?? 'N/A',
-                'tipo_operacion' => $row['tipo_operacion'] ?? 'N/A',
+                'nombre' => $row['rol_descripcion'] ?? 'N/A',
+                'status' => $row['status'] ?? 'N/A',
             ];
         }
         return $data;
@@ -69,18 +63,18 @@ class ClientesControlador
     {
         $conexion = $this->db->getConexion();
 
-        $where = "WHERE (c.fecha_baja IS NULL OR c.status != 'eliminado')";
+        $where = "WHERE (r.fecha_baja IS NULL OR r.status != 'eliminado')";
         $params = [];
         $types = "";
 
         // 🔎 Filtro nombre
-        if (!empty($filtros['razon_social'])) {
-            $where .= " AND c.nombre_razon LIKE ?";
-            $params[] = "%" . $filtros['razon_social'] . "%";
+        if (!empty($filtros['nombre_rol'])) {
+            $where .= " AND r.rol_descripcion LIKE ?";
+            $params[] = "%" . $filtros['nombre_rol'] . "%";
             $types .= "s";
         }
 
-        $sql = "SELECT COUNT(*) as total FROM clientes c $where";
+        $sql = "SELECT COUNT(*) as total FROM cat_rol r $where";
 
         $stmt = $conexion->prepare($sql);
 
@@ -97,27 +91,23 @@ class ClientesControlador
     public function show($id){
         $conexion = $this->db->getConexion();
 
-        $SQL = "SELECT * FROM clientes WHERE id = ? LIMIT 1";
+        $SQL = "SELECT id, rol_descripcion, status FROM cat_rol WHERE id = ? LIMIT 1";
 
         $stmt = $conexion->prepare($SQL);
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
-        $client = $result->fetch_assoc();
+        $rol = $result->fetch_assoc();
         $stmt->close();
 
-        return $client;
+        return $rol;
     }
     public function crear($data){
-        $SQL = "INSERT INTO clientes (nombre_razon, telefono, correo, tipo_operacion, tipo_cliente, status, fecha_alta) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $SQL = "INSERT INTO cat_rol (rol_descripcion, status, fecha_alta) 
+                VALUES (?, ?, ?)";
 
         $params = [
-            $data['nombre_razon'],
-            $data['telefono'],
-            $data['correo'],
-            $data['tipo_operacion'],
-            $data['tipo_cliente'],
+            $data['nombre'],
             $data['status'],
             date('Y-m-d H:i:s'),
         ];
@@ -126,32 +116,25 @@ class ClientesControlador
     }
     public function actualizar($id , $data){
         $campos = [
-            'nombre_razon = ?',
-            'telefono = ?',
-            'correo = ?',
-            'tipo_operacion = ?',
-            'tipo_cliente = ?',
+            'rol_descripcion = ?',
             'status = ?',
         ];
 
         $params = [
-            $data['nombre_razon'],
-            $data['telefono'],
-            $data['correo'],
-            $data['tipo_operacion'],
-            $data['tipo_cliente'],
+            $data['nombre'],
             $data['status'],
             $id
         ];
 
-        $sql = "UPDATE clientes SET ". implode(", ", $campos) ." WHERE id = ?";
+        $sql = "UPDATE cat_rol SET ". implode(", ", $campos) ." WHERE id = ?";
         return $this->db->execute($sql, $params);
     }
+
     public function eliminar($id){
 
         $fechaHora = date('Y-m-d H:i:s');
 
-        $sql = "UPDATE clientes SET status='eliminado', fecha_baja=? WHERE id=?";
+        $sql = "UPDATE cat_rol SET status='eliminado', fecha_baja=? WHERE id=?";
         return $this->db->execute($sql, [$fechaHora, $id]);
     }
 

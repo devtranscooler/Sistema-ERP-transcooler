@@ -1,40 +1,16 @@
 <?php
 require '../system/connection.php';
 require '../system/constants.php';
-
-$db = new MySQL();
-$modulos_catalogo = $db->consulta("SELECT id, nombre FROM modulos_catalogo");
-$modulos = [];
-while ($row = $db->fetch_array($modulos_catalogo)) {
-    $modulos[] = $row;
-}
-
-$id_usuario = $_SESSION['ID_USUARIO'];
-$q = "
-    SELECT cr.id_rol, cr.rol_descripcion, cr.fecha_alta
-    FROM cat_rol cr
-";
-
-//echo $modulos_usuario_query;
-//die();
-
-$modulos_usuario = [];
-$result = $db->consulta($q);
-while ($row = $db->fetch_array($result)) {
-    $modulos_usuario[] = $row;
-}
-
 ?>
-  
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <?php include_once($_SERVER['DOCUMENT_ROOT'] . '/utilities/head.php'); ?>
-
 
     <script>
         function toggleMenu() {
@@ -48,116 +24,104 @@ while ($row = $db->fetch_array($result)) {
                 sidebar.classList.remove('open');
             }
         }
-        
     </script>
 </head>
-<body onclick="closeMenu(event)">
-    <?php
-    require_once '../utilities/sidebar.php'; 
-    Sidebar::render("Roles");
-    ?>
-    <div class="content">
-        <h1>Rol</h1>
-                    <div class="datos-usuario">
-                        <p><strong>ID:</strong> <?= htmlspecialchars($_SESSION['ID_USUARIO']) ?></p>
-                        <p><strong>Nombre:</strong> <?= htmlspecialchars($_SESSION['NAME']) ?></p>
-                    </div>
-    
-            <div class="modulos">
-              <?php foreach ($modulos_usuario as $modulo): ?>
-                <div class="modulo mb-4">
-                    <span><?= htmlspecialchars($modulo['id_rol']) ?></span>
-                    -
-                    <span><?= htmlspecialchars($modulo['rol_descripcion']) ?></span>
-                        
-            
-                </div>
-            <?php endforeach; ?>
-    </div>
-<!-- Boton -->
-<button type="button" class="btn btn-primary btn-lg rounded-circle fab-btn" data-bs-toggle="modal" data-bs-target="#moduloModal">
-    <i class="bi bi-plus"></i>
-</button>
 
-        <div class="modal fade" id="moduloModal" tabindex="-1" aria-labelledby="moduloModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Agregar Modulo</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="moduloForm">
-                            <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($_SESSION['ID_USUARIO']) ?>">
-                            <div class="mb-3">
-                                <label for="modulo" class="form-label">Seleccionar Modulo</label>
-                                <select class="form-select" id="modulo" name="id_modulo" required>
-                                    <option value="">Seleccionar...</option>
-                                    <?php foreach ($modulos as $modulo): ?>
-                                        <option value="<?= $modulo['id'] ?>"><?= htmlspecialchars($modulo['nombre']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Agregar</button>
-                        </form>
+<body onclick="closeMenu(event)">
+    <?php require_once '../utilities/sidebar.php'; Sidebar::render("Roles");?>
+    <div class="container-fluid">
+
+        <!-- Breadcrumb mejorado con íconos -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item">
+                    <i class="bi bi-house-door me-1"></i>Inicio
+                </li>
+                <li class="breadcrumb-item active">
+                    <i class="bi bi-person-badge me-1"></i>Roles
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado con mejor espaciado y diseño -->
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="fw-bold mb-0">
+                    <i class="bi bi-person-video2 text-primary"></i>
+                    Gestión de Roles
+                </h2>
+            </div>
+
+            <div class="col-md-6 text-md-end">
+                <!-- Botones con mejor diseño y spacing -->
+                <button class="btn btn-primary  shadow-sm" onclick="abrirModal('formRol.php')">
+                    <i class="bi bi-plus-circle me-2"></i>Nuevo Rol
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros dentro de un card con mejor organización -->
+        <div class="filter-card">
+            <div class="row">
+                <!-- Campo de búsqueda por nombre -->
+                <div class="col-md-12">
+                    <label for="filtroNombreRol" class="form-label small text-muted">
+                        <i class="bi bi-person-square"></i> Buscar por Nombre de Rol
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text"
+                            name="nombre"
+                            id="filtroNombreRol"
+                            class="form-control border-start-0 ps-0"
+                            placeholder="Escribe el nombre del rol...">
                     </div>
                 </div>
             </div>
         </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- AJAX to Submit Form Without Refresh -->
-<script>
-$(document).ready(function () {
-    const modalEl = document.getElementById('moduloModal');
-    const modalInstance = new bootstrap.Modal(modalEl);
+        <div class="table-responsive mb-0">
+            <table class="table table-hover align-middle mb-0" id="tablaRoles">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th class="text-center" style="width: 200px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargan -->
+                </tbody>
+            </table>
+        </div>
 
-   $("#moduloForm").submit(function (event) {
-        event.preventDefault();
-        const formData = $(this).serialize();
+        <div class="row mt-2 align-items-center">
+            <div class="col-md-6">
+                <div id="info-paginacion" class="text-muted"></div>
+            </div>
+            <div class="col-md-6">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-md-end justify-content-center mb-0" id="paginacion"></ul>
+                </nav>
+            </div>
+        </div>
 
-        $.post("./dao/insertModulo.php", formData, function (response) {
-            alert(response);
-            modalInstance.hide();
-            $("#moduloForm")[0].reset();
-            $("#id_modulo").val('');
-            location.reload();
-        });
-    });
-});
-$(document).on('change', '.permiso-checkbox', function () {
-    const checkbox = $(this);
-    const idUsuario = checkbox.data('idusuario');
-    const idModulo = checkbox.data('idmodulo');
-    const permiso = checkbox.data('permiso');
-    const valor = checkbox.is(':checked') ? 1 : 0;
+        <!-- AJAX to Submit Form Without Refresh -->
+        <!-- MODAL GLOBAL -->
+        <div class="modal fade" id="globalModal" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content" id="globalModalContent" style="overflow-y: auto;">
+                </div>
+            </div>
+        </div>
 
-    $.post('./dao/updatePermiso.php', {
-        id_usuario: idUsuario,
-        id_modulo: idModulo,
-        permiso: permiso,
-        valor: valor
-    }, function (response) {
-        console.log('Permiso actualizado:', response);
-    }).fail(function () {
-        alert('Error al actualizar el permiso.');
-    });
-});
-
-function deleteModulo(idModulo) {
-    if (!confirm("¿Estás seguro que deseas eliminar este módulo?")) return;
-
-    $.post("./dao/deleteModulo.php", {
-        id_usuario: <?= json_encode($id_usuario) ?>,
-        id_modulo: idModulo
-    }, function (response) {
-        alert(response);
-        location.reload(); // Refresh to reflect changes
-    }).fail(function () {
-        alert('Error al eliminar el módulo.');
-    });
-}
-</script>
+    </div> <!-- Cierre del container-fluid -->
+    <script src="roles.js"></script>
 
 </body>
+
 </html>

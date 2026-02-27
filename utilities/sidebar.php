@@ -5,6 +5,7 @@ $db = new MySQL();
 $id_usuario = intval($id_usuario ?? 0);
 
 // Obtener cada opción de menú con id_parent para construir la o las jerarquías
+$mysqli_conn = $db->getConexion(); // Obtener la conexión mysqli
 $q = "
   SELECT 
     m.id_menu,
@@ -14,13 +15,18 @@ $q = "
     m.url
   FROM menu_usuarios mu
   INNER JOIN menu m ON mu.id_menu = m.id_menu
-  WHERE mu.id_usuario = $id_usuario
+  WHERE mu.id_usuario = ?
     AND m.status = 'activo'
     AND m.tab = 0
   ORDER BY m.orden, m.id_menu
 ";
-
-$rs = $db->consulta($q);
+$stmt = $mysqli_conn->prepare($q);
+if ($stmt === false) {
+    die('MySQL prepare error: ' . $mysqli_conn->error);
+}
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$rs = $stmt->get_result(); // Obtener el resultado para usar fetch_array
 
 // Construir lista plana
 $menus = [];
