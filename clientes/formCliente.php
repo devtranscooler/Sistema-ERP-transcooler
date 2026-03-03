@@ -66,7 +66,7 @@ $status = $_POST['status'] ?? null;
             </div>
 
             <div class="col-md-4">
-                <label class="form-label">Tipoi de cliente <span class="text-danger"><span class="text-danger">*</span></span></label>
+                <label class="form-label">Tipo de cliente <span class="text-danger"><span class="text-danger">*</span></span></label>
                 <select class="form-select" name="tipo_cliente" id="tipo_cliente" value="<?= $tipo_cliente ?>" required>
                     <option value="nacional" <?= $tipo_cliente === 'nacional' ? 'selected' : '' ?>>Nacional </option>
                     <option value="extranjero" <?= $tipo_cliente === 'extranjero' ? 'selected' : '' ?>>Extranjero</option>

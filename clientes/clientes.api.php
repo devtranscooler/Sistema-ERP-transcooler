@@ -58,6 +58,14 @@ switch ($action) {
             'success' => $controlador->eliminar($id),
         ]);
         break;
+        
+        //Agregar datos fiscales
+    case 'agregarFiscales':
+        $id = $_POST['id'];
+        echo json_encode([
+            'success' => $controlador->agregarFiscales($id, $_POST),
+        ]);
+        break;
 
     default:
         echo json_encode([

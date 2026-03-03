@@ -104,7 +104,7 @@ function pintarPaginacion(totalRegistros) {
     document.getElementById("paginacion").innerHTML = html;
 }
 
-function abrirModal(url, data = {}) {
+/* function abrirModal(url, data = {}) {
 
     fetch(url, {
         method: "POST",
@@ -132,6 +132,32 @@ function abrirModal(url, data = {}) {
                 text: 'No se pudo cargar el formulario'
             });
         });
+} */
+
+function abrirModal(url, data = {}) {
+    fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(data)
+    })
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById("globalModalContent").innerHTML = html;
+        document.getElementById("globalModalContent")
+            .querySelectorAll("script")
+            .forEach(scriptViejo => {
+                const scriptNuevo = document.createElement("script");
+                scriptNuevo.textContent = scriptViejo.textContent;
+                document.body.appendChild(scriptNuevo);
+                scriptNuevo.remove();
+            });
+        const modal = new bootstrap.Modal(document.getElementById("globalModal"));
+        modal.show();
+    })
+    .catch(error => {
+        console.error("Error cargando modal:", error);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cargar el formulario' });
+    });
 }
 
 function cargarClientes(page = 1) {
@@ -167,7 +193,6 @@ function ver(id) {
     const formData = new FormData();
     formData.append('action', 'find');
     formData.append('id', id);
-
     fetch("clientes.api.php", {
         method: 'POST',
         body: formData,
@@ -313,4 +338,3 @@ function fiscales(id) {
             console.error("Error al editar:", error);
         });
 }
-

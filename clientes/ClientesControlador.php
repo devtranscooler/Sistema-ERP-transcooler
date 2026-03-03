@@ -155,4 +155,29 @@ class ClientesControlador
         return $this->db->execute($sql, [$fechaHora, $id]);
     }
 
+    public function agregarFiscales($id , $data){
+        $campos = [
+            'calle = ?',
+            'num_ext = ?',
+            'num_int = ?',
+            'codigo_postal = ?',
+            'RFC = ?',
+            'regimen_fiscal = ?',
+            'tipo_persona = ?',
+        ];
+
+        $params = [
+            $data['calle'],
+            $data['num_ext'],
+            $data['num_int'],
+            $data['codigo_postal'],
+            $data['RFC'],
+            $data['regimen_fiscal'],
+            $data['tipo_persona'],
+            $id
+        ];
+        
+        $sql = "UPDATE clientes SET ". implode(", ", $campos) ." WHERE id = ?";
+        return $this->db->execute($sql, $params);
+    }
 }
