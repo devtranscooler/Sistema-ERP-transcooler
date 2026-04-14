@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<body>
+<body>  
     <div class="container-fluid">
 
         <!-- Breadcrumb -->
@@ -11,7 +11,7 @@
                     <i class="bi bi-house-door me-1"></i>Inicio
                 </li>
                 <li class="breadcrumb-item active">
-                    <i class="bi bi-headset me-1"></i>Servicios
+                    <i class="bi bi-truck me-1"></i>Salidas
                 </li>
             </ol>
         </nav>
@@ -20,18 +20,17 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <h2 class="fw-bold mb-0">
-                    <i class="bi bi-headset text-primary"></i>
-                    Gestión de Servicios
+                    <i class="bi bi-truck text-primary"></i>
+                    Dar salida a unidad
                 </h2>
-            </div>
-            
+            </div>            
         </div>
 
         <!-- Filtros -->
         <div class="filter-card">
             <div class="row">
                 <div class="col-md-12">
-                    <label for="filtroIdServicioMain" class="form-label small text-muted">
+                    <label for="filtroIdServicioSalida" class="form-label small text-muted">
                         <i class="bi bi-search"></i> Buscar por ID de Servicio
                     </label>
                     <div class="input-group">
@@ -40,7 +39,7 @@
                         </span>
                         <input type="text"
                             name="idServicio"
-                            id="filtroIdServicioMain"
+                            id="filtroIdServicioSalida"
                             class="form-control border-start-0 ps-0"
                             placeholder="ID, cliente, servicio...">
                     </div>
@@ -50,7 +49,7 @@
 
         <!-- Tabla -->
         <div class="table-responsive mb-0">
-            <table class="table table-hover aligmiddle mb-0" id="tablaServiciosMain">
+            <table class="table table-hover aligmiddle mb-0" id="tablaServiciosSalida">
                 <thead>
                     <tr>
                         <th class="text-center">ID</th>
@@ -61,13 +60,12 @@
                         <th>Fecha descarga</th>
                         <th>Id Usuario</th>
                         <th>Num repartos</th>
-                        <th>Tracking</th>
                         <th>Fecha alta</th>
                         <th class="text-center" style="width: 200px;"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Los datos se cargan via servicioClientes.js -->
+                    <!-- Los datos se cargan via servicioSalida.js -->
                 </tbody>
             </table>
         </div>
@@ -75,20 +73,19 @@
         <!-- Paginación -->
         <div class="row mt-2 align-items-center">
             <div class="col-md-6">
-                <div id="info-paginacion-main" class="text-muted"></div>
+                <div id="info-paginacion-salida" class="text-muted"></div>
             </div>
             <div class="col-md-6">
                 <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-md-end justify-content-center mb-0"
-                        id="paginacion-main"></ul>
+                    <ul class="pagination justify-content-md-end justify-content-center mb-0" id="paginacion-salida"></ul>
                 </nav>
             </div>
         </div>
 
-        <!-- MODAL SERVICIOS -->
-        <div class="modal fade" id="mainModal" tabindex="-1">
+        <!-- MODAL SALIDAS -->
+        <div class="modal fade" id="salidaModal" tabindex="-1">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content" id="mainModalContent" style="overflow-y: auto;">
+                <div class="modal-content" id="salidaModalContent" style="overflow-y: auto;">
                 </div>
             </div>
         </div>
@@ -96,6 +93,6 @@
     </div>
 </body>
 
-<script src="main/servicioMain.js"></script>
+<script src="salida-servicio/servicioSalida.js"></script>
 
 </html>

@@ -28,7 +28,7 @@ require '../system/constants.php';
 
 <body onclick="closeMenu(event)">
     <?php require_once '../utilities/sidebar.php';
-    Sidebar::render("Clientes"); ?>
+    Sidebar::render("Unidades"); ?>
 
     <div class="container-fluid">
 
@@ -39,7 +39,7 @@ require '../system/constants.php';
                     <i class="bi bi-house-door me-1"></i>Inicio
                 </li>
                 <li class="breadcrumb-item active">
-                    <i class="bi bi-people me-1"></i>Clientes
+                    <i class="bi bi-truck me-1"></i>Unidades
                 </li>
             </ol>
         </nav>
@@ -48,19 +48,19 @@ require '../system/constants.php';
         <div class="row align-items-center">
             <div class="col-md-6">
                 <h2 class="fw-bold mb-0">
-                    <i class="bi bi-person-video2 text-primary"></i>
-                    Gestión de Clientes
+                    <i class="bi bi-truck text-primary"></i>
+                    Gestión de Unidades
                 </h2>
             </div>
 
             <div class="col-md-6 text-md-end">
                 <!-- Botones con mejor diseño y spacing -->
-                <button class="btn btn-primary  shadow-sm" onclick="abrirModal('formCliente.php')">
-                    <i class="bi bi-plus-circle me-2"></i>Nuevo Cliente
+                <button class="btn btn-primary  shadow-sm" onclick="abrirModal('formUnidades.php')">
+                    <i class="bi bi-plus-circle me-2"></i>Nueva Unidad
                 </button>
-                <button class="btn btn-success shadow-sm ms-2">
+                <!-- <button class="btn btn-success shadow-sm ms-2">
                     <i class="bi bi-file-earmark-excel me-2"></i>Exportar
-                </button>
+                </button> -->
             </div>
         </div>
 
@@ -69,33 +69,33 @@ require '../system/constants.php';
             <div class="row">
                 <!-- Campo de búsqueda por nombre -->
                 <div class="col-md-12">
-                    <label for="filtroRazon" class="form-label small text-muted">
-                        <i class="bi bi-person-square"></i> Buscar por razon social
+                    <label for="filtroEco" class="form-label small text-muted">
+                        <i class="bi bi-truck-front"></i> Buscar por Eco
                     </label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="bi bi-search"></i>
                         </span>
                         <input type="text"
-                            name="nombre"
-                            id="filtroRazon"
+                            name="eco"
+                            id="filtroEco"
                             class="form-control border-start-0 ps-0"
-                            placeholder="Escribe la razon social...">
+                            placeholder="Número economico...">
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="table-responsive mb-0">
-            <table class="table table-hover aligmiddle mb-0" id="tablaClientes">
+            <table class="table table-hover aligmiddle mb-0" id="tablaUnidades">
                 <thead>
                     <tr>
                         <th class="text-center">ID</th>
-                        <th>Razón social</th>
-                        <th>RFC</th>
-                        <th>Correo</th>
-                        <th>Movil</th>
-                        <th>Operación</th>
+                        <th>Eco</th>
+                        <th>Tipo</th>
+                        <th>Placas</th>
+                        <th>Motor</th>
+                        <th>NIV</th>
                         <th class="text-center" style="width: 200px;"></th>
                     </tr>
                 </thead>
@@ -127,6 +127,6 @@ require '../system/constants.php';
     </div>
 </body>
 
-<script src="clientes.js"></script>
+<script src="unidades.js"></script>
 
 </html>

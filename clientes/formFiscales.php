@@ -240,6 +240,11 @@ function rellenarFormularioFiscal(datos) {
         num_ext:       'num_ext',
         num_int:       'num_int',
         calle:         'calle',
+        CFDI:          'CFDI', 
+        tipo_credito:  'tipo_credito', 
+        cantidad_credito: 'cantidad_credito', 
+        forma_pago:    'forma_pago', 
+        metodo_pago:   'metodo_pago', 
     };
 
     Object.entries(mapa).forEach(([clave, nombre]) => {

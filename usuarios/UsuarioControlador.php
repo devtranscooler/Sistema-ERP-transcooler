@@ -235,4 +235,26 @@ class UsuarioControlador
         $sql = "UPDATE usuarios SET estatus='eliminado' WHERE id=?";
         return $this->db->execute($sql, [$id]);
     }
+
+    public function buscarOperadores($term)
+    {
+        $term = $this->db->escape_string($term);
+
+        $query = "SELECT id, nombre, apellidoP, apellidoM 
+                FROM usuarios u  
+                WHERE area = 'OPERACIONES' AND nombre LIKE '%$term%' 
+                LIMIT 10";
+
+        $result = $this->db->consulta($query);
+
+        $operadores = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $operadores[] = [
+                'id' => $row['id'],
+                'nombreOperador' => $row['nombre'] . ' ' . $row['apellidoP'] . ' ' . $row['apellidoM']
+            ];
+        }
+        return $operadores;
+    }
 }

@@ -154,7 +154,6 @@ class ClientesControlador
         $sql = "UPDATE clientes SET status='eliminado', fecha_baja=? WHERE id=?";
         return $this->db->execute($sql, [$fechaHora, $id]);
     }
-
     public function agregarFiscales($id , $data){
         $campos = [
             'calle = ?',
@@ -164,6 +163,11 @@ class ClientesControlador
             'RFC = ?',
             'regimen_fiscal = ?',
             'tipo_persona = ?',
+            'CFDI = ?',
+            'tipo_credito = ?',
+            'cantidad_credito = ?',
+            'forma_pago = ?',
+            'metodo_pago = ?',
         ];
 
         $params = [
@@ -174,10 +178,38 @@ class ClientesControlador
             $data['RFC'],
             $data['regimen_fiscal'],
             $data['tipo_persona'],
+            $data['CFDI'],
+            $data['tipo_credito'],
+            $data['cantidad_credito'],
+            $data['forma_pago'],
+            $data['metodo_pago'],
             $id
         ];
         
         $sql = "UPDATE clientes SET ". implode(", ", $campos) ." WHERE id = ?";
         return $this->db->execute($sql, $params);
+    }
+    public function buscarClientes($term)
+    {
+        $term = $this->db->escape_string($term);
+
+        $query = "SELECT id, nombre_razon, tipo_servicio, TRIM(CONCAT_WS(' ', calle, num_ext, num_int, CONCAT('C.P. ', codigo_postal))) AS origen
+                FROM clientes c  
+                WHERE c.status = 'activo' AND c.nombre_razon LIKE '%$term%' 
+                LIMIT 10";
+
+        $result = $this->db->consulta($query);
+
+        $clientes = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $clientes[] = [
+                'id' => $row['id'],
+                'nombre_razon' => $row['nombre_razon'],
+                'tipo_servicio' => $row['tipo_servicio'],
+                'origen' => $row['origen']
+            ];
+        }
+        return $clientes;
     }
 }

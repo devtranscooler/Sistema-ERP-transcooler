@@ -66,6 +66,25 @@ switch ($action) {
             'success' => $controlador->agregarFiscales($id, $_POST),
         ]);
         break;
+    
+    case 'buscar_clientes':
+        $term = $_POST['term'] ?? '';
+
+        echo json_encode([
+            'data' => $controlador->buscarClientes($term)
+        ]);
+        break;
+    
+    case 'find_cliente':
+    $id = $_POST['id'];
+    $cliente = $controlador->show($id);
+    echo json_encode([
+        'data' => [
+            'id'  => $cliente['id'],
+            'nombre_razon' => $cliente['nombre_razon']
+        ]
+    ]);
+    break;
 
     default:
         echo json_encode([
