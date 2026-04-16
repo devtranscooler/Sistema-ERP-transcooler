@@ -79,6 +79,10 @@
         word-break: break-word;
     }
 
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
     @media (max-width: 992px) { .section-content { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 576px) { .section-content { grid-template-columns: 1fr; } }
 </style>
@@ -120,7 +124,7 @@
         </div>
         <div class="section-content">
             <div class="info-field">
-                <div class="info-label">Eo unidad</div>
+                <div class="info-label">Eco unidad</div>
                 <div class="info-value"><?= $eco ?></div>
             </div>
             <div class="info-field">
@@ -144,15 +148,26 @@
             <i class="bi bi-truck" style="font-size: 0.85rem"></i> Repartos
         </div>
         <div class="section-content">
+            <div class="info-field full-width">
+                <div class="info-label">Inicio de ruta:</div>
+                <div class="info-value"><?= $repartos[0]['origen_inicio'] ?></div>
+            </div>
             <div class="info-field">
-                <div class="info-label">No. Repartos</div>
-                <div class="info-value"><?= $num_repartos ?></div>
+                <div class="info-label">No. Repartos: <?= $num_repartos ?></div>
             </div>
         </div>
-        <div class="section-content" v-for="(reparto, index) in $repartos" :key="index">
-            <div class="info-field">
-                <div class="info-label"></div>
-            </div>
+        <div class="section-content">
+            <?php foreach ($repartos as $index => $reparto): ?>
+                <div class="info-field">
+                    <div class="info-label">Reparto <?= $index + 1 ?></div>
+                    <div class="info-value">
+                        <?php if ($index === 1): ?>
+                            <strong>Origen:</strong> <?= $reparto['origen'] ?> <br>
+                        <?php endif; ?>
+                        <strong>Destino:</strong> <?= $reparto['destino'] ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
