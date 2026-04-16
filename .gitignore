@@ -4,3 +4,4 @@
 *.pdf
 
 /system/agentes/
+/config/storage/*.json
