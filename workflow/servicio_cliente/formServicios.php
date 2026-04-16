@@ -38,20 +38,20 @@ FORMULARIO PARA AGREGAR NUEVO SERVICIO
         </h5>
 
         <div class="row ">
-            <!-- Cliente -->  
+            <!-- Cliente -->
             <div class="col-md-4">
                 <label class="form-label">
                     Cliente <span class="text-danger">*</span>
                 </label>
 
                 <div class="position-relative">
-                    <input type="text" 
-                        class="form-control" 
-                        id="cliente_busqueda" 
-                        placeholder="Buscar cliente..." 
+                    <input type="text"
+                        class="form-control"
+                        id="cliente_busqueda"
+                        placeholder="Buscar cliente..."
                         autocomplete="off">
 
-                    <div id="lista_clientes" 
+                    <div id="lista_clientes"
                         class="list-group shadow-sm"
                         style="
                             position: fixed;
@@ -67,7 +67,7 @@ FORMULARIO PARA AGREGAR NUEVO SERVICIO
             <div class="col-md-4">
                 <label class="form-label">Shipment <span class="text-danger"><span class="text-danger">*</span></span></label>
                 <input type="text" class="form-control" name="shipment" id="shipment" value="<?= $shipment ?>" required>
-            </div> 
+            </div>
             <!-- Tipo de servicio -->
             <div class="col-md-4">
                 <label for="tipo_servicio" class="form-label">
@@ -78,12 +78,12 @@ FORMULARIO PARA AGREGAR NUEVO SERVICIO
                     <option value="spot"      <?= $tipo_servicio == 'spot'      ? 'selected' : '' ?>>Spot</option>
                     <option value="dedicado"  <?= $tipo_servicio == 'dedicado'  ? 'selected' : '' ?>>Dedicado</option>
                 </select>
-            </div> 
+            </div>
             <!-- Origen -->
             <div class="col-md-8">
                 <label class="form-label">Origen <span class="text-danger"><span class="text-danger">*</span></span></label>
                 <input type="text" class="form-control" name="origen" id="origen" value="<?= $origen ?>" required>
-            </div>     
+            </div>
             <!-- Tipo de viaje -->
             <div class="col-md-4">
                 <label for="tipo_viaje" class="form-label">
@@ -94,26 +94,26 @@ FORMULARIO PARA AGREGAR NUEVO SERVICIO
                     <option value="local"      <?= $tipo_viaje == 'local'      ? 'selected' : '' ?>>Local</option>
                     <option value="foraneo"  <?= $tipo_viaje == 'foraneo'  ? 'selected' : '' ?>>Foraneo</option>
                 </select>
-            </div>           
+            </div>
             <!-- Fecha carga -->
             <div class="col-md-4">
                 <label class="form-label">Fecha carga <span class="text-danger"><span class="text-danger">*</span></span></label>
                 <input type="datetime-local" class="form-control" name="fecha_carga" id="fecha_carga" value="<?= $fecha_carga ?>" required>
-            </div>  
+            </div>
             <!-- Fecha descarga -->
             <div class="col-md-4">
                 <label class="form-label">Fecha descarga <span class="text-danger"><span class="text-danger">*</span></span></label>
                 <input type="datetime-local" class="form-control" name="fecha_descarga" id="fecha_descarga" value="<?= $fecha_descarga ?>" required>
-            </div>                                  
+            </div>
             <!-- Num repartos -->
             <div class="col-md-4">
                 <label class="form-label">Número de repartos <span class="text-danger"><span class="text-danger">*</span></span></label>
                 <input type="number" class="form-control" name="num_repartos" id="num_repartos" value="<?= $num_repartos ?>" min="1" required>
-            </div>  
+            </div>
             <!-- Direcciones de repartos -->
             <div class="col-12" id="contenedor_repartos">
                 <!-- Los campos se generan aquí con JS -->
-            </div>          
+            </div>
         </div>
     </div>
 </form>
@@ -243,14 +243,14 @@ FORMULARIO PARA AGREGAR NUEVO SERVICIO
                 <div class="col-md-8 mt-2 mb-3">
                     <label class="form-label">Reparto No.${i} <span class="text-danger">*</span></label>
                     <div class="position-relative">
-                        <input 
-                            type="text" 
-                            class="form-control" 
-                            id="destino_busqueda_${i}" 
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="destino_busqueda_${i}"
                             placeholder="Buscar destino por nombre o calle..."
                             autocomplete="off"
                         >
-                        <div id="lista_destino_${i}" 
+                        <div id="lista_destino_${i}"
                             class="list-group shadow-sm"
                             style="position:fixed;z-index:9999;min-width:200px;display:none;">
                         </div>
@@ -267,7 +267,7 @@ FORMULARIO PARA AGREGAR NUEVO SERVICIO
                 listaId:  `lista_destino_${i}`,
                 hiddenId: `id_destino_${i}`,
                 action:   'buscar_destinos',
-                labelKey: 'nombre',   
+                labelKey: 'nombre',
                 apiUrl:   '../destinos/destinos.api.php'
             });
         }

@@ -48,20 +48,41 @@ switch ($action) {
         $id_servicio = $controlador->crearRetornandoId($_POST);
 
         if ($id_servicio) {
+            $origen = $_POST['origen'] ?? "";
             $destinos = $_POST['id_destino'] ?? [];
+
+            $destinoAnterior = null;
+
             foreach ($destinos as $numero => $id_destino) {
                 if (!$id_destino) continue;
-                $repartosControlador->crear([
+
+                $data = [
                     'id_servicio'    => $id_servicio,
                     'numero_reparto' => $numero + 1,
                     'id_destino'     => $id_destino,
-                ]);
+                    'id_origen'      => null,
+                    'origen_inicio'  => null,
+                ];
+
+                if ($numero == 0) {
+                    // Primer reparto
+                    $data['origen_inicio'] = $origen;
+                } else {
+                    // Siguientes repartos
+                    $data['id_origen'] = $destinoAnterior;
+                }
+
+                $repartosControlador->crear($data);
+
+                // Guardar el destino actual como "anterior"
+                $destinoAnterior = $id_destino;
             }
+
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al crear el servicio']);
         }
-        break;
+    break;
 
     case 'actualizar':
         $id = $_POST['id'];
@@ -105,6 +126,10 @@ switch ($action) {
         echo json_encode([
             'success' => $controlador->actualizarTracking($id, $tracking),
         ]);
+        break;
+
+    case 'cargarArchivos':
+        echo json_encode($controlador->uploadFiles($_POST, $_FILES));
         break;
         
     default:

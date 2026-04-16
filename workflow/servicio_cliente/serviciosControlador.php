@@ -1,6 +1,10 @@
 <?php
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT'] . '/system/connection.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/validations/media/FileValidator.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/services/media/FileUploadService.php');
+require_once $_SERVER['DOCUMENT_ROOT'] . '/DTO/media/UploadMediaDTO.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Resources/Media/MediaResponse.php';
 
 class serviciosControlador
 {
@@ -34,24 +38,24 @@ class serviciosControlador
 
         // Filtro nombre
         if (!empty($filtros['filtroIdServicio'])) {
-            $where .= " AND s.id LIKE ?";
+            $where .= " AND CONCAT(s.id, s.shipment) LIKE ?";
             $params[] = "%" . $filtros['filtroIdServicio'] . "%";
             $types .= "s";
         }
         // Filtro nombre
         if (!empty($filtros['filtroIdServicioTrafico'])) {
-            $where .= " AND s.id LIKE ?";
+            $where .= " AND CONCAT(s.id, s.shipment) LIKE ?";
             $params[] = "%" . $filtros['filtroIdServicioTrafico'] . "%";
             $types .= "s";
         }
         // Filtro nombre
         if (!empty($filtros['filtroIdServicioMain'])) {
-            $where .= " AND s.id LIKE ?";
+            $where .= " AND CONCAT(s.id, s.shipment) LIKE ?";
             $params[] = "%" . $filtros['filtroIdServicioMain'] . "%";
             $types .= "s";
         }
 
-        $SQL = " SELECT s.id, 
+        $SQL = " SELECT s.id,
             s.id_cliente,
             s.id_usuario_alta,
             s.fec_alta,
@@ -158,14 +162,17 @@ class serviciosControlador
             CONCAT(ua.nombre, ' ', ua.apellidoP) AS nombreUsuarioAlta,
             r.id AS reparto_id,
             r.numero_reparto,
-            cd.nombre
+            r.origen_inicio,
+            co.nombre AS origen,
+            cd.nombre AS destino
         FROM servicios s
         LEFT JOIN clientes c        ON c.id  = s.id_cliente
         LEFT JOIN cat_unidades cu   ON cu.id = s.id_unidad
         LEFT JOIN usuarios uo       ON uo.id = s.id_operador
         LEFT JOIN usuarios ua       ON ua.id = s.id_usuario_alta
         INNER JOIN repartos r 		ON s.id = r.id_servicio
-        INNER JOIN cat_destinos cd  ON cd.id  = r.id_destino
+        LEFT JOIN cat_destinos co   ON co.id = r.id_origen
+		LEFT JOIN cat_destinos cd   ON cd.id = r.id_destino
         WHERE s.id = ?";
 
         $stmt = $conexion->prepare($SQL);
@@ -187,7 +194,7 @@ class serviciosControlador
                     'tipo_servicio' => $row['tipo_servicio'],
                     'fec_alta' => $row['fec_alta'],
                     'tipo_viaje' => $row['tipo_viaje'],
-                    'origen' => $row['origen'],
+                    'num_repartos' => $row['num_repartos'],
                     'status' => $row['status'],
 
                     'nombre_razon' => $row['nombre_razon'],
@@ -201,7 +208,9 @@ class serviciosControlador
             $repartos[] = [
                 'id' => $row['reparto_id'],
                 'numero_reparto' => $row['numero_reparto'],
-                'destino' => $row['nombre'],
+                'destino' => $row['destino'],
+                'origen' => $row['origen'],
+                'origen_inicio' => $row['origen_inicio'],
             ];
         }
 
@@ -299,8 +308,8 @@ class serviciosControlador
         return $this->db->execute($sql, [$id]);
     }
     public function crearRetornandoId($data) {
-        $SQL = "INSERT INTO servicios (id_cliente, id_usuario_alta, fec_alta, shipment, tipo_viaje, num_repartos, fecha_carga, fecha_descarga, tipo_servicio, origen, status) 
-                VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, 'activo')";
+        $SQL = "INSERT INTO servicios (id_cliente, id_usuario_alta, fec_alta, shipment, tipo_viaje, num_repartos, fecha_carga, fecha_descarga, tipo_servicio, status)
+                VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, 'activo')";
 
         $params = [
             $data['id_cliente'],
@@ -311,11 +320,46 @@ class serviciosControlador
             $data['fecha_carga'],
             $data['fecha_descarga'],
             $data['tipo_servicio'],
-            $data['origen'],
         ];
 
         $this->db->execute($SQL, $params);
 
         return $this->db->getConexion()->insert_id;
+    }
+
+    
+    public function uploadFiles($post, $files)
+    {
+        $validation = FileValidator::fileValidation($files, $post);
+
+        if (!$validation['status']) {
+            return $validation;
+        }
+
+        $validatedFiles = $validation['files'];
+        $data = $validation['data'];
+
+        $mediaDTO = new UploadMediaDTO(
+            $data['tipo_recurso'],
+            $data['tipo_recurso_id'],
+            /*$_SESSION['ID_USUARIO']*/ 2,
+            $data['modulo_servicio']
+        );
+
+        $uploadService = new FileUploadService();
+
+        $results = $uploadService->process($validatedFiles, $mediaDTO);
+
+        $response = array_map(
+            fn($item) => MediaResponse::transform($item),
+            $results
+        );
+
+        // 🔹 5. Respuesta final
+        return [
+            "status" => true,
+            "message" => "success",
+            "data" => $response
+        ];
     }
 }

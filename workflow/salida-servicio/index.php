@@ -23,7 +23,7 @@
                     <i class="bi bi-truck text-primary"></i>
                     Dar salida a unidad
                 </h2>
-            </div>            
+            </div>
         </div>
 
         <!-- Filtros -->
@@ -41,7 +41,7 @@
                             name="idServicio"
                             id="filtroIdServicioSalida"
                             class="form-control border-start-0 ps-0"
-                            placeholder="ID, cliente, servicio...">
+                            placeholder="Buscar...">
                     </div>
                 </div>
             </div>

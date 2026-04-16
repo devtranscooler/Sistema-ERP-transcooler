@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/system/connection.php');
+require_once $_SERVER['DOCUMENT_ROOT'] . '/system/connection.php';
 
 class repartosControlador
 {
@@ -12,13 +12,15 @@ class repartosControlador
     }
     
     public function crear($data){
-        $SQL = "INSERT INTO repartos (id_servicio,numero_reparto,id_destino) 
-                VALUES (?, ?, ?)";
+        $SQL = "INSERT INTO repartos (id_servicio,numero_reparto,id_destino,id_origen,origen_inicio) 
+                VALUES (?, ?, ?, ?, ?)";
         
         $params = [
             $data['id_servicio'],
             $data['numero_reparto'],
             $data['id_destino'],
+            $data['id_origen'],
+            $data['origen_inicio']
         ];
 
         return $this->db->execute($SQL, $params);
@@ -27,13 +29,17 @@ class repartosControlador
         $campos = [
             'id_servicio = ?',
             'numero_reparto = ?',
-            'id_destino = ?'            
+            'id_destino = ?',
+            'id_origen = ?',
+            'origen_inicio = ?'
             ];
 
         $params = [
             $data['id_servicio'],
             $data['numero_reparto'],
             $data['id_destino'],
+            $data['id_origen'],
+            $data['origen_inicio'],
             $id
         ];
 

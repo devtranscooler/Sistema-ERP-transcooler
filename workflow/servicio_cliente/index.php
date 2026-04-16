@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <label for="filtroIdServicio" class="form-label small text-muted">
-                        <i class="bi bi-search"></i> Buscar por ID de Servicio
+                        <i class="bi bi-search"></i> Buscar
                     </label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
@@ -47,7 +47,7 @@
                             name="idServicio"
                             id="filtroIdServicio"
                             class="form-control border-start-0 ps-0"
-                            placeholder="ID, cliente, servicio...">
+                            placeholder="Buscar...">
                     </div>
                 </div>
             </div>
