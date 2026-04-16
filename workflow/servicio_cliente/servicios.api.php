@@ -127,6 +127,10 @@ switch ($action) {
             'success' => $controlador->actualizarTracking($id, $tracking),
         ]);
         break;
+
+    case 'cargarArchivos':
+        echo json_encode($controlador->uploadFiles($_POST, $_FILES));
+        break;
         
     default:
         echo json_encode([

@@ -1,6 +1,10 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/system/connection.php';
+require_once($_SERVER['DOCUMENT_ROOT'] . '/system/connection.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/validations/media/FileValidator.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/services/media/FileUploadService.php');
+require_once $_SERVER['DOCUMENT_ROOT'] . '/DTO/media/UploadMediaDTO.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Resources/Media/MediaResponse.php';
 
 class serviciosControlador
 {
@@ -321,5 +325,41 @@ class serviciosControlador
         $this->db->execute($SQL, $params);
 
         return $this->db->getConexion()->insert_id;
+    }
+
+    
+    public function uploadFiles($post, $files)
+    {
+        $validation = FileValidator::fileValidation($files, $post);
+
+        if (!$validation['status']) {
+            return $validation;
+        }
+
+        $validatedFiles = $validation['files'];
+        $data = $validation['data'];
+
+        $mediaDTO = new UploadMediaDTO(
+            $data['tipo_recurso'],
+            $data['tipo_recurso_id'],
+            /*$_SESSION['ID_USUARIO']*/ 2,
+            $data['modulo_servicio']
+        );
+
+        $uploadService = new FileUploadService();
+
+        $results = $uploadService->process($validatedFiles, $mediaDTO);
+
+        $response = array_map(
+            fn($item) => MediaResponse::transform($item),
+            $results
+        );
+
+        // 🔹 5. Respuesta final
+        return [
+            "status" => true,
+            "message" => "success",
+            "data" => $response
+        ];
     }
 }
