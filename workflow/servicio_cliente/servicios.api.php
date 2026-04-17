@@ -128,6 +128,12 @@ switch ($action) {
         ]);
         break;
 
+    case 'getMediaFilesByModule':
+        echo json_encode([
+            'success' => $controlador->mediaFilesByModuleId($_POST),
+        ]);
+        break;
+
     case 'cargarArchivos':
         echo json_encode($controlador->uploadFiles($_POST, $_FILES));
         break;

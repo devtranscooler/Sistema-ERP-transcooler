@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT'] . '/system/connection.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/validations/media/FindByResource.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/validations/media/FileValidator.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/services/media/FileUploadService.php');
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DTO/media/UploadMediaDTO.php';
@@ -327,7 +328,70 @@ class serviciosControlador
         return $this->db->getConexion()->insert_id;
     }
 
+    /**
+     * This PHP function retrieves media files based on a module ID after validating the resource.
+     * 
+     * @param post The `mediaFilesByModuleId` function takes a `` parameter as input. This
+     * function appears to be retrieving media files based on the resource type and resource ID
+     * provided in the `` parameter.
+     * 
+     * @return The function `mediaFilesByModuleId` returns an array with a "message" key and a "data"
+     * key. If the validation of the media resource fails, it returns an array with a "status" key
+     * indicating the failure status. If the media resource validation is successful and media files
+     * are found, it returns a success message with the media data. If no results are found, it returns
+     */
+    public function mediaFilesByModuleId($post)
+    {
+
+        $validation = FindByResource::validationMediaResource($post);
+
+        if (!$validation['status']) {
+            return $validation;
+        }
+
+        ["tipo_recurso" => $tipo_recurso, "tipo_recurso_id" => $tipo_recurso_id] = $validation["data"];
+
+        $media = new Media();
+        $result = $media->findByResource($tipo_recurso, $tipo_recurso_id);
+
+        if(!isset($result['data']) || empty($result['data'])){
+            http_response_code(404);
+            return [
+                "message" => "Not results found",
+            ];
+        }
+
+        http_response_code(200);
+        return [
+            "message" => "success",
+            "data" => $result['data'] ?? []
+        ];
+    }
     
+    /**
+    * The `uploadFiles` function in PHP handles file validation, creates a media DTO object, processes
+    * file uploads, transforms the results, and returns a success response with the uploaded media
+    * data.
+    * 
+    * @param post The `uploadFiles` function takes two parameters: `` and ``.
+    * @param files The `files` parameter in the `uploadFiles` function represents the files that are
+    * being uploaded. It is typically an array containing information about the files such as file
+    * name, file type, file size, and temporary location on the server. These files are validated using
+    * the `FileValidator::fileValidation
+    * 
+    * @return The function `uploadFiles` is returning an array with the following structure:
+    * ```
+    * [
+    *     "status" => true,
+    *     "message" => "success",
+    *     "data" => 
+    * ]
+    * ```
+    * Where:
+    * - "status" indicates the success status of the operation.
+    * - "message" provides a success message.
+    * - "data" contains the response data which is an array of
+    */
     public function uploadFiles($post, $files)
     {
         $validation = FileValidator::fileValidation($files, $post);
