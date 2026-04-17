@@ -419,11 +419,56 @@ class serviciosControlador
             $results
         );
 
-        // 🔹 5. Respuesta final
+        http_response_code(201);
         return [
             "status" => true,
             "message" => "success",
             "data" => $response
+        ];
+    }
+
+    /**
+     * This PHP function deletes a media file based on the provided media ID and returns a success
+     * message if the deletion is successful.
+     * 
+     * @param post The `deleteMediaFile` function takes a `` parameter which is expected to be an
+     * array containing information about the media file to be deleted. The function first retrieves
+     * the media file using the `media_id` from the database, then checks if the file exists. If the
+     * file is found,
+     * 
+     * @return The function `deleteMediaFile` returns an array with a status and message. If the media
+     * file is successfully deleted, it returns:
+     * ```php
+     * [
+     *     "status" => true,
+     *     "message" => "File deleted successfully",
+     * ]
+     * ```
+     * If no media file is found or an error occurs, it returns:
+     * ```php
+     * [
+     *     "status" => false,
+     *     "message"
+     */
+    public function deleteMediaFile($post)
+    {
+        $media = new Media();
+        $getMediaFile = $media->findById($post['media_id']);
+
+        if (!$getMediaFile['status'] || empty($getMediaFile['data'])) {
+            http_response_code(404);
+            return [
+                "status" => false,
+                "message" => "No results found",
+            ];
+        }
+
+        $media->delete($getMediaFile['data']['id']);
+
+        http_response_code(200);
+        return [
+            "status" => true,
+            "message" => "File deleted successfully",
         ];
     }
 }
