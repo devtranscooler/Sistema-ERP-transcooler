@@ -15,6 +15,69 @@ class Media
         date_default_timezone_set('America/Mexico_City');
     }
 
+    public function getAll(array $filters = [], array $pagination = []): array
+    {
+        $connection = $this->db->getConexion();
+
+        $where = ["mda.estatus = 1"];
+        $params = [];
+        $types = "";
+
+        if (!empty($filters['tipo_recurso'])) {
+            $where[] = "mda.tipo_recurso = ?";
+            $params[] = $filters['tipo_recurso'];
+            $types .= "s";
+        }
+
+        if (!empty($filters['tipo_recurso_id'])) {
+            $where[] = "mda.tipo_recurso_id = ?";
+            $params[] = $filters['tipo_recurso_id'];
+            $types .= "i";
+        }
+
+        $page = max(1, $pagination['page'] ?? 1);
+        $perPage = max(1, $pagination['per_page'] ?? 10);
+        $offset = ($page - 1) * $perPage;
+
+        $sql = "SELECT 
+                mda.id as id_media,
+                mda.nombre_origen,
+                mda.ruta,
+                mda.tipo_recurso,
+                mda.tipo_recurso_id,
+                mda.estatus,
+                usrs.id as id_usuario_creador,
+                usrs.nombre,
+                usrs.apellidoP,
+                usrs.apellidoM,
+                mda.created_at as fecha_carga_archivo 
+            FROM media as mda
+            LEFT JOIN usuarios as usrs
+                ON mda.id_usuario_creador = usrs.id
+            WHERE " . implode(" AND ", $where) . "
+            ORDER BY mda.id ASC
+            LIMIT ? OFFSET ?";
+
+        $stmt = $connection->prepare($sql);
+
+        $params[] = $perPage;
+        $params[] = $offset;
+        $types .= "ii";
+
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $data = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     /**
     * The function `findByResource` retrieves media data based on a specified resource type and ID,
     * handling exceptions and returning the data or an error message.
@@ -192,10 +255,7 @@ class Media
 
             $data = $result->fetch_assoc();
 
-            return [
-                "status" => true,
-                "data" => $data
-            ];
+            return $data;
 
         } catch (\Throwable $e) {
 

@@ -127,20 +127,6 @@ switch ($action) {
             'success' => $controlador->actualizarTracking($id, $tracking),
         ]);
         break;
-
-    case 'getMediaFilesByModule':
-        echo json_encode([
-            'success' => $controlador->mediaFilesByModuleId($_POST),
-        ]);
-        break;
-
-    case 'cargarArchivos':
-        echo json_encode($controlador->uploadFiles($_POST, $_FILES));
-        break;
-    
-    case 'deleteMediaFile':
-        echo json_encode($controlador->deleteMediaFile($_POST));
-        break;
         
     default:
         echo json_encode([
