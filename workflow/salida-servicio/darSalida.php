@@ -162,9 +162,9 @@
 
                 const btn = document.getElementById("send-images");
 
-                // if (selectedFiles.length === 0) {
-                //     return alert("Debes tomar o seleccionar al menos una foto");
-                // }
+                if (selectedFiles.length === 0) {
+                    return alert("Debes tomar o seleccionar al menos una foto");
+                }
 
                 try {
 
@@ -179,7 +179,7 @@
                     formData.append("modulo_servicio", "arribo");
 
                     selectedFiles.forEach(file => {
-                        formData.append("file[]", file);
+                        formData.append("files[]", file);
                     });
 
                     const response = await fetch(`${urlDomain}/public/index.php/api/media`, {
