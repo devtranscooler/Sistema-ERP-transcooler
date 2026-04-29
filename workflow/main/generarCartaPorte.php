@@ -1,9 +1,8 @@
-    <?php
-        $data = $_POST;
+<?php
 
-        $id_servicio = $data['id'] ?? null;
-    ?>
+    $servicio = json_decode($_POST['servicio'] ?? '{}', true);    
 
+?>
 
     <div class="modal-header dar-salida-modal">
         <h5 class="modal-title">
@@ -19,7 +18,7 @@
             </button>
         </div>
 
-        <div id="container-pdf" class="bg-white p-2" style="overflow-y: auto; max-height: 80vh;">
+        <div id="container-pdf" class="bg-secondary p-3 rounded" style="overflow-y: auto; max-height: 80vh;">
     
                 
             <div class="pdf-page shadow-sm bg-white mx-auto rounded" id="hoja-1">
@@ -29,13 +28,13 @@
                     <div>
                         <img src="/img/logo1.png" alt="Logo transccoler" class="img-fluid">
                     </div>
-                    <div class="d-flex justify-content-between align-items-center gap-3 px-5">
+                    <div class="d-flex justify-content-between align-items-center gap-3 px-5 fw-bold">
                         <div class="row">
                             <div class="col-12">
                                 <p class="m-0 small"> CARTA PORTE </p>
                                 <p class="m-0 small"> FCCP-010826 </p>
                                 <p class="m-0 small"> FECHA EXPEDICIÓN </p>
-                                <p class="m-0 small"> 27-04-2026 </p>
+                                <p class="m-0 small"> <?= date('d-m-Y') ?> </p>
                             </div>
                         </div>
                         <div class="row">
@@ -70,10 +69,10 @@
                             <div class="col-6 d-flex flex-column">
                                 <p class="text-start fw-bold mb-1"> CLIENTE </p>
                                 <div class="border p-1 h-100 small">
-                                    <p class="m-0"> PILGRIM'S PRIDE </p>
-                                    <p class="m-0"> Av. Antea #1032 Col.0089-Jurica 014-Querétaro Queretaro </p>
+                                    <p class="m-0"> <?= $servicio['nombre_cliente'] ? strtoupper($servicio['nombre_cliente']) : 'S/D' ?> </p>
+                                    <p class="m-0"> <?= $servicio['direccion_cliente'] ?? 'S/D' ?> </p>
                                     <p class="mt-3 m-0"> Querétaro, QUE </p>
-                                    <p class="m-0"> PPR910701LEA </p>
+                                    <p class="m-0"> <?= $servicio['rfc_cliente'] ?? 'S/D' ?> </p>
                                 </div>
                             </div>
                             
@@ -91,7 +90,7 @@
                                 <p class="text-start fw-bold mb-1"> ORIGEN </p>
                                 <div class="border p-1 h-100 small">
                                     <p class="m-0"> Pilgrim's Tepeji </p>
-                                    <p class="m-0"> Antigua México - Querétaro 2705, San Mateo 2da, 42850 Tepeji del río de Ocampo, Hgo </p>
+                                    <p class="m-0"> <?= $servicio['origin_route_address']['origen_inicio'] ?? 'S/D' ?> </p>
                                     <p class="mt-1 m-0"> Tepeji del Río de Ocampo, HGO </p>
                                     <p class="m-0"> PPR910701LEA </p>
                                     <p class="m-0"> RECOGER EN: </p>
@@ -102,7 +101,7 @@
                                 <p class="text-start fw-bold mb-1"> DESTINO </p>
                                 <div class="border p-1 h-100 small">
                                     <p class="m-0"> Cedis Pilgrims Tepotzotlan </p>
-                                    <p class="m-0"> Av. La Luz #10, Col. 3002-Ricardo Flores Magon 095-Tepotzotlán Estado de México </p>
+                                    <p class="m-0"> <?= $servicio['destination_route_address']['destino_final'] ?? 'S/D' ?> </p>
                                     <p class="mt-1 m-0"> Tepotzotlán, MEX </p>
                                     <p class="m-0"> XAXX010101000 </p>
                                     <p class="m-0"> ENTREGAR EN: </p>
@@ -149,7 +148,7 @@
                                 <p></p>
                             </div>
                             <div class="col">
-                                <p></p>
+                                <p> <?= $servicio['capacidad'] ? strtoupper($servicio['capacidad']) : 'S/D' ?> </p>
                             </div>
                             <div class="col">
                                 <p> FLETE $1.00 </p>
@@ -187,7 +186,7 @@
                                 </div>
                                 <div class="col-md-8 text-md-end">
                                     <span class="data-label fw-bold"> OPERADOR: </span>
-                                    <span class="data-value"> GONZALEZ ARVIZU ERICK </span>
+                                    <span class="data-value"> <?= $servicio['nombre_operador'] ?? 'S/D' ?> </span>
                                 </div>
                             </div>
                             <div class="sub-divider"></div>
@@ -199,7 +198,7 @@
                                     </div>
                                     <div>
                                         <span class="data-label fw-bold"> PLACAS: </span>
-                                        <span class="data-value"> 97AL7E </span>
+                                        <span class="data-value"> <?= $servicio['placas_unidad'] ?? 'S/D' ?> </span>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-1 text-md-end">
@@ -309,6 +308,7 @@
             </div>
             
         </div>
+
     </div>
 
     <div class="modal-footer generar-carta-porte-modal">
@@ -318,9 +318,10 @@
     </div>
 
     <script>
+        
 
         (function () {
-
+            
             document.getElementById("generate-pdf").addEventListener("click", () => {
                 const contenido = document.getElementById("container-pdf");
 
@@ -331,6 +332,7 @@
                 // Quita límites
                 contenido.style.maxHeight = "none";
                 contenido.style.overflow = "visible";
+                contenido.classList.remove("bg-secondary","rounded")
 
                 generarPDF()
             });
@@ -341,10 +343,10 @@
                 const contenido = document.getElementById("container-pdf"); 
                 const canvas = await html2canvas(contenido, 
                 { 
-                    scale: 2 // mejora calidad 
+                    scale: 3 // mejora calidad 
                 }); 
                 
-                const imgData = canvas.toDataURL("image/png"); 
+                const imgData = canvas.toDataURL("image/jpeg"); 
                 const pdf = new jsPDF("p", "mm", "letter"); 
                 const imgWidth = 210; 
                 const pageHeight = 295; 
@@ -361,8 +363,15 @@
                     pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight); 
                     heightLeft -= pageHeight; 
                 } 
-                
-                pdf.save("documento.pdf"); 
+
+                const documentName = Date.now();
+
+                // pdf.save(`${documentName}.pdf`); 
+
+                const blob = pdf.output("blob");
+                const url = URL.createObjectURL(blob);
+
+                window.open(url, "_blank");
             }
 
         })();
