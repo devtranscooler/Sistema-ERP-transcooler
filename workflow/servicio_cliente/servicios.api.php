@@ -1,11 +1,15 @@
 <?php
 require_once "serviciosControlador.php";
 require_once __DIR__ . '/../repartos/repartosControlador.php';
+require_once __DIR__ . '/../producto_reparto/repartoProductoControlador.php';
+require_once __DIR__ . '/../../destinos/DestinosControlador.php';
 
 header('Content-Type: application/json');
 
 $controlador = new serviciosControlador();
 $repartosControlador = new repartosControlador();
+$repartoProductoControlador = new repartoProductoControlador();
+$destinosControlador = new DestinosControlador();
 $action = $_POST['action'] ?? '';
 
 switch ($action) {
@@ -46,24 +50,47 @@ switch ($action) {
 
     case 'crear':
         $id_servicio = $controlador->crearRetornandoId($_POST);
-
         if ($id_servicio) {
-            $origen = $_POST['origen'] ?? "";
+            $origen   = $_POST['origen'] ?? "";
             $destinos = $_POST['id_destino'] ?? [];
-
             $destinoAnterior = null;
+
+            // Obtener último destino
+            $ultimoDestinoId = end($destinos);
+
+            // Consultar destino completo
+            $destinoFinalTexto = null;
+            if ($ultimoDestinoId) {
+                // Ajusta esto según tu controlador/modelo
+                $destinoInfo = $destinosControlador->show($ultimoDestinoId);
+                
+                if ($destinoInfo) {
+                    $direccion = [
+                        $destinoInfo['calle'] ?? '',
+                        $destinoInfo['numero_exterior'] ?? '',
+                        $destinoInfo['numero_interior'] ?? '',
+                        $destinoInfo['municipio'] ?? '',
+                        $destinoInfo['ciudad'] ?? '',
+                        $destinoInfo['pais'] ?? '',
+                        $destinoInfo['codigo_postal'] ?? '',
+                    ];
+                    // Eliminar vacíos
+                    $direccion = array_filter($direccion);
+                    // Convertir a texto
+                    $destinoFinalTexto = implode(', ', $direccion);                    
+                }
+            }
 
             foreach ($destinos as $numero => $id_destino) {
                 if (!$id_destino) continue;
-
                 $data = [
                     'id_servicio'    => $id_servicio,
                     'numero_reparto' => $numero + 1,
                     'id_destino'     => $id_destino,
                     'id_origen'      => null,
                     'origen_inicio'  => null,
+                    'destino_final'  => null,
                 ];
-
                 if ($numero == 0) {
                     // Primer reparto
                     $data['origen_inicio'] = $origen;
@@ -71,16 +98,22 @@ switch ($action) {
                     // Siguientes repartos
                     $data['id_origen'] = $destinoAnterior;
                 }
-
+                // Si es el último reparto
+                if ($id_destino == $ultimoDestinoId) {
+                    $data['destino_final'] = $destinoFinalTexto;
+                }
                 $repartosControlador->crear($data);
-
-                // Guardar el destino actual como "anterior"
+                // Guardar destino actual
                 $destinoAnterior = $id_destino;
             }
-
-            echo json_encode(['success' => true]);
+            echo json_encode([
+                'success' => true
+            ]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Error al crear el servicio']);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error al crear el servicio'
+            ]);
         }
     break;
 
@@ -114,9 +147,11 @@ switch ($action) {
         break;
 
     case 'agregarOperadorUnidad':
-        $id = $_POST['id'];
+        $servicioId = $_POST['id'];
+        $tracking = 'Asignación de productos';
+        $controlador->agregarOperadorUnidad($servicioId, $_POST);
         echo json_encode([
-            'success' => $controlador->agregarOperadorUnidad($id, $_POST),
+            'success' => $controlador->actualizarTracking($servicioId, $tracking),
         ]);
         break;
 
@@ -127,6 +162,42 @@ switch ($action) {
             'success' => $controlador->actualizarTracking($id, $tracking),
         ]);
         break;
+
+    case 'agregarProductosPermisos':
+        try {
+            //Agregar detalles de trayecto
+            $servicioId = $_POST['servicio_id'];
+            $tracking = 'En espera de salida';
+            $data = [
+                'km_origen_destino'  => $_POST['kilometros'],
+                'monto_total' => $_POST['montoFlete'],
+                'tipo_permiso'    => $_POST['tipoPermiso'],
+                'folio_permiso'        => $_POST['folioPermiso'],
+            ];
+            $controlador->agregarProductosPermisos($servicioId, $data);
+
+            //Crear registros de repartos y sus roductos
+            $productos = $_POST['productos'] ?? [];
+            foreach ($productos as $repartoId => $items) {
+                foreach ($items as $producto) {
+                    $repartoProductoControlador->crear([
+                        'reparto_id'  => $producto['reparto_id'],
+                        'producto_id' => $producto['producto_id'],
+                        'cantidad'    => $producto['cantidad'],
+                        'peso'        => $producto['peso'],
+                    ]);
+                }
+            }
+            echo json_encode([
+                'success' => $controlador->actualizarTracking($servicioId, $tracking)
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    break;
         
     default:
         echo json_encode([

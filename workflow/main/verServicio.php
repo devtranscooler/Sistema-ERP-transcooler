@@ -2,7 +2,7 @@
     $data = $_POST;
 
     $servicio = json_decode($data['servicio'], true);
-    $repartos = json_decode($data['repartos'], true);
+    $repartos = json_decode($data['repartos'], true);    
 
     // Datos del servicio
     $id               = $servicio['id'] ?? null;
@@ -29,63 +29,7 @@
     }
 ?>
 
-<style>
-    .servicio-modal {
-        --color-text-primary: #1a1a1a;
-        --color-text-secondary: #666;
-        --color-border: #e5e5e5;
-    }
-    .servicio-modal .modal-header { border-bottom: 1px solid var(--color-border); padding: 1rem; }
-    .servicio-modal .modal-title  { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.3px; }
-    .servicio-modal .modal-body   { padding: 1rem; background: #fff; }
-    .servicio-modal .modal-footer { border-top: 1px solid var(--color-border); padding: 0.75rem 1rem; gap: 0.5rem; }
-
-    .info-section  { margin-bottom: 1.5rem; }
-    .info-section:last-child { margin-bottom: 0; }
-
-    .section-title {
-        font-size: 0.875rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: #007AA3;
-        margin-bottom: 0.75rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .section-content {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-    }
-
-    .info-field { display: flex; flex-direction: column; }
-
-    .info-label {
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        color: #000;
-        margin-bottom: 0.35rem;
-    }
-
-    .info-value {
-        font-size: 0.95rem;
-        color: var(--color-text-primary);
-        font-weight: 500;
-        word-break: break-word;
-    }
-
-    .full-width {
-        grid-column: 1 / -1;
-    }
-
-    @media (max-width: 992px) { .section-content { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 576px) { .section-content { grid-template-columns: 1fr; } }
-</style>
+<head><link rel="stylesheet" href="/styles/style.css"></head>
 
 <div class="modal-header servicio-modal">
     <h5 class="modal-title">
@@ -147,28 +91,76 @@
         <div class="section-title">
             <i class="bi bi-truck" style="font-size: 0.85rem"></i> Repartos
         </div>
-        <div class="section-content">
-            <div class="info-field full-width">
+        <div class="container full-width" style="margin: 10px;">
+            <div class="info-field box">
                 <div class="info-label">Inicio de ruta:</div>
                 <div class="info-value"><?= $repartos[0]['origen_inicio'] ?></div>
             </div>
-            <div class="info-field">
-                <div class="info-label">No. Repartos: <?= $num_repartos ?></div>
+            <div class="info-field box">
+                <div class="info-label">Destino de ruta:</div>
+                <div class="info-value" style="text-transform: uppercase;"><?= end($repartos)['destino_final'] ?></div>
             </div>
-        </div>
-        <div class="section-content">
-            <?php foreach ($repartos as $index => $reparto): ?>
-                <div class="info-field">
-                    <div class="info-label">Reparto <?= $index + 1 ?></div>
-                    <div class="info-value">
-                        <?php if ($index === 1): ?>
-                            <strong>Origen:</strong> <?= $reparto['origen'] ?> <br>
-                        <?php endif; ?>
-                        <strong>Destino:</strong> <?= $reparto['destino'] ?>
+        </div>        
+        <?php if (!empty($repartos)): ?>
+            <div class="section-content">
+                <?php foreach ($repartos as $index => $reparto): ?>
+                    <div class="reparto-card">
+                        <div class="reparto-header">
+                            Reparto <?= $index + 1 ?>
+                        </div>
+                        <div class="reparto-body">
+                            <?php if (!empty($reparto['origen'])): ?>
+                                <p>
+                                    <strong>Origen:</strong>
+                                    <?= $reparto['origen'] ?>
+                                </p>
+                            <?php endif; ?>
+                            <?php if (!empty($reparto['origen_inicio'])): ?>
+                                <p>
+                                    <strong>Origen inicial:</strong>
+                                    <?= $reparto['origen_inicio'] ?>
+                                </p>
+                            <?php endif; ?>
+                            <p>
+                                <strong>Destino:</strong>
+                                <?= $reparto['destino'] ?>
+                            </p>
+                            <?php if (!empty($reparto['destino_final'])): ?>
+                                <p>
+                                    <strong>Destino final:</strong>
+                                    <?= $reparto['destino_final'] ?>
+                                </p>
+                            <?php endif; ?>
+                            <div class="productos-section">
+                                <strong>Productos a entregar:</strong>
+                                <?php if (!empty($reparto['productos'])): ?>
+                                    <table class="productos-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                                <th>Peso</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($reparto['productos'] as $producto): ?>
+                                                <tr>
+                                                    <td><?= $producto['producto_nombre'] ?></td>
+                                                    <td><?= $producto['cantidad'] ?></td>
+                                                    <td><?= $producto['peso'] ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                <?php else: ?>
+                                    <p>No hay productos registrados.</p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- FECHAS -->

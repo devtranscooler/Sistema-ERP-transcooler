@@ -1,18 +1,18 @@
-const Salida = (() => {
+const MesaControl = (() => {
     let paginaActual         = 1;
     const registrosPorPagina = 15;
     let timeout              = null;
 
-    const MODAL_ID         = "salidaModal";
-    const MODAL_CONTENT_ID = "salidaModalContent";
-    const PAGINACION_ID    = "paginacion-salida";
-    const INFO_PAG_ID      = "info-paginacion-salida";
+    const MODAL_ID         = "mesaControlModal";
+    const MODAL_CONTENT_ID = "mesaControlModalContent";
+    const PAGINACION_ID    = "paginacion-mesa-control";
+    const INFO_PAG_ID      = "info-paginacion-mesa-control";
 
     function init() {
-        if (!document.getElementById("tablaServiciosSalida")) return;
+        if (!document.getElementById("tablaServiciosMesaControl")) return;
         document.addEventListener("DOMContentLoaded", () => cargar());
 
-        document.getElementById("filtroIdServicioSalida")
+        document.getElementById("filtroIdServicioMesaControl")
                 .addEventListener("keyup", () => {
                     clearTimeout(timeout);
                     timeout = setTimeout(() => cargar(), 300);
@@ -45,12 +45,12 @@ const Salida = (() => {
                     <td>${s.fec_alta}</td>
                     <td class="text-center">
                         <button type="button" class="btn btn-sm btn-primary"
-                                onclick="Salida.darSalida(${s.id})"
-                                title="Dar salida a la unidad">
-                            <i class="bi bi-capslock-fill"></i>
+                                onclick="MesaControl.asignarProducto(${s.id})"
+                                title="Asignar producto">
+                            <i class="bi bi-kanban"></i>
                         </button>
                         <button type="button" class="btn btn-sm btn-success"
-                                onclick="Salida.ver(${s.id})"
+                                onclick="MesaControl.ver(${s.id})"
                                 title="Ver detalles">
                             <i class="bi bi-eye-fill"></i>
                         </button>
@@ -59,7 +59,7 @@ const Salida = (() => {
             });
         }
 
-        document.querySelector("#tablaServiciosSalida tbody").innerHTML = html;
+        document.querySelector("#tablaServiciosMesaControl tbody").innerHTML = html;
     }
 
     function pintarPaginacion(totalRegistros) {
@@ -78,7 +78,7 @@ const Salida = (() => {
         for (let i = 1; i <= totalPaginas; i++) {
             html += `
             <li class="page-item ${i === paginaActual ? "active" : ""}"
-                onclick="Salida.cargar(${i})" style="cursor:pointer">
+                onclick="MesaControl.cargar(${i})" style="cursor:pointer">
                 <span class="page-link">${i}</span>
             </li>`;
         }
@@ -108,22 +108,22 @@ const Salida = (() => {
             bootstrap.Modal.getOrCreateInstance(modalEl).show();
         })
         .catch((err) => {
-            console.error("Salida.abrirModal error:", err);
+            console.error("MesaControl.abrirModal error:", err);
             Swal.fire({ icon: "error", title: "Error", text: "No se pudo cargar el formulario" });
         });
     }
 
     function cargar(page = 1) {
         paginaActual = page;
-        const idServicio = document.getElementById("filtroIdServicioSalida")?.value ?? "";
+        const idServicio = document.getElementById("filtroIdServicioMesaControl")?.value ?? "";
 
         const fd = new FormData();
         fd.append("action",  "listar");
         fd.append("page",    page);
         fd.append("limit",   registrosPorPagina);
-        fd.append("filtroIdServicioSalida", idServicio);
-        fd.append("context", "salida");
-
+        fd.append("filtroIdServicioMesaControl", idServicio);
+        fd.append("context", "mesaControl");
+        
         fetch("servicio_cliente/servicios.api.php", { method: "POST", body: fd })
             .then((r) => r.json())
             .then((res) => {
@@ -131,7 +131,7 @@ const Salida = (() => {
                 pintarPaginacion(res.total);
             })
             .catch((err) => {
-                console.error("Salida.cargar error:", err);
+                console.error("MesaControl.cargar error:", err);
                 Swal.fire({ icon: "error", title: "Error", text: "No se pudieron cargar los servicios" });
             });
     }
@@ -146,57 +146,46 @@ const Salida = (() => {
         .then((res) => {
             if (res.success) abrirModal("servicio_cliente/verServicio.php", res.data);
         })
-        .catch((err) => console.error("Salida.ver error:", err));
+        .catch((err) => console.error("MesaControl.ver error:", err));
     }
 
-    function darSalida(id) {
+    function asignarProducto(id) {
         fetch("servicio_cliente/servicios.api.php", {
-            method: "POST",
+            method:  "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `action=actualizarTracking&id=${id}&tracking=En ruta`,
+            body:    `action=find&id=${id}`,
         })
         .then((r) => r.json())
         .then((res) => {
             if (res.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "¡Listo!",
-                    text: "El servicio ahora está en ruta",
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-
-                cargar();
+                abrirModal("mesa-de-control/formMesaControl.php", res.data);
             } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res.message || "No se pudo actualizar el tracking"
-                });
+                Swal.fire({ icon: "error", title: "Error", text: "No se pudo cargar el servicio" });
             }
         })
-        .catch((err) => {
-            console.error("Salida.darSalida error:", err);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Error de conexión con el servidor"
-            });
-        });
+        .catch((err) => console.error("MesaControl.asignarProducto error:", err));
     }
 
     function guardar() {
-        /* const form = document.getElementById("formServiciosSalida");
+        const form = document.getElementById("formServiciosMesaControl");
         if (!form) return;
 
         let errores = [];
 
-        const operador = document.getElementById('id_operador').value;
-        const unidad   = document.getElementById('id_unidad').value;
+        // 🔹 Obtener valores (IDs reales)
+        /* const producto = document.getElementById('id_producto').value; */
 
-        if (!operador) errores.push('Debes seleccionar un operador');
-        if (!unidad) errores.push('Debes seleccionar una unidad');
+        // 🔹 Cantidad
+        /* const dollyDiv = document.getElementById('campo_dolly');
+        if (dollyDiv.style.display !== 'none') {
+            const dolly = document.getElementById('id_dolly').value;
+            if (!dolly) errores.push('Debes seleccionar el dolly');
+        } */
 
+        // 🔹 Validaciones básicas
+        /* if (!producto) errores.push('Debes seleccionar un producto'); */
+
+        // 🚨 Si hay errores → NO enviar
         if (errores.length > 0) {
             Swal.fire({
                 icon: "warning",
@@ -206,6 +195,7 @@ const Salida = (() => {
             return;
         }
 
+        // Si está bien → enviar
         fetch("servicio_cliente/servicios.api.php", {
             method: "POST",
             body: new FormData(form),
@@ -231,16 +221,16 @@ const Salida = (() => {
             }
         })
         .catch((err) => {
-            console.error("Salida.guardar error:", err);
+            console.error("MesaControl.guardar error:", err);
             Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: "Ocurrió un error al guardar"
             });
-        }); */
+        });
     }
 
     init();
 
-    return { cargar, ver, guardar, abrirModal, darSalida };
+    return { cargar, ver, guardar, abrirModal, asignarProducto };
 })();

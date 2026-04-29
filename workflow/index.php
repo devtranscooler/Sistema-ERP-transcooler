@@ -94,13 +94,14 @@ if ($currentPage === null && count($tabs) > 0) {
         </ul>
 
         <!-- ========== CONTENEDOR DINÁMICO  ========== -->
-        <?php foreach ($tabs as $tab) {
-            $isActive = ($currentPage === $tab['nombre']) ? 'block' : 'none';
+        <?php
+            foreach ($tabs as $tab) {
+                if ($currentPage === $tab['nombre']) {
+                    require $_SERVER['DOCUMENT_ROOT'] . $tab['url'];
+                    break;
+                }
+            }
         ?>
-            <div style="display: <?= $isActive ?>;">
-                <?php require $_SERVER['DOCUMENT_ROOT'] . $tab['url']; ?>
-            </div>
-        <?php } ?>
     </div>
 
 </body>

@@ -108,7 +108,7 @@ FORMULARIO PARA AGREGAR NUEVO SERVICIO
             <!-- Num repartos -->
             <div class="col-md-4">
                 <label class="form-label">Número de repartos <span class="text-danger"><span class="text-danger">*</span></span></label>
-                <input type="number" class="form-control" name="num_repartos" id="num_repartos" value="<?= $num_repartos ?>" min="1" required>
+                <input type="number" class="form-control" name="num_repartos" id="num_repartos" value="<?= $num_repartos ?>" min="1" max="10" required oninput="validarRepartos(this)">
             </div>
             <!-- Direcciones de repartos -->
             <div class="col-12" id="contenedor_repartos">
@@ -272,4 +272,13 @@ FORMULARIO PARA AGREGAR NUEVO SERVICIO
             });
         }
     });
+
+    function validarRepartos(input) {
+        let valor = parseInt(input.value) || 0;
+
+        if (valor > 10) input.value = 10;
+        if (valor < 1) input.value = 1;
+    }
+
 </script>
+

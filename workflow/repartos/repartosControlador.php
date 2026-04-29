@@ -12,15 +12,16 @@ class repartosControlador
     }
     
     public function crear($data){
-        $SQL = "INSERT INTO repartos (id_servicio,numero_reparto,id_destino,id_origen,origen_inicio) 
-                VALUES (?, ?, ?, ?, ?)";
+        $SQL = "INSERT INTO repartos (id_servicio,numero_reparto,id_destino,id_origen,origen_inicio,destino_final) 
+                VALUES (?, ?, ?, ?, ?, ?)";
         
         $params = [
             $data['id_servicio'],
             $data['numero_reparto'],
             $data['id_destino'],
             $data['id_origen'],
-            $data['origen_inicio']
+            $data['origen_inicio'],
+            $data['destino_final']
         ];
 
         return $this->db->execute($SQL, $params);
