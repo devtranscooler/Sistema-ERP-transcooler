@@ -40,51 +40,67 @@
 
 <div class="modal-body servicio-modal">
 
-    <!-- IDENTIFICACIÓN -->
-    <div class="info-section">
-        <div class="section-title">
-            <i class="bi bi-hash" style="font-size: 0.85rem"></i> Identificación
-        </div>
-        <div class="section-content">
-            <div class="info-field">
-                <div class="info-label">ID Servicio</div>
-                <div class="info-value">#<?= $id ?></div>
-            </div>
-            <div class="info-field">
-                <div class="info-label">Shipment</div>
-                <div class="info-value"><?= $shipment ?></div>
-            </div>
-            <div class="info-field">
-                <div class="info-label">Cliente</div>
-                <div class="info-value"><?= $nombre_razon ?></div>
-            </div>
-        </div>
-    </div>
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pills-general-tab" data-bs-toggle="pill" data-bs-target="#pills-general" type="button" role="tab" aria-controls="pills-general" aria-selected="true">
+                Información general
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link gx-2" id="pills-images-tab" data-bs-toggle="pill" data-bs-target="#pills-images" type="button" role="tab" aria-controls="pills-images" aria-selected="false">
+                <i class="bi bi-images"></i> Imagenes
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-general" role="tabpanel" aria-labelledby="pills-general-tab">
+            <section>
 
-    <!-- OPERACIÓN -->
-    <div class="info-section">
-        <div class="section-title">
-            <i class="bi bi-truck" style="font-size: 0.85rem"></i> Operación
-        </div>
-        <div class="section-content">
-            <div class="info-field">
-                <div class="info-label">Eco unidad</div>
-                <div class="info-value"><?= $eco ?></div>
-            </div>
-            <div class="info-field">
-                <div class="info-label">Operador</div>
-                <div class="info-value"><?= $nombreOperador ?></div>
-            </div>
-            <div class="info-field">
-                <div class="info-label">Tipo de servicio</div>
-                <div class="info-value"><?= ucfirst($tipo_servicio) ?></div>
-            </div>
-            <div class="info-field">
-                <div class="info-label">Tipo de viaje</div>
-                <div class="info-value"><?= ucfirst($tipo_viaje) ?></div>
-            </div>
-        </div>
-    </div>
+                <!-- IDENTIFICACIÓN -->
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="bi bi-hash" style="font-size: 0.85rem"></i> Identificación
+                    </div>
+                    <div class="section-content">
+                        <div class="info-field">
+                            <div class="info-label">ID Servicio</div>
+                            <div class="info-value">#<?= $id ?></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">Shipment</div>
+                            <div class="info-value"><?= $shipment ?></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">Cliente</div>
+                            <div class="info-value"><?= $nombre_razon ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OPERACIÓN -->
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="bi bi-truck" style="font-size: 0.85rem"></i> Operación
+                    </div>
+                    <div class="section-content">
+                        <div class="info-field">
+                            <div class="info-label">Eco unidad</div>
+                            <div class="info-value"><?= $eco ?></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">Operador</div>
+                            <div class="info-value"><?= $nombreOperador ?></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">Tipo de servicio</div>
+                            <div class="info-value"><?= ucfirst($tipo_servicio) ?></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">Tipo de viaje</div>
+                            <div class="info-value"><?= ucfirst($tipo_viaje) ?></div>
+                        </div>
+                    </div>
+                </div>
 
     <!-- Repartos -->
     <div class="info-section">
@@ -163,37 +179,46 @@
         <?php endif; ?>
     </div>
 
-    <!-- FECHAS -->
-    <div class="info-section">
-        <div class="section-title">
-            <i class="bi bi-calendar3" style="font-size: 0.85rem"></i> Fechas
-        </div>
-        <div class="section-content">
-            <div class="info-field">
-                <div class="info-label">Fecha de carga</div>
-                <div class="info-value"><?= $fecha_carga ?></div>
-            </div>
-            <div class="info-field">
-                <div class="info-label">Fecha de descarga</div>
-                <div class="info-value"><?= $fecha_descarga ?></div>
-            </div>
-            <div class="info-field">
-                <div class="info-label">Fecha de alta</div>
-                <div class="info-value"><?= $fec_alta ?></div>
-            </div>
-        </div>
-    </div>
+                <!-- FECHAS -->
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="bi bi-calendar3" style="font-size: 0.85rem"></i> Fechas
+                    </div>
+                    <div class="section-content">
+                        <div class="info-field">
+                            <div class="info-label">Fecha de carga</div>
+                            <div class="info-value"><?= $fecha_carga ?></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">Fecha de descarga</div>
+                            <div class="info-value"><?= $fecha_descarga ?></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">Fecha de alta</div>
+                            <div class="info-value"><?= $fec_alta ?></div>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- REGISTRO -->
-    <div class="info-section">
-        <div class="section-title">
-            <i class="bi bi-person-check" style="font-size: 0.85rem"></i> Registro
+                <!-- REGISTRO -->
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="bi bi-person-check" style="font-size: 0.85rem"></i> Registro
+                    </div>
+                    <div class="section-content">
+                        <div class="info-field">
+                            <div class="info-label">Usuario alta</div>
+                            <div class="info-value"><?= $nombreUsuarioAlta ?></div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
         </div>
-        <div class="section-content">
-            <div class="info-field">
-                <div class="info-label">Usuario alta</div>
-                <div class="info-value"><?= $nombreUsuarioAlta ?></div>
-            </div>
+        <div class="tab-pane fade" id="pills-images" role="tabpanel" aria-labelledby="pills-images-tab">
+            <section>
+                <div class="row justify-content-start" id="content-tab-images"></div>
+            </section>
         </div>
     </div>
 
@@ -204,3 +229,88 @@
         <i class="bi bi-x-circle me-1"></i> Cerrar
     </button>
 </div>
+
+<script>
+    
+
+    document.getElementById("pills-images-tab").addEventListener("click", () => {
+        getMediaByService();
+    });
+
+    function getMediaByService() {
+        const urlDomain = window.location.origin
+        fetch(`${urlDomain}/public/index.php/api/media?tipo_recurso=SERVICIO&tipo_recurso_id=${<?= $id ?>}`)
+        .then(r => r.json())
+        .then(res => {
+            if (res.data) {
+                printGallery(res.data);
+            } else {
+                emptyMediaFiles()
+            }
+        })
+        .catch(err => {
+            console.error(err)
+            
+        });
+    }
+
+    function generateCard(idMedia, path, autor) {
+        const col = document.createElement("div");
+        col.className = "col-md-3";
+        col.className += " my-2"; 
+
+        col.innerHTML = `
+            <div class="card shadow h-100">
+                <img src="${path}" 
+                    class="card-img-top object-fit-cover p-1 rounded-3"
+                    alt="${idMedia}" 
+                    loading="lazy"
+                    style="width: 100%; height: 200px;">
+                
+                <div class="card-body p-2">
+                    <div class="d-flex justify-content-between align-items-center gap-2">
+                        <span class="text-secondary" style="font-size: 14px">
+                            Subido por
+                        </span>
+                        <button class="btn btn-primary btn-sm mb-0">
+                            ${autor}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return col;
+    }
+
+    function printGallery(data) {
+        const contenedor = document.getElementById("content-tab-images");
+        contenedor.innerHTML = ""; // limpiar antes de pintar
+
+
+        data.forEach(item => {
+            const rutaCompleta = `https://storage.googleapis.com/transcooler/${item.ruta}`; // ajusta según tu servidor
+
+            const autor = `${item.nombre} ${item.apellidoP}`;
+
+            const card = generateCard(data.id_media, rutaCompleta, autor);
+
+            contenedor.appendChild(card);
+        });
+    }
+
+    function emptyMediaFiles() {
+        const contenedor = document.getElementById("content-tab-images");
+        contenedor.innerHTML = ""
+
+        const col = document.createElement("div");
+        col.innerHTML = `
+            <div class="mt-2 d-flex flex-column align-items-center gap-2">
+                <p class="fs-4"> No hay imagenes relacionadas a este servicio </p>
+                <i class="bi bi-images fs-2"></i>
+            </div>
+        `;
+
+        contenedor.appendChild(col)
+    }
+</script>

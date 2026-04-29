@@ -149,41 +149,12 @@ const Salida = (() => {
         .catch((err) => console.error("Salida.ver error:", err));
     }
 
-    function darSalida(id) {
-        fetch("servicio_cliente/servicios.api.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `action=actualizarTracking&id=${id}&tracking=En ruta`,
-        })
-        .then((r) => r.json())
-        .then((res) => {
-            if (res.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "¡Listo!",
-                    text: "El servicio ahora está en ruta",
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-
-                cargar();
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res.message || "No se pudo actualizar el tracking"
-                });
-            }
-        })
-        .catch((err) => {
-            console.error("Salida.darSalida error:", err);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Error de conexión con el servidor"
-            });
+    function darSalida(id) {    
+        abrirModal("/workflow/salida-servicio/darSalida.php", {
+            id: id
         });
     }
+    
 
     function guardar() {
         /* const form = document.getElementById("formServiciosSalida");
@@ -239,6 +210,10 @@ const Salida = (() => {
             });
         }); */
     }
+
+    window.addEventListener("salida:recargar", () => {
+        cargar();
+    });
 
     init();
 
