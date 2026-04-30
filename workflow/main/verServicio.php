@@ -43,7 +43,12 @@
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="pills-general-tab" data-bs-toggle="pill" data-bs-target="#pills-general" type="button" role="tab" aria-controls="pills-general" aria-selected="true">
-                Información general
+                <i class="bi bi-info-circle-fill"></i> Información general
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link gx-2" id="pills-repartos-tab" data-bs-toggle="pill" data-bs-target="#pills-repartos" type="button" role="tab" aria-controls="pills-repartos" aria-selected="false">
+                <i class="bi bi-box2-heart-fill"></i> Repartos
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -100,84 +105,24 @@
                             <div class="info-value"><?= ucfirst($tipo_viaje) ?></div>
                         </div>
                     </div>
-                </div>
-
-    <!-- Repartos -->
-    <div class="info-section">
-        <div class="section-title">
-            <i class="bi bi-truck" style="font-size: 0.85rem"></i> Repartos
-        </div>
-        <div class="container full-width" style="margin: 10px;">
-            <div class="info-field box">
-                <div class="info-label">Inicio de ruta:</div>
-                <div class="info-value"><?= $repartos[0]['origen_inicio'] ?></div>
-            </div>
-            <div class="info-field box">
-                <div class="info-label">Destino de ruta:</div>
-                <div class="info-value" style="text-transform: uppercase;"><?= end($repartos)['destino_final'] ?></div>
-            </div>
-        </div>        
-        <?php if (!empty($repartos)): ?>
-            <div class="section-content">
-                <?php foreach ($repartos as $index => $reparto): ?>
-                    <div class="reparto-card">
-                        <div class="reparto-header">
-                            Reparto <?= $index + 1 ?>
-                        </div>
-                        <div class="reparto-body">
-                            <?php if (!empty($reparto['origen'])): ?>
-                                <p>
-                                    <strong>Origen:</strong>
-                                    <?= $reparto['origen'] ?>
-                                </p>
-                            <?php endif; ?>
-                            <?php if (!empty($reparto['origen_inicio'])): ?>
-                                <p>
-                                    <strong>Origen inicial:</strong>
-                                    <?= $reparto['origen_inicio'] ?>
-                                </p>
-                            <?php endif; ?>
-                            <p>
-                                <strong>Destino:</strong>
-                                <?= $reparto['destino'] ?>
-                            </p>
-                            <?php if (!empty($reparto['destino_final'])): ?>
-                                <p>
-                                    <strong>Destino final:</strong>
-                                    <?= $reparto['destino_final'] ?>
-                                </p>
-                            <?php endif; ?>
-                            <div class="productos-section">
-                                <strong>Productos a entregar:</strong>
-                                <?php if (!empty($reparto['productos'])): ?>
-                                    <table class="productos-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Producto</th>
-                                                <th>Cantidad</th>
-                                                <th>Peso</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($reparto['productos'] as $producto): ?>
-                                                <tr>
-                                                    <td><?= $producto['producto_nombre'] ?></td>
-                                                    <td><?= $producto['cantidad'] ?></td>
-                                                    <td><?= $producto['peso'] ?></td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                <?php else: ?>
-                                    <p>No hay productos registrados.</p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                </div>              
+                
+                <!-- REPARTOS -->
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="bi bi-truck" style="font-size: 0.85rem"></i> Repartos
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-    </div>
+                    <div class="section-content">
+                        <div class="info-field">
+                            <div class="info-label">Inicio de ruta:</div>
+                            <div class="info-value"><?= $repartos[0]['origen_inicio'] ?></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="info-label">Destino de ruta:</div>
+                            <div class="info-value" style="text-transform: uppercase;"><?= end($repartos)['destino_final'] ?></div>
+                        </div>
+                    </div>   
+                </div>
 
                 <!-- FECHAS -->
                 <div class="info-section">
@@ -220,8 +165,74 @@
                 <div class="row justify-content-start" id="content-tab-images"></div>
             </section>
         </div>
+        <div class="tab-pane fade" id="pills-repartos" role="tabpanel" aria-labelledby="pills-repartos-tab">
+            <section>
+                <!-- Repartos -->
+                <div class="info-section">                      
+                    <?php if (!empty($repartos)): ?>
+                        <div class="container">
+                            <?php foreach ($repartos as $index => $reparto): ?>
+                                <div class="reparto-card">
+                                    <div class="reparto-header">
+                                        Reparto <?= $index + 1 ?>
+                                    </div>
+                                    <div class="reparto-body">
+                                        <?php if (!empty($reparto['origen'])): ?>
+                                            <p>
+                                                <strong>Origen:</strong>
+                                                <?= $reparto['origen'] ?>
+                                            </p>
+                                        <?php endif; ?>
+                                        <?php if (!empty($reparto['origen_inicio'])): ?>
+                                            <p>
+                                                <strong>Origen inicial:</strong>
+                                                <?= $reparto['origen_inicio'] ?>
+                                            </p>
+                                        <?php endif; ?>
+                                        <p>
+                                            <strong>Destino:</strong>
+                                            <?= $reparto['destino'] ?>
+                                        </p>
+                                        <?php if (!empty($reparto['destino_final'])): ?>
+                                            <p>
+                                                <strong>Destino final:</strong>
+                                                <?= $reparto['destino_final'] ?>
+                                            </p>
+                                        <?php endif; ?>
+                                        <div class="productos-section">
+                                            <strong>Productos a entregar:</strong>
+                                            <?php if (!empty($reparto['productos'])): ?>
+                                                <table class="productos-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Producto</th>
+                                                            <th>Cantidad</th>
+                                                            <th>Peso</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($reparto['productos'] as $producto): ?>
+                                                            <tr>
+                                                                <td><?= $producto['producto_nombre'] ?></td>
+                                                                <td><?= $producto['cantidad'] ?></td>
+                                                                <td><?= $producto['peso'] ?></td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            <?php else: ?>
+                                                <p>No hay productos registrados.</p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+        </div>
     </div>
-
 </div>
 
 <div class="modal-footer servicio-modal">
@@ -230,8 +241,7 @@
     </button>
 </div>
 
-<script>
-    
+<script>    
 
     document.getElementById("pills-images-tab").addEventListener("click", () => {
         getMediaByService();

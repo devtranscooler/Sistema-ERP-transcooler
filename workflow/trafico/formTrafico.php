@@ -134,12 +134,12 @@ $config_vehicular = $_POST['config_vehicular'] ?? null;
             </div>
 
             <!-- Configuracion vehicular — oculto por defecto -->
-            <div id="conf_vehicular" class="col-md-6">
+            <!-- <div id="conf_vehicular" class="col-md-6">
                 <label class="form-label">
                     Coniguración vehicular <span class="text-danger">*</span>
                 </label>
                 <input class="form-control" type="text" name="config_vehicular" id="config_vehicular" value="<?= $config_vehicular ?>" placeholder="Configuración vehicular...">
-            </div>
+            </div> -->
         </div>
 
         <!-- modal -->
