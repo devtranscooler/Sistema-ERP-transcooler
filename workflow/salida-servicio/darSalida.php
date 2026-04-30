@@ -5,6 +5,27 @@
 
 ?>
 
+    <style>
+        .pulse-button {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+                0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+            }
+                70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+            }
+                100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+            }
+        }
+    </style>
+
     <div class="modal-header dar-salida-modal">
         <h5 class="modal-title">
             <i class="bi bi-arrow-return-right"></i> Dar Salida
@@ -15,20 +36,6 @@
     <div class="modal-body dar-salida-modal">
 
         <!-- Begin Upload File Options -->
-        <!-- <div class="row">
-            <div class="d-flex justify-content-center">
-                <div class="border rounded-pill p-2 d-flex shadow-sm">
-                    <button type="button" class="btn btn-primary rounded-pill fw-bold" id="open-camera"> 
-                        <i class="bi bi-camera me-2"></i>
-                            Abrir camara 
-                    </button>
-                    <button type="button" class="btn"> 
-                        <i class="bi bi-image me-2"></i>
-                            Seleccionar 
-                    </button>
-                </div>
-            </div>
-        </div> -->
         <div class="d-flex justify-content-center align-items-center">
             <ul class="nav nav-pills mb-3 border p-2 bg-light rounded-pill shadow" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -47,26 +54,6 @@
         </div>
         <!-- End Upload File Options -->
 
-        <!-- Begin Camera Preview -->
-        <!-- <div class="row">
-            <div class="d-flex flex-column align-items-center mt-6 d-none" id="camera-container">
-                <video id="video" autoplay playsinline class="w-50 rounded-3" style="max-height: 270px; border-radius: 2rem; margin-top: 2rem;"></video>
-                <button type="button" class="btn btn-success mt-2 rounded-5" id="btn-take-photo">
-                        Tomar foto
-                </button>
-            </div>
-        </div> -->
-        <!-- End Camera Preview -->
-
-        <!-- Begin Canvas -->
-        <!-- <div class="row mt-2">
-            <canvas id="canvas" class="d-none"></canvas>
-        </div> -->
-        <!-- Begin Canvas -->
-
-        <!-- Begin Camera Photo Preview -->
-        <!-- <div id="preview-container" class="row g-2"></div> -->
-        <!-- Begin Camera Photo Preview -->
 
         <!-- Container Tabs -->
         <div class="tab-content" id="pills-tabContent">
@@ -99,7 +86,7 @@
             <div class="tab-pane fade" id="pills-images" role="tabpanel" aria-labelledby="pills-images-tab">
                 <div class="p-3 mt-2 rounded-3">
                     <div class="d-flex flex-column align-items-center mt-3">
-                        <button class="btn btn-primary rounded-circle" style="cursor: pointer;" id="openDialogFilesBtn">
+                        <button class="btn btn-success rounded-circle pulse-button" style="cursor: pointer;" id="openDialogFilesBtn">
                             <i class="bi bi-cloud-upload text-white" style="font-size: 4rem;"></i>
                         </button>
                         <input 
@@ -108,7 +95,7 @@
                             accept="image/*" 
                             multiple 
                             hidden>
-                        <span class="mt-2"> Selecciona un archivo de tu galería </span>
+                        <span class="mt-2"> Haz clic en el botón de arriba para seleccionar tus archivos </span>
                         <span class="mt-2 small text-secondary"> Archivos permitidios: <i class="bi bi-images"></i> imagenes </span>
                     </div>
                 </div>
