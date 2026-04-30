@@ -364,10 +364,6 @@
                     heightLeft -= pageHeight; 
                 } 
 
-                const documentName = Date.now();
-
-                // pdf.save(`${documentName}.pdf`); 
-
                 const blob = pdf.output("blob");
                 const url = URL.createObjectURL(blob);
 

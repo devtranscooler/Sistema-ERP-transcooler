@@ -151,7 +151,8 @@ const Salida = (() => {
 
     function darSalida(id) {    
         abrirModal("/workflow/salida-servicio/darSalida.php", {
-            id: id
+            servicio: id,
+            repartos: null
         });
     }
     
