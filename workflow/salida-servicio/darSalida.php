@@ -1,8 +1,30 @@
 <?php
     $data = $_POST;
 
-    $id_servicio = $data['id'] ?? null;
+    $id_servicio = json_decode($_POST['servicio'] ?? '{}', true);  
+
 ?>
+
+    <style>
+        .pulse-button {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+                0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+            }
+                70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+            }
+                100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+            }
+        }
+    </style>
 
     <div class="modal-header dar-salida-modal">
         <h5 class="modal-title">
@@ -14,42 +36,75 @@
     <div class="modal-body dar-salida-modal">
 
         <!-- Begin Upload File Options -->
-        <div class="row">
-            <div class="d-flex justify-content-center">
-                <div class="border rounded-pill p-2 d-flex shadow-sm">
-                    <button type="button" class="btn btn-primary rounded-pill fw-bold" id="open-camera"> 
-                        <i class="bi bi-camera me-2"></i>
-                            Abrir camara 
+        <div class="d-flex justify-content-center align-items-center">
+            <ul class="nav nav-pills mb-3 border p-2 bg-light rounded-pill shadow" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-pill" id="pills-general-tab" data-bs-toggle="pill" data-bs-target="#pills-general" type="button" role="tab" aria-controls="pills-general" aria-selected="true">
+                        <i class="bi bi-camera me-2"></i> 
+                            Abrir camara
                     </button>
-                    <button type="button" class="btn"> 
-                        <i class="bi bi-image me-2"></i>
-                            Seleccionar 
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link gx-2 rounded-pill" id="pills-images-tab" data-bs-toggle="pill" data-bs-target="#pills-images" type="button" role="tab" aria-controls="pills-images" aria-selected="false">
+                        <i class="bi bi-images me-2"></i> 
+                            Seleccionar
                     </button>
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
         <!-- End Upload File Options -->
 
-        <!-- Begin Camera Preview -->
-        <div class="row">
-            <div class="d-flex flex-column align-items-center mt-6 d-none" id="camera-container">
-                <video id="video" autoplay playsinline class="w-50 rounded-3" style="max-height: 270px; border-radius: 2rem; margin-top: 2rem;"></video>
-                <button type="button" class="btn btn-success mt-2 rounded-5" id="btn-take-photo">
-                        Tomar foto
-                </button>
+
+        <!-- Container Tabs -->
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-general" role="tabpanel" aria-labelledby="pills-general-tab">
+
+                <!-- Begin Camera Photo Preview -->
+                <div id="preview-container" class="row g-2"></div>
+                <!-- Begin Camera Photo Preview -->
+                
+                <!-- Begin Camera Preview -->
+                <div class="row">
+                    <div class="d-flex flex-column align-items-center mt-6 d-none" id="camera-container">
+                        <video id="video" autoplay playsinline class="w-50 rounded-3" style="max-height: 270px; border-radius: 2rem; margin-top: 2rem;"></video>
+                        <button type="button" class="btn btn-success mt-2 rounded-5" id="btn-take-photo">
+                            Tomar foto
+                        </button>
+                    </div>
+                </div>
+                <!-- End Camera Preview -->
+
+                <!-- Begin Canvas -->
+                <div class="row mt-2">
+                    <canvas id="canvas" class="d-none"></canvas>
+                </div>
+                <!-- Begin Canvas -->
+                
+
             </div>
-        </div>
-        <!-- End Camera Preview -->
 
-        <!-- Begin Canvas -->
-        <div class="row mt-2">
-            <canvas id="canvas" class="d-none"></canvas>
-        </div>
-        <!-- Begin Canvas -->
+            <div class="tab-pane fade" id="pills-images" role="tabpanel" aria-labelledby="pills-images-tab">
+                <div class="p-3 mt-2 rounded-3">
+                    <div class="d-flex flex-column align-items-center mt-3">
+                        <button class="btn btn-success rounded-circle pulse-button" style="cursor: pointer;" id="openDialogFilesBtn">
+                            <i class="bi bi-cloud-upload text-white" style="font-size: 4rem;"></i>
+                        </button>
+                        <input 
+                            type="file" 
+                            id="fileInput" 
+                            accept="image/*" 
+                            multiple 
+                            hidden>
+                        <span class="mt-2"> Haz clic en el botón de arriba para seleccionar tus archivos </span>
+                        <span class="mt-2 small text-secondary"> Archivos permitidios: <i class="bi bi-images"></i> imagenes </span>
+                    </div>
+                </div>
 
-        <!-- Begin Camera Photo Preview -->
-        <div id="preview-container" class="row g-2"></div>
-        <!-- Begin Camera Photo Preview -->
+                <div id="previewSelectFilesContainer" class="mt-3 d-flex gap-2 flex-wrap"></div>
+            </div>
+
+        </div>
+        <!-- End Container Tabs -->
         
     </div>
 
@@ -65,12 +120,16 @@
     <script>
 
         (function () {
+
+            const uploadBtn = document.getElementById('openDialogFilesBtn');
+            const fileInput = document.getElementById('fileInput');
+            const previewSelectFilesContainer = document.getElementById('previewSelectFilesContainer');
         
             let selectedFiles = [];
             let stream = null;
 
             
-            document.getElementById("open-camera").addEventListener("click", openCamera);
+            document.getElementById("pills-general-tab").addEventListener("click", openCamera);
 
             async function openCamera() {
                 try {
@@ -154,6 +213,64 @@
                 document.getElementById("camera-container").classList.add("d-none");
             }
 
+            
+            uploadBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (event) => {
+                const files = Array.from(event.target.files);
+
+                if (selectedFiles.length + files.length > 5) {
+                    alert('Solo puedes subir máximo 5 imágenes');
+                    return;
+                }
+
+                files.forEach(file => {
+                    if (!file.type.startsWith('image/')) return;
+
+                    const fileId = Date.now() + Math.random();
+
+                    selectedFiles.push({ id: fileId, file });
+
+                    const reader = new FileReader();
+
+                    reader.onload = (e) => {
+                        const card = document.createElement('div');
+                        card.className = 'card shadow position-relative p-2';
+                        card.style.width = '120px';
+
+                        card.innerHTML = `
+                            <img src="${e.target.result}" class="card-img-top"
+                                style="height: 100px; object-fit: cover;">
+
+                            <button 
+                                class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-2 delete-btn"
+                                data-id="${fileId}">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        `;
+
+                        previewSelectFilesContainer.appendChild(card);
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+
+                fileInput.value = '';
+            });
+
+            previewSelectFilesContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-btn')) {
+                    const btn = e.target.closest('.delete-btn');
+                    const id = btn.getAttribute('data-id');
+
+                    selectedFiles = selectedFiles.filter(f => f.id != id);
+
+                    btn.closest('.card').remove();
+                }
+            });
+
             document.getElementById("send-images").addEventListener("click", handleSubmit)
 
             async function handleSubmit() {
@@ -178,7 +295,8 @@
                     formData.append("tipo_recurso_id", servicioId);
                     formData.append("modulo_servicio", "arribo");
 
-                    selectedFiles.forEach(file => {
+                    selectedFiles.forEach(item => {
+                        const file = item.file ? item.file : item;
                         formData.append("files[]", file);
                     });
 
@@ -201,7 +319,6 @@
                     window.dispatchEvent(new Event("salida:recargar"));
 
                     closeModal();
-
 
                     await Swal.fire({
                         icon: "success",

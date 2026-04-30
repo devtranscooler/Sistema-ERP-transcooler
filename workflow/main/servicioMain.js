@@ -162,9 +162,20 @@ const Main = (() => {
     }
 
     function generarCartaPorte(id) {
-        abrirModal("/workflow/main/generarCartaPorte.php", {
-            id: id
-        });
+        const urlDomain = window.location.origin
+        fetch(`${urlDomain}/public/index.php/api/carta-porte/${id}`)
+        .then((r) => r.json())
+        .then((res) => {
+            if (res.success) {
+
+                abrirModal("/workflow/main/generarCartaPorte.php", {
+                    servicio: res.data,
+                    repartos: null
+                });
+
+            };
+        })
+        .catch((err) => console.error("Main.ver error:", err));
     }
 
     function editar(id) {
