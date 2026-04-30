@@ -14,7 +14,7 @@ class FileValidator
     private const MAX_FILES = 2;
 
 
-    public static function fileValidation(array $files, array $post, string $field = 'file'): array
+    public static function fileValidation(array $files, array $post, string $field = 'files'): array
     {
         $fieldsValidation = self::validateFields($post);
         if (!$fieldsValidation['status']) {

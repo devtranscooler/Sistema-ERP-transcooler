@@ -47,7 +47,12 @@ const Main = (() => {
                     <td>${s.num_repartos}</td>
                     <td>${s.tracking}</td>
                     <td>${s.fec_alta}</td>
-                    <td class="text-center">                        
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-primary"
+                                onclick="Main.generarCartaPorte(${s.id})"
+                                title="Generar carta porte">
+                            <i class="bi bi-filetype-pdf"></i>
+                        </button>                        
                         <button type="button" class="btn btn-sm btn-success"
                                 onclick="Main.ver(${s.id})"
                                 title="Ver detalles">
@@ -156,6 +161,23 @@ const Main = (() => {
         .catch((err) => console.error("Main.ver error:", err));
     }
 
+    function generarCartaPorte(id) {
+        const urlDomain = window.location.origin
+        fetch(`${urlDomain}/public/index.php/api/carta-porte/${id}`)
+        .then((r) => r.json())
+        .then((res) => {
+            if (res.success) {
+
+                abrirModal("/workflow/main/generarCartaPorte.php", {
+                    servicio: res.data,
+                    repartos: null
+                });
+
+            };
+        })
+        .catch((err) => console.error("Main.ver error:", err));
+    }
+
     function editar(id) {
         fetch("servicio_cliente/servicios.api.php", {
             method:  "POST",
@@ -231,5 +253,5 @@ const Main = (() => {
 
     init();
 
-    return { cargar, abrirModal, ver, editar, guardar, eliminar };
+    return { cargar, abrirModal, ver, editar, generarCartaPorte, guardar, eliminar };
 })();

@@ -1,10 +1,6 @@
 <?php
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT'] . '/system/connection.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/validations/media/FileValidator.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/services/media/FileUploadService.php');
-require_once $_SERVER['DOCUMENT_ROOT'] . '/DTO/media/UploadMediaDTO.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Resources/Media/MediaResponse.php';
 
 class serviciosControlador
 {
@@ -21,14 +17,20 @@ class serviciosControlador
         $conxion = $this->db->getConexion();
 
         $offset = ($page - 1)  * $limit;
-
+        //Servicios para tab de Trafico
         if ($context === 'trafico'){
-            $where = "WHERE (s.status = 'activo' AND (s.id_unidad IS NULL OR s.id_operador IS NULL))";
+            $where = "WHERE (s.status = 'activo' AND s.tracking = 'Asignación de unidad')";
             }
+        //Servicios para tab de Mesa de control
+        else if ($context === 'mesaControl') {
+            $where = "WHERE (s.status = 'activo' AND s.tracking = 'Asignación de productos')";
+        }
+        //Servicios para tab de Salidas
         else if ($context === 'salida') {
             $where = "WHERE (s.status = 'activo' AND s.tracking = 'En espera de salida')";
         }
         else {
+            //Servicios para tab de Main y servicio a cliente
             $where = "WHERE (s.status = 'activo')";
         }
         
@@ -150,74 +152,114 @@ class serviciosControlador
         $row = $result->fetch_assoc();
 
         return $row['total'];
-    }
-    public function show($id){
+    }    
+    public function show($id)
+    {
         $conexion = $this->db->getConexion();
-
-        $SQL = "SELECT
+        $SQLServicio = "SELECT
             s.*,
             c.nombre_razon,
             cu.eco,
+
             CONCAT(uo.nombre, ' ', uo.apellidoP, ' ', uo.apellidoM) AS nombreOperador,
-            CONCAT(ua.nombre, ' ', ua.apellidoP) AS nombreUsuarioAlta,
-            r.id AS reparto_id,
-            r.numero_reparto,
-            r.origen_inicio,
-            co.nombre AS origen,
-            cd.nombre AS destino
+
+            CONCAT(ua.nombre, ' ', ua.apellidoP) AS nombreUsuarioAlta
+
         FROM servicios s
-        LEFT JOIN clientes c        ON c.id  = s.id_cliente
-        LEFT JOIN cat_unidades cu   ON cu.id = s.id_unidad
-        LEFT JOIN usuarios uo       ON uo.id = s.id_operador
-        LEFT JOIN usuarios ua       ON ua.id = s.id_usuario_alta
-        INNER JOIN repartos r 		ON s.id = r.id_servicio
-        LEFT JOIN cat_destinos co   ON co.id = r.id_origen
-		LEFT JOIN cat_destinos cd   ON cd.id = r.id_destino
+
+        LEFT JOIN clientes c      ON c.id = s.id_cliente
+        LEFT JOIN cat_unidades cu ON cu.id = s.id_unidad
+
+        LEFT JOIN usuarios uo ON uo.id = s.id_operador
+        LEFT JOIN usuarios ua ON ua.id = s.id_usuario_alta
+
         WHERE s.id = ?";
 
-        $stmt = $conexion->prepare($SQL);
+        $stmt = $conexion->prepare($SQLServicio);
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
+        $servicio = $result->fetch_assoc();
+        $stmt->close();
 
-        $servicio = null;
-        $repartos = [];
+        if ($servicio) {
+            $servicio = [
+                'id' => $servicio['id'],
+                'shipment' => $servicio['shipment'],
+                'fecha_carga' => $servicio['fecha_carga'],
+                'fecha_descarga' => $servicio['fecha_descarga'],
+                'tipo_servicio' => $servicio['tipo_servicio'],
+                'fec_alta' => $servicio['fec_alta'],
+                'tipo_viaje' => $servicio['tipo_viaje'],
+                'num_repartos' => $servicio['num_repartos'],
+                'status' => $servicio['status'],
 
-        while ($row = $result->fetch_assoc()) {
-            
-            if (!$servicio) {
-                $servicio = [
-                    'id' => $row['id'],
-                    'shipment' => $row['shipment'],
-                    'fecha_carga' => $row['fecha_carga'],
-                    'fecha_descarga' => $row['fecha_descarga'],
-                    'tipo_servicio' => $row['tipo_servicio'],
-                    'fec_alta' => $row['fec_alta'],
-                    'tipo_viaje' => $row['tipo_viaje'],
-                    'num_repartos' => $row['num_repartos'],
-                    'status' => $row['status'],
-
-                    'nombre_razon' => $row['nombre_razon'],
-                    'eco' => $row['eco'],
-                    'nombreOperador' => $row['nombreOperador'],
-                    'nombreUsuarioAlta' => $row['nombreUsuarioAlta'],
-                ];
-            }
-
-            // Repartos
-            $repartos[] = [
-                'id' => $row['reparto_id'],
-                'numero_reparto' => $row['numero_reparto'],
-                'destino' => $row['destino'],
-                'origen' => $row['origen'],
-                'origen_inicio' => $row['origen_inicio'],
+                'nombre_razon' => $servicio['nombre_razon'],
+                'eco' => $servicio['eco'],
+                'nombreOperador' => $servicio['nombreOperador'],
+                'nombreUsuarioAlta' => $servicio['nombreUsuarioAlta'],
             ];
         }
 
+        $SQLRepartos = "SELECT
+                r.id,
+                r.numero_reparto,
+                r.origen_inicio,
+                r.destino_final,
+
+                co.nombre AS origen,
+                cd.nombre AS destino,
+
+                pr.cantidad,
+                pr.peso,
+
+                p.id AS producto_id,
+                p.nombre AS producto_nombre
+
+            FROM repartos r
+
+            LEFT JOIN cat_destinos co ON co.id = r.id_origen
+            LEFT JOIN cat_destinos cd ON cd.id = r.id_destino
+
+            LEFT JOIN producto_reparto pr ON pr.reparto_id = r.id
+            LEFT JOIN productos p         ON p.id = pr.producto_id
+
+            WHERE r.id_servicio = ?";
+
+            $stmt = $conexion->prepare($SQLRepartos);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $repartos = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $repartoId = $row['id'];
+            // Crear reparto
+            if (!isset($repartos[$repartoId])) {
+                $repartos[$repartoId] = [
+                    'id' => $row['id'],
+                    'numero_reparto' => $row['numero_reparto'],
+                    'destino' => $row['destino'],
+                    'origen' => $row['origen'],
+                    'origen_inicio' => $row['origen_inicio'],
+                    'destino_final' => $row['destino_final'],
+                    'productos' => []
+                ];
+            }
+            // Agregar productos
+            if ($row['producto_id']) {
+                $repartos[$repartoId]['productos'][] = [
+                    'producto_id' => $row['producto_id'],
+                    'producto_nombre' => $row['producto_nombre'],
+                    'cantidad' => $row['cantidad'],
+                    'peso' => $row['peso'],
+                ];
+            }
+        }
         $stmt->close();
         return [
             'servicio' => $servicio,
-            'repartos' => $repartos
+            'repartos' => array_values($repartos)
         ];
     }
     public function crear($data){
@@ -277,7 +319,8 @@ class serviciosControlador
                     id_unidad = ?,
                     id_remolque = ?,
                     id_remolque2 = ?,
-                    id_dolly = ?
+                    id_dolly = ?,
+                    config_vehicular = ?
                 WHERE id = ?";
         
         $params = [
@@ -286,6 +329,7 @@ class serviciosControlador
             $data['id_remolque']  ?? null,
             $data['id_remolque2'] ?? null,
             $data['id_dolly'] ?? null,
+            $data['config_vehicular'] ?? null,
             $id
         ];
 
@@ -326,40 +370,22 @@ class serviciosControlador
 
         return $this->db->getConexion()->insert_id;
     }
-
-    
-    public function uploadFiles($post, $files)
-    {
-        $validation = FileValidator::fileValidation($files, $post);
-
-        if (!$validation['status']) {
-            return $validation;
-        }
-
-        $validatedFiles = $validation['files'];
-        $data = $validation['data'];
-
-        $mediaDTO = new UploadMediaDTO(
-            $data['tipo_recurso'],
-            $data['tipo_recurso_id'],
-            /*$_SESSION['ID_USUARIO']*/ 2,
-            $data['modulo_servicio']
-        );
-
-        $uploadService = new FileUploadService();
-
-        $results = $uploadService->process($validatedFiles, $mediaDTO);
-
-        $response = array_map(
-            fn($item) => MediaResponse::transform($item),
-            $results
-        );
-
-        // 🔹 5. Respuesta final
-        return [
-            "status" => true,
-            "message" => "success",
-            "data" => $response
+    public function agregarProductosPermisos ($id, $data){
+        $SQL = "UPDATE servicios 
+                SET km_origen_destino = ?, 
+                    monto_total = ?,
+                    tipo_permiso = ?,
+                    folio_permiso = ?
+                WHERE id = ?";
+        
+        $params = [
+            $data['km_origen_destino'],
+            $data['monto_total'],
+            $data['tipo_permiso']  ?? null,
+            $data['folio_permiso'] ?? null,
+            $id
         ];
+
+        return $this->db->execute($SQL, $params);
     }
 }

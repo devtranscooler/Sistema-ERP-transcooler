@@ -1,9 +1,14 @@
 <?php
-$id = $_POST['id'] ?? null;
+$data = $_POST;
+$servicio = json_decode($data['servicio'], true); 
+
+$id = $servicio['id'] ?? null;
 $id_operador = $_POST['id_operador'] ?? null;
 $id_unidad = $_POST['id_unidad'] ?? null;
 $id_remolque = $_POST['id_remolque'] ?? null;
 $id_remolque2 = $_POST['id_remolque2'] ?? null;
+$id_dolly = $_POST['id_dolly'] ?? null;
+$config_vehicular = $_POST['config_vehicular'] ?? null;
 ?>
 <div class="modal-header">
     <h5 class="modal-title">
@@ -127,6 +132,14 @@ $id_remolque2 = $_POST['id_remolque2'] ?? null;
                 </div>
                 <input type="hidden" name="id_dolly" id="id_dolly" value="<?= $id_dolly ?>">
             </div>
+
+            <!-- Configuracion vehicular — oculto por defecto -->
+            <!-- <div id="conf_vehicular" class="col-md-6">
+                <label class="form-label">
+                    Coniguración vehicular <span class="text-danger">*</span>
+                </label>
+                <input class="form-control" type="text" name="config_vehicular" id="config_vehicular" value="<?= $config_vehicular ?>" placeholder="Configuración vehicular...">
+            </div> -->
         </div>
 
         <!-- modal -->
@@ -369,4 +382,6 @@ $id_remolque2 = $_POST['id_remolque2'] ?? null;
         labelKey: 'eco',
         apiUrl: '../unidades/unidades.api.php'
     });
+
+
 </script>

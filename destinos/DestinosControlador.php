@@ -1,5 +1,5 @@
 <?php
-require_once "../system/connection.php";
+require_once __DIR__ . '/../system/connection.php';
 
 class DestinosControlador
 {
