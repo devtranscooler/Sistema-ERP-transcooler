@@ -7,11 +7,13 @@ require_once 'ImageStorageStrategy.php';
 require_once 'DocumentStorageStrategy.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/DTO/media/UploadMediaDTO.php';
 
+define('BASE_PATH', dirname(__DIR__, 2));
 
 class FileUploadService 
 {
     private string $bucket = 'transcooler';
-    private string $credentials = __DIR__ . '/../../config/storage/transcooler-480721-85cfc67ca604.json';
+    //private string $credentials = __DIR__ . '/../../config/storage/transcooler-480721-85cfc67ca604.json';
+    private string $credentials = BASE_PATH . '/config/storage/transcooler-480721-85cfc67ca604.json';
 
     public function process(array $files, UploadMediaDTO $mediaDTO): array
     {
