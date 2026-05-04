@@ -1,15 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-   <!--  <head>
-         <title>Mapa con Map ID</title>
-        <style>
-            #map {
-                height: 500px;
-                width: 100%;
-            }
-        </style>
-    </head> -->
-
 <body>
     <div class="container-fluid">
 
@@ -101,9 +91,6 @@
                 </div>
             </div>
         </div>
-        <!-- <h2>Mi mapa personalizado</h2>
-
-        <div id="map"></div> -->
     </div>
 
     
@@ -112,27 +99,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="main/servicioMain.js"></script>
-
-
-<!-- <script>
-  function initMap() {
-    const location = { lat: 19.4326, lng: -99.1332 }; 
-
-    const map = new google.maps.Map(document.getElementById("map"), {
-      center: location,
-      zoom: 12,
-      mapId: "172b2970e28e4b885dc8a378"
-    });
-
-    new google.maps.Marker({
-      position: location,
-      map: map,
-    });
-  }
-</script>
-
-<script async
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPTJ-KM1wA3sOZDXPuIt0Zfzw9_51xZn8&callback=initMap">
-</script> -->
 
 </html>

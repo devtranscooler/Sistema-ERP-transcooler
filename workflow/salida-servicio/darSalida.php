@@ -60,16 +60,24 @@
             <div class="tab-pane fade show active" id="pills-general" role="tabpanel" aria-labelledby="pills-general-tab">
 
                 <!-- Begin Camera Photo Preview -->
-                <div id="preview-container" class="row g-2"></div>
+                <div id="preview-container" class="row g-2 row-cols-2 row-cols-sm-3 row-cols-md-4"></div>
                 <!-- Begin Camera Photo Preview -->
                 
                 <!-- Begin Camera Preview -->
                 <div class="row">
-                    <div class="d-flex flex-column align-items-center mt-6 d-none" id="camera-container">
-                        <video id="video" autoplay playsinline class="w-50 rounded-3" style="max-height: 270px; border-radius: 2rem; margin-top: 2rem;"></video>
+                    <div class="d-flex flex-column align-items-center mt-4 mt-md-5 d-none px-2 px-sm-0" id="camera-container">
+                        
+                        <video 
+                            id="video" 
+                            autoplay 
+                            playsinline 
+                            class="w-100 w-sm-75 w-md-50 rounded-3" 
+                            style="max-height: 270px; border-radius: 2rem; margin-top: 2rem;"></video>
+
                         <button type="button" class="btn btn-success mt-2 rounded-5" id="btn-take-photo">
                             Tomar foto
                         </button>
+
                     </div>
                 </div>
                 <!-- End Camera Preview -->
@@ -95,7 +103,7 @@
                             accept="image/*" 
                             multiple 
                             hidden>
-                        <span class="mt-2"> Haz clic en el botón de arriba para seleccionar tus archivos </span>
+                        <span class="mt-2 text-center"> Haz clic en el botón de arriba para seleccionar tus archivos </span>
                         <span class="mt-2 small text-secondary"> Archivos permitidios: <i class="bi bi-images"></i> imagenes </span>
                     </div>
                 </div>
@@ -109,7 +117,7 @@
     </div>
 
     <div class="modal-footer dar-salida-modal">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="close-modal">
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" id="close-modal">
             <i class="bi bi-x-circle me-1"></i> Cerrar
         </button>
         <button type="button" class="btn btn-primary" id="send-images">
