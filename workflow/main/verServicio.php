@@ -170,9 +170,10 @@
                 <!-- Repartos -->
                 <div class="info-section">                      
                     <?php if (!empty($repartos)): ?>
-                        <div class="container">
-                            <?php foreach ($repartos as $index => $reparto): ?>
-                                <div class="reparto-card">
+                        <div class="row">
+                        <?php foreach ($repartos as $index => $reparto): ?>
+                            <div class="col-12 col-md-12">
+                                <div class="reparto-card my-2">
                                     <div class="reparto-header">
                                         Reparto <?= $index + 1 ?>
                                     </div>
@@ -226,7 +227,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
+                        <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
                 </div>

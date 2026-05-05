@@ -44,16 +44,18 @@ const Trafico = (() => {
                     <td>${s.num_repartos}</td>
                     <td>${s.fec_alta}</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-primary"
-                                onclick="Trafico.setEcoAndOperator(${s.id})"
-                                title="Asignar Eco y operador">
-                            <i class="bi bi-truck"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success"
-                                onclick="Trafico.ver(${s.id})"
-                                title="Ver detalles">
-                            <i class="bi bi-eye-fill"></i>
-                        </button>
+                        <div class="d-flex justify-content-between gap-2 gap-md-1">
+                            <button type="button" class="btn btn-sm btn-primary"
+                                    onclick="Trafico.setEcoAndOperator(${s.id})"
+                                    title="Asignar Eco y operador">
+                                <i class="bi bi-truck"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success"
+                                    onclick="Trafico.ver(${s.id})"
+                                    title="Ver detalles">
+                                <i class="bi bi-eye-fill"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>`;
             });
