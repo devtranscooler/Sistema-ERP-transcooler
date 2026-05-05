@@ -75,7 +75,7 @@ if ($currentPage === null && count($tabs) > 0) {
 
     <?php require_once '../utilities/sidebar.php'; Sidebar::render("Workflow"); ?>
 
-    <div class="content">
+    <div class="content p-3">
         <h1>Workflow</h1>
 
         <ul class="nav nav-pills nav-fill rounded-2" style="overflow: hidden;" >

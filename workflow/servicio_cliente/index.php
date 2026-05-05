@@ -6,7 +6,7 @@
 
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-1">
+            <ol class="breadcrumb my-2">
                 <li class="breadcrumb-item">
                     <i class="bi bi-house-door me-1"></i>Inicio
                 </li>
@@ -17,7 +17,7 @@
         </nav>
 
         <!-- Encabezado -->
-        <div class="row align-items-center">
+        <div class="row align-items-center my-3">
             <div class="col-md-6">
                 <h2 class="fw-bold mb-0">
                     <i class="bi bi-headset text-primary"></i>
@@ -35,18 +35,18 @@
         <!-- Filtros -->
         <div class="filter-card">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 p-0">
                     <label for="filtroIdServicio" class="form-label small text-muted">
                         <i class="bi bi-search"></i> Buscar
                     </label>
                     <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0">
+                        <span class="input-group-text bg-primary text-white border-end-0">
                             <i class="bi bi-search"></i>
                         </span>
                         <input type="text"
                             name="idServicio"
                             id="filtroIdServicio"
-                            class="form-control border-start-0 ps-0"
+                            class="form-control border-start-0 px-2"
                             placeholder="Buscar...">
                     </div>
                 </div>
@@ -54,8 +54,8 @@
         </div>
 
         <!-- Tabla -->
-        <div class="table-responsive mb-0">
-            <table class="table table-hover aligmiddle mb-0" id="tablaServicios">
+        <div class="table-responsive my-3">
+            <table class="table table-hover table-striped aligmiddle mb-0" id="tablaServicios">
                 <thead>
                     <tr>
                         <th class="text-center">ID</th>

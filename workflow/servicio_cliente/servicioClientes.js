@@ -47,21 +47,23 @@ const Servicios = (() => {
                     <td>${s.num_repartos}</td>
                     <td>${s.fec_alta}</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-primary"
-                                onclick="Servicios.editar(${s.id})"
-                                title="Editar servicio">
-                            <i class="bi bi-pencil-fill"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success"
-                                onclick="Servicios.ver(${s.id})"
-                                title="Ver detalles">
-                            <i class="bi bi-eye-fill"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-danger"
-                                onclick="Servicios.eliminar(${s.id})"
-                                title="Eliminar servicio">
-                            <i class="bi bi-trash-fill"></i>
-                        </button>
+                        <div class="d-flex justify-content-between gap-2 gap-md-1">
+                            <button type="button" class="btn btn-sm btn-primary"
+                                    onclick="Servicios.editar(${s.id})"
+                                    title="Editar servicio">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success"
+                                    onclick="Servicios.ver(${s.id})"
+                                    title="Ver detalles">
+                                <i class="bi bi-eye-fill"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger"
+                                    onclick="Servicios.eliminar(${s.id})"
+                                    title="Eliminar servicio">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>`;
             });

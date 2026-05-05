@@ -44,16 +44,18 @@ const Salida = (() => {
                     <td>${s.num_repartos}</td>
                     <td>${s.fec_alta}</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-primary"
-                                onclick="Salida.darSalida(${s.id})"
-                                title="Dar salida a la unidad">
-                            <i class="bi bi-capslock-fill"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-success"
-                                onclick="Salida.ver(${s.id})"
-                                title="Ver detalles">
-                            <i class="bi bi-eye-fill"></i>
-                        </button>
+                        <div class="d-flex justify-content-between gap-2 gap-md-1">
+                            <button type="button" class="btn btn-sm btn-primary p-2 rounded-circle"
+                                    onclick="Salida.darSalida(${s.id})"
+                                    title="Dar salida a la unidad">
+                                <i class="bi bi-cloud-upload"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success p-2 rounded-circle"
+                                    onclick="Salida.ver(${s.id})"
+                                    title="Ver detalles">
+                                <i class="bi bi-eye-fill"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>`;
             });
