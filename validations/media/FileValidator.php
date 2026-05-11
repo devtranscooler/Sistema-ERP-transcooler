@@ -62,7 +62,8 @@ class FileValidator
             "data" => [
                 "tipo_recurso" => $post['tipo_recurso'],
                 "tipo_recurso_id" => (int) $post['tipo_recurso_id'],
-                "modulo_servicio" => $post['modulo_servicio']
+                "modulo_servicio" => $post['modulo_servicio'],
+                "user_id" => (int) $post["user_id"]
             ]
         ];
     }
@@ -82,6 +83,11 @@ class FileValidator
         // modulo_servicio
         if (empty($post['modulo_servicio']) || !is_string($post['modulo_servicio'])) {
             return self::error("El campo modulo_servicio es requerido y debe ser texto");
+        }
+
+       // user_id
+        if (!isset($post['user_id']) || !is_numeric($post['user_id']) || is_null($post['user_id'])) {
+            return self::error("El campo user_id es requerido y debe ser numérico");
         }
 
         return ["status" => true];

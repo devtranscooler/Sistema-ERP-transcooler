@@ -61,4 +61,12 @@ class Router
             "message" => "Ruta no encontrada"
         ];
     }
+
+    public function getJsonBody(): array
+    {
+        return json_decode(
+            file_get_contents("php://input"),
+            true
+        ) ?? [];
+    }
 }

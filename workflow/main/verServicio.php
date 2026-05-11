@@ -53,7 +53,12 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link gx-2" id="pills-images-tab" data-bs-toggle="pill" data-bs-target="#pills-images" type="button" role="tab" aria-controls="pills-images" aria-selected="false">
-                <i class="bi bi-images"></i> Imagenes
+                <i class="bi bi-images"></i> Salidas
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link gx-2 load-evidences-tab" id="pills-evidences-tab" data-bs-toggle="pill" data-bs-target="#pills-evidences" type="button" role="tab" aria-controls="pills-evidences" aria-selected="false">
+                <i class="bi bi-images"></i> Evidencias
             </button>
         </li>
     </ul>
@@ -234,6 +239,9 @@
                 </div>
             </section>
         </div>
+        <div class="tab-pane fade" id="pills-evidences" role="tabpanel" aria-labelledby="pills-evidences-tab">
+            <div id="container-evidences-images"></div>
+        </div>
     </div>
 </div>
 
@@ -245,84 +253,200 @@
 
 <script>    
 
-    document.getElementById("pills-images-tab").addEventListener("click", () => {
-        getMediaByService();
-    });
+    (() => {
 
-    function getMediaByService() {
-        const urlDomain = window.location.origin
-        fetch(`${urlDomain}/public/index.php/api/media?tipo_recurso=SERVICIO&tipo_recurso_id=${<?= $id ?>}`)
-        .then(r => r.json())
-        .then(res => {
-            if (res.data) {
-                printGallery(res.data);
-            } else {
-                emptyMediaFiles()
-            }
-        })
-        .catch(err => {
-            console.error(err)
-            
+        const evidencesContainer = document.getElementById("container-evidences-images");
+
+        document.getElementById("pills-images-tab").addEventListener("click", () => {
+            getMediaByService();
         });
-    }
 
-    function generateCard(idMedia, path, autor) {
-        const col = document.createElement("div");
-        col.className = "col-md-3";
-        col.className += " my-2"; 
+        document.getElementById("pills-evidences-tab").addEventListener("click", () => {
+            getEvidencesMedia(<?= $id ?>);
+        });
 
-        col.innerHTML = `
-            <div class="card shadow h-100">
-                <img src="${path}" 
-                    class="card-img-top object-fit-cover p-1 rounded-3"
-                    alt="${idMedia}" 
-                    loading="lazy"
-                    style="width: 100%; height: 200px;">
+        function getMediaByService() {
+            const urlDomain = window.location.origin
+            fetch(`${urlDomain}/public/index.php/api/media?tipo_recurso=SERVICIO&tipo_recurso_id=${<?= $id ?>}`)
+            .then(r => r.json())
+            .then(res => {
+                if (res.data) {
+                    printGallery(res.data);
+                } else {
+                    emptyMediaFiles()
+                }
+            })
+            .catch(err => {
+                console.error(err)
                 
-                <div class="card-body p-2">
-                    <div class="d-flex justify-content-between align-items-center gap-2">
-                        <span class="text-secondary" style="font-size: 14px">
-                            Subido por
-                        </span>
-                        <button class="btn btn-primary btn-sm mb-0">
-                            ${autor}
-                        </button>
+            });
+        }
+
+        function generateCard(idMedia, path, autor) {
+            const col = document.createElement("div");
+            col.className = "col-md-3";
+            col.className += " my-2"; 
+
+            col.innerHTML = `
+                <div class="card shadow h-100">
+                    <img src="${path}" 
+                        class="card-img-top object-fit-cover p-1 rounded-3"
+                        alt="${idMedia}" 
+                        loading="lazy"
+                        style="width: 100%; height: 200px;">
+                    
+                    <div class="card-body p-2">
+                        <div class="d-flex justify-content-between align-items-center gap-2">
+                            <span class="text-secondary" style="font-size: 14px">
+                                Subido por
+                            </span>
+                            <button class="btn btn-primary btn-sm mb-0">
+                                ${autor}
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
 
-        return col;
-    }
+            return col;
+        }
 
-    function printGallery(data) {
-        const contenedor = document.getElementById("content-tab-images");
-        contenedor.innerHTML = ""; // limpiar antes de pintar
+        function printGallery(data) {
+            const contenedor = document.getElementById("content-tab-images");
+            contenedor.innerHTML = "";
 
 
-        data.forEach(item => {
-            const rutaCompleta = `https://storage.googleapis.com/transcooler/${item.ruta}`; // ajusta según tu servidor
+            data.forEach(item => {
+                const rutaCompleta = `https://storage.googleapis.com/transcooler/${item.ruta}`;
 
-            const autor = `${item.nombre} ${item.apellidoP}`;
+                const autor = `${item.nombre} ${item.apellidoP}`;
 
-            const card = generateCard(data.id_media, rutaCompleta, autor);
+                const card = generateCard(data.id_media, rutaCompleta, autor);
 
-            contenedor.appendChild(card);
-        });
-    }
+                contenedor.appendChild(card);
+            });
+        }
 
-    function emptyMediaFiles() {
-        const contenedor = document.getElementById("content-tab-images");
-        contenedor.innerHTML = ""
+        function emptyMediaFiles() {
+            const contenedor = document.getElementById("content-tab-images");
+            contenedor.innerHTML = ""
 
-        const col = document.createElement("div");
-        col.innerHTML = `
-            <div class="mt-2 d-flex flex-column align-items-center gap-2">
-                <p class="fs-4"> No hay imagenes relacionadas a este servicio </p>
-                <i class="bi bi-images fs-2"></i>
-            </div>
-        `;
+            const col = document.createElement("div");
+            col.innerHTML = `
+                <div class="mt-2 d-flex flex-column align-items-center gap-2">
+                    <p class="fs-4"> No hay imagenes relacionadas a este servicio </p>
+                    <i class="bi bi-images fs-2"></i>
+                </div>
+            `;
 
-        contenedor.appendChild(col)
-    }
+            contenedor.appendChild(col)
+        }
+
+        function getEvidencesMedia(serviceId) {
+
+            const urlDomain = window.location.origin
+
+            fetch(`${urlDomain}/public/index.php/api/deliveries/${serviceId}`)
+            .then(r => r.json())
+            .then(res => {
+                if (res.data) {
+                    return generateCardDeliveryEvidence(res.data)
+                } 
+
+                return emptyEvidences()
+            })
+            .catch(err => {
+                console.error(err)
+            });
+        }
+
+
+        function generateCardDeliveryEvidence(deliveries){
+        
+            evidencesContainer.innerHTML = "";
+
+            const html = deliveries.map(delivery => {
+                let colorBadge = "";
+                
+                if(delivery.status === 'Completado') {
+                    colorBadge = "badge text-bg-success"
+                } else if(delivery.status === 'Rechazado') {
+                    colorBadge = "badge text-bg-danger"
+                } else {
+                    colorBadge = "badge text-bg-secondary"
+                }
+
+                return `
+                    <div class="row p-3">
+                        <div class="card p-0 rounded-4">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">
+                                        <i class="bi bi-images"></i> Reparto ${delivery.numero_reparto}
+                                    </p>
+                                    <span class="${colorBadge}"> Estatus: ${delivery.status} </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex gap-3 overflow-auto pb-2 custom-horizontal-scroll">
+                                    ${printEvidenceGallery(delivery.media)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("")
+
+            evidencesContainer.innerHTML = html
+        }
+
+        function printEvidenceGallery(media) {
+            if (!Object.is(media, null)) {
+                return media.map(item => {
+                    const autor = `${item.nombre} ${item.apellidoP}`;
+                    return `
+                        <div class="flex-shrink-0">
+                                <div class="card shadow h-100">
+                                    <img src="https://storage.googleapis.com/transcooler/${item.ruta}" 
+                                        class="card-img-top object-fit-cover p-1 rounded-3"
+                                        alt="Evidencia ${item.id}" 
+                                        loading="lazy"
+                                        style="width: 140px%; height: 140px;">
+                                    
+                                    <div class="card-body p-2">
+                                        <div class="d-flex justify-content-between align-items-center gap-2">
+                                            <span class="text-secondary" style="font-size: 14px">
+                                                Subido por
+                                            </span>
+                                            <button class="btn btn-primary btn-sm mb-0">
+                                                ${autor}
+                                            </button>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>`;
+                }).join("");
+            }
+
+            return `
+                <p class="text-secondary mb-0">
+                    Sin evidencias
+                </p>
+            `;
+        }
+        
+        function emptyEvidences() {
+            evidencesContainer.innerHTML = "";
+            const html = `
+                <div class="row p-3 my-3">
+                    <h2 class="text-center"> Servicio sin repartos
+                            <span class="d-block"> <i class="bi bi-truck-flatbed fs-1"></i> </span>
+                    </h2>
+                </div>
+            `;
+            evidencesContainer.innerHTML = html;
+        }
+
+    })();
+
 </script>

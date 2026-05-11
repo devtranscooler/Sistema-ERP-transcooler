@@ -48,7 +48,7 @@ const Main = (() => {
                     <td>${s.tracking}</td>
                     <td>${s.fec_alta}</td>
                     <td class="text-center">
-                        <div class="d-flex justify-content-between gap-2 gap-md-1">
+                        <div class="d-flex justify-content-center gap-2 gap-md-2">
                             <button type="button" class="btn btn-sm btn-primary p-2 rounded-circle"
                                 onclick="Main.generarCartaPorte(${s.id})"
                                 title="Generar carta porte">

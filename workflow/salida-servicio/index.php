@@ -4,6 +4,8 @@
 <body>  
     <div class="container-fluid">
 
+        <input type="hidden" name="auth_user_id" id="auth_user_id" value="<?= $_SESSION['ID_USUARIO'] ?? null ?> ">
+
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb my-2">
