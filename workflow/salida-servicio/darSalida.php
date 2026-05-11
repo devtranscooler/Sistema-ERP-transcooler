@@ -94,8 +94,8 @@
             <div class="tab-pane fade" id="pills-images" role="tabpanel" aria-labelledby="pills-images-tab">
                 <div class="p-3 mt-2 rounded-3">
                     <div class="d-flex flex-column align-items-center mt-3">
-                        <button class="btn btn-success rounded-circle pulse-button" style="cursor: pointer;" id="openDialogFilesBtn">
-                            <i class="bi bi-cloud-upload text-white" style="font-size: 4rem;"></i>
+                        <button class="btn btn-success rounded-circle pulse-button" style="cursor: pointer;  width:70px; height:70px;" id="openDialogFilesBtn">
+                            <i class="bi bi-cloud-upload text-white fs-2"></i>
                         </button>
                         <input 
                             type="file" 
@@ -128,6 +128,8 @@
     <script>
 
         (function () {
+            
+            const authUser = document.getElementById("auth_user_id").value
 
             const uploadBtn = document.getElementById('openDialogFilesBtn');
             const fileInput = document.getElementById('fileInput');
@@ -302,6 +304,7 @@
                     formData.append("tipo_recurso", "SERVICIO");
                     formData.append("tipo_recurso_id", servicioId);
                     formData.append("modulo_servicio", "arribo");
+                    formData.append("user_id", authUser)
 
                     selectedFiles.forEach(item => {
                         const file = item.file ? item.file : item;

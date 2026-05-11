@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/ProductController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/MediaController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/CartaPorteController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryOperatorController.php';
 
 /** Product Routes */
 $router->get('/api/products', function () {
@@ -26,8 +28,28 @@ $router->delete('/api/media/{id}', function($id) {
 });
 /** End Media Routes */
 
-/** Service Routes */
+/** Servicios Routes */
+$router->get('/api/deliveries/{serviceId}', function($id) {
+    return (new DeliveryController())->getDeliveriesByService((int) $id);
+});
+
+$router->put('/api/deliveries/{deliveryId}', function($id) use($router) {
+    return (new DeliveryController())->updateDelivery((int) $id, $router->getJsonBody());
+});
+/** Termina Servicios Routes */
+
+/** Carta porte Routes */
 $router->get('/api/carta-porte/{service_id}', function($id) {
     return (new CartaPorteController())->generate((int) $id);
 });
-/** Service Routes */
+/** Carta Porte Routes */
+
+/** Repartos */
+$router->get('/api/operator-deliveries/{opetaorId}', function($id) {
+    return (new DeliveryOperatorController())->index((int) $id);
+});
+
+$router->get('/api/products-delivery/{deliveryId}', function($id) {
+    return (new DeliveryOperatorController())->productByDelivery((int) $id);
+});
+/** End Repartos  */
