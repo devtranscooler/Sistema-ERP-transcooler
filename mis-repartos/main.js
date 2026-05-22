@@ -27,14 +27,22 @@ const evidenceInput = document.getElementById("evidenceInput");
 const uploadEvidenceBtn = document.getElementById("uploadEvidenceBtn");
 const evidenceModalTitle = document.getElementById("evidenceModalTitle");
 
+const statusSelect = document.getElementById("status_delivery")
+const allowedStatus = ["Aceptado", "Rechazado", "Detenido", "Traslapado"];
+let statusSelected = ""
+
 export const sendForm = document.getElementById("send-images")
 
 let deliverySelected = null;
 let deliveryProductSelected = null;
-let deliveryStatusSelected = "Completado";
+let deliveryStatusSelected = "";
 
 document.addEventListener("DOMContentLoaded", async () => {
     await getDeliveries();
+});
+
+statusSelect.addEventListener("change", (event) => {
+    statusSelected = event.target.value
 });
 
 async function getDeliveries() {
@@ -129,6 +137,11 @@ sendForm.addEventListener("click", async(e) => {
         return alert("Debes tomar o seleccionar al menos una foto desde main.js");
     }
 
+    if(statusSelected === '' || !allowedStatus.includes(statusSelected)) {
+        alert("Debes seleccionar una opción valida")
+        return
+    }
+
     try {
 
         const uploadPromise = handleSubmit({
@@ -140,7 +153,7 @@ sendForm.addEventListener("click", async(e) => {
 
         const statusPromise = updateDeliveryStatus(
             deliverySelected,
-            deliveryStatusSelected
+            statusSelected
         );
 
         const [
@@ -169,9 +182,7 @@ sendForm.addEventListener("click", async(e) => {
                 error.message ||
                 "Ocurrió un error en el proceso"
         });
-    } finally {
-        
-    }
+    } 
 })
 
 async function getProductsByDelivery(deliveryId) {

@@ -8,6 +8,34 @@ class Service
 {
     private MySQL $db;
 
+    private string $table = "servicios";
+
+    private array $fillable = [
+        'id',
+        'id_cliente',
+        'id_usuario_alta',
+        'fec_alta',
+        'shipment',
+        'tipo_viaje',
+        'num_repartos',
+        'fecha_carga',
+        'fecha_descarga',
+        'tipo_servicio',
+        'status',
+        'id_unidad',
+        'id_operador',
+        'tracking',
+        'id_remolque',
+        'id_remolque2',
+        'id_dolly',
+        'config_vehicular',
+        'km_origen_destino',
+        'monto_total',
+        'tipo_permiso',
+        'folio_permiso',
+        'status_operativo'
+    ];
+
     public function __construct()
     {
         $this->db = new MySQL();
@@ -126,5 +154,165 @@ class Service
         $data = $result->fetch_assoc();
 
         return $data ?? null;
+    }
+
+    /**
+     * This PHP function retrieves a service by its ID from a database and returns the data as an array
+     * or null if no data is found.
+     * 
+     * @param int serviceId The `getServiceById` function is a method that retrieves a service from the
+     * database based on the provided `serviceId`. It connects to the database, prepares and executes a
+     * SQL query to select the service with the specified ID, and then fetches the result into an
+     * array.
+     * 
+     * @return ?array An array containing the service data for the service with the specified ID is
+     * being returned. If no data is found for the given service ID, then `null` is returned.
+     */
+    public function getServiceById(int $serviceId): ?array
+    {
+        $connection = $this->db->getConexion();
+
+        $sql = "SELECT *
+        FROM servicios as srvcs
+        WHERE srvcs.id = ?
+        ORDER BY srvcs.id ASC
+        LIMIT 1";
+
+        $stmt = $connection->prepare($sql);
+        $stmt->bind_param("i", $serviceId);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $data = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data ?? null;
+    }
+
+    /**
+     * The function `update` updates a record in a database table with the provided data based on the
+     * specified ID.
+     * 
+     * @param int id The `id` parameter in the `update` function represents the identifier of the
+     * record you want to update in the database. It is an integer value that uniquely identifies the
+     * record within the table.
+     * @param array data The `update` function you provided is a PHP method that updates a record in a
+     * database table based on the given ID and data. The function performs the following steps:
+     * 
+     * @return bool The `update` function returns a boolean value indicating whether the update
+     * operation was successful or not. It returns `true` if the update was executed successfully, and
+     * `false` if there were no fields to update or if an error occurred during the execution of the
+     * update query.
+     */
+    public function update(int $id, array $data): bool
+    {
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTRAR SOLO CAMPOS PERMITIDOS
+        |--------------------------------------------------------------------------
+        */
+
+        $filteredData = array_intersect_key($data, array_flip($this->fillable));
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDAR QUE HAYA CAMPOS
+        |--------------------------------------------------------------------------
+        */
+
+        if (empty($filteredData)) {
+            return false;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | GENERAR SET DINÁMICO
+        |--------------------------------------------------------------------------
+        */
+
+        $fields = [];
+
+        foreach ($filteredData as $column => $value) {
+            $fields[] = "{$column} = ?";
+        }
+
+        $setClause = implode(', ', $fields);
+
+        /*
+        |--------------------------------------------------------------------------
+        | QUERY FINAL
+        |--------------------------------------------------------------------------
+        */
+
+        $sql = "
+            UPDATE {$this->table}
+            SET {$setClause}
+            WHERE id = ?";
+
+        $connection = $this->db->getConexion();
+        $stmt = $connection->prepare($sql);
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALUES
+        |--------------------------------------------------------------------------
+        */
+
+        $values = array_values($filteredData);
+
+        /*
+        |--------------------------------------------------------------------------
+        | AGREGAR ID AL FINAL
+        |--------------------------------------------------------------------------
+        */
+
+        $values[] = $id;
+
+        /*
+        |--------------------------------------------------------------------------
+        | TYPES
+        |--------------------------------------------------------------------------
+        */
+
+        $types = '';
+
+        foreach ($values as $value) {
+
+            if (is_int($value)) {
+
+                $types .= 'i';
+
+            } elseif (is_float($value)) {
+
+                $types .= 'd';
+
+            } else {
+
+                $types .= 's';
+
+            }
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | BIND DINÁMICO
+        |--------------------------------------------------------------------------
+        */
+
+        $stmt->bind_param($types, ...$values);
+
+        /*
+        |--------------------------------------------------------------------------
+        | PREPARE
+        |--------------------------------------------------------------------------
+        */
+
+        return $stmt->execute();
     }
 }

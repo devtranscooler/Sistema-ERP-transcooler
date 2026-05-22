@@ -26,13 +26,11 @@
             </div>
         </div>
 
+
         <!-- Filtros -->
-        <div class="filter-card">
-            <div class="row">
-                <div class="col-md-12 p-0">
-                    <label for="filtroIdServicioMesaControl" class="form-label small text-muted">
-                        <i class="bi bi-search"></i> Buscar
-                    </label>
+        <div class="mb-3">
+            <div class="row g-2">
+                <div class="col-12 col-md-10">
                     <div class="input-group">
                         <span class="input-group-text bg-primary text-white border-end-0">
                             <i class="bi bi-search"></i>
@@ -42,6 +40,63 @@
                             id="filtroIdServicioMesaControl"
                             class="form-control border-start-0 px-2"
                             placeholder="Buscar...">
+                    </div>
+                </div>
+                <div class="col-12 col-md-2">
+                    <div class="w-100">
+                        <div class="dropdown w-100">
+                            <button
+                                id="btnFiltroEstatusMesaControl"
+                                class="btn btn-dark border dropdown-toggle w-100"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                    <i class="bi bi-funnel"></i>  Filtrar por estatus
+                            </button>
+                            <ul class="dropdown-menu px-1" id="dropdownFiltroEstatusMesaControl">
+
+                                <li>
+                                    <a class="dropdown-item active rounded"
+                                    href="#"
+                                    data-estatus="">
+                                        Todo
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item rounded"
+                                    href="#"
+                                    data-estatus="aceptado">
+                                        Aceptado
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item rounded"
+                                    href="#"
+                                    data-estatus="rechazado">
+                                        Rechazado
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item rounded"
+                                    href="#"
+                                    data-estatus="detenido">
+                                        Detenido
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item rounded"
+                                    href="#"
+                                    data-estatus="traslapado">
+                                        Traslapados
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,6 +124,7 @@
                 </tbody>
             </table>
         </div>
+
 
         <!-- Paginación -->
         <div class="row mt-2 align-items-center">
