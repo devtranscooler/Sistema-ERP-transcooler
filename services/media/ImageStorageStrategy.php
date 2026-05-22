@@ -32,7 +32,7 @@ class ImageStorageStrategy extends BaseStorageStrategy
                 "nombre_origen" => $file['name'],
                 "ruta" => $path,
                 "extension" => $extension,
-                "id_usuario_creador" => $mediaDTO->id_usuario,
+                "id_usuario_creador" => $mediaDTO->user_id,
                 "tipo_recurso" => $mediaDTO->tipo_recurso,
                 "tipo_recurso_id" => $mediaDTO->tipo_recurso_id
             ]);

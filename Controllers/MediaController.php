@@ -27,7 +27,7 @@ class MediaController
 
         $pagination = [
             'page' => (int)($_GET['page'] ?? 1),
-            'per_page' => (int)($_GET['per_page'] ?? 10),
+            'per_page' => (int)($_GET['per_page'] ?? 15),
         ];
 
 
@@ -89,7 +89,7 @@ class MediaController
         $mediaDTO = new UploadMediaDTO(
             $data['tipo_recurso'],
             $data['tipo_recurso_id'],
-            /*$_SESSION['ID_USUARIO']*/ 2,
+            $data['user_id'],
             $data['modulo_servicio']
         );
 
