@@ -153,13 +153,20 @@
             </div>
             <!-- Termina Sección título -->
 
+            <!-- Número operador -->
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="text-start"> Número operador: <?= $_SESSION['ID_USUARIO'] ?? '' ?> </h4>
+                </div>
+            </div>
+            <!-- Termina número operador -->
 
             <!-- Repartos -->
             <div id="deliveriesContainer"></div>
             <!-- Termina Repartos -->
 
             <!-- Modal productos reparto -->
-            <?= require 'modalProductos.php'; ?>
+            <?php include_once('modalProductos.php'); ?>
             <!-- Termina Modal productos reparto -->
 
             <!-- Modal Carga archivos -->
@@ -213,21 +220,20 @@
 
                                 <!-- Estatus -->
                                 <div class="col-12">
-                                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 pb-3 border-bottom">
-                                        <div>
-                                            <h6 class="mb-1 fw-semibold"> Resultado del reparto </h6>
-                                            <small class="text-secondary"> Indica si la entrega fue exitosa </small>
+                                    <div class="row border-bottom pb-3">
+                                        <div class="col-md-4">
+                                            <div>
+                                                <h6 class="mb-1 fw-semibold"> Estado del servicio </h6>
+                                                <small class="text-secondary"> Indica el estado del servicio </small>
+                                            </div>
                                         </div>
-                                        <div class="d-flex align-items-center gap-2 flex-wrap">
-                                            <button type="button" class="btn btn-dark rounded-pill px-3 py-2 d-flex align-items-center gap-2 shadow-sm delivery-status-btn active-status" data-status="Completado">
-                                                <i class="bi bi-check2-circle"></i>
-                                                <span> Aceptado </span>
-                                            </button>
-
-                                            <button type="button" class="btn btn-light border rounded-pill px-3 py-2 d-flex align-items-center gap-2 shadow-sm delivery-status-btn"  data-status="Rechazado">
-                                                <i class="bi bi-x-circle text-danger"></i>
-                                                <span>  Rechazado </span>
-                                            </button>
+                                        <div class="col-md-8">
+                                            <select class="form-select" aria-label="status" name="status_delivery" id="status_delivery">
+                                                <option selected=""> Selecciona un estatus </option>
+                                                <option value="Aceptado"> Aceptado </option>
+                                                <option value="Rechazado"> Rechazado </option>
+                                                <option value="Detenido"> Detenido </option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -283,7 +289,7 @@
                                 </div>
                                 <div id="preview-select-files-container" class="d-flex gap-2 flex-wrap mt-3"></div>
                             </div>
-                            <!-- Termina cOntenedor Vista Previa Archivos -->
+                            <!-- Termina Contenedor Vista Previa Archivos -->
 
                         </div>
                         <div class="modal-footer">

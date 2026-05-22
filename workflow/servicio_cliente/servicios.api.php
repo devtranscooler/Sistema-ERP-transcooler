@@ -21,6 +21,7 @@ switch ($action) {
             'filtroIdServicioMain' => $_POST['filtroIdServicioMain'] ?? null,
             'filtroIdServicioTrafico' => $_POST['filtroIdServicioTrafico'] ?? null,
             'filtroIdServicioSalida' => $_POST['filtroIdServicioSalida'] ?? null,
+            'estatusMesaControl' => $_POST['estatusMesaControl'] ?? null
         ];
         $context = $_POST['context'] ?? null;
         

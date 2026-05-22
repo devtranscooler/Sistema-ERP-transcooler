@@ -17,13 +17,34 @@ class serviciosControlador
         $conxion = $this->db->getConexion();
 
         $offset = ($page - 1)  * $limit;
+        $params = [];
+        $types = "";
+
         //Servicios para tab de Trafico
         if ($context === 'trafico'){
             $where = "WHERE (s.status = 'activo' AND s.tracking = 'Asignación de unidad')";
-            }
+        }
         //Servicios para tab de Mesa de control
         else if ($context === 'mesaControl') {
-            $where = "WHERE (s.status = 'activo' AND s.tracking = 'Asignación de productos')";
+            $estatusMesaControl = $filtros['estatusMesaControl'] ?? '';
+
+            if (!empty($estatusMesaControl)) {
+
+                $where = "WHERE (
+                    s.status_operativo = ?
+                    AND s.tracking = 'Asignación de productos'
+                )";
+
+                $params[] = $estatusMesaControl;
+                $types .= "s";
+
+            } else {
+
+                $where = "WHERE (
+                    s.status_operativo IN ('activo', 'detenido', 'rechazado', 'traslapado') OR s.status_operativo IS NULL
+                    AND s.tracking = 'Asignación de productos'
+                )";
+            }
         }
         //Servicios para tab de Salidas
         else if ($context === 'salida') {
@@ -34,10 +55,6 @@ class serviciosControlador
             $where = "WHERE (s.status = 'activo')";
         }
         
-
-        $params = [];
-        $types = "";
-
         // Filtro nombre
         if (!empty($filtros['filtroIdServicio'])) {
             $where .= " AND CONCAT(s.id, s.shipment) LIKE ?";
@@ -56,6 +73,7 @@ class serviciosControlador
             $params[] = "%" . $filtros['filtroIdServicioMain'] . "%";
             $types .= "s";
         }
+        
 
         $SQL = " SELECT s.id,
             s.id_cliente,
@@ -84,6 +102,7 @@ class serviciosControlador
 
         $stmt = $conxion->prepare($SQL);
         $stmt->bind_param($types, ...$params);
+
         $stmt->execute();
 
         $result = $stmt->get_result();

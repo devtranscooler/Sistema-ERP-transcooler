@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Models/Delivery.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Models/Service.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/services/deliveries/DeliveryService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/validations/deliveries/RequestValidator.php';
 
@@ -68,18 +69,30 @@ class DeliveryController
 
         if(!$delivery || empty($delivery)) {
             http_response_code(404);
-            return ['message' => 'Resources not found'];
+            return ['message' => 'Delivery not found'];
+        }
+
+        $serviceModel = new Service();
+        $service = $serviceModel->getServiceById($delivery[0]['id_servicio']);
+
+        if(!$service || empty($service)) {
+            http_response_code(404);
+            return ['message' => 'Service not found'];
         }
 
         $updated = $deliveryModel->update($delivery[0]['id'], [
             'status' => $validatedFields['status']
         ]);
 
-        if (!$updated) {
+        $updateStatusService = $serviceModel->update($service[0]['id'], [
+            'status_operativo' => strtolower($validatedFields['status'])
+        ]);
+
+        if (!$updated || !$updateStatusService) {
             http_response_code(500);
             return [
                 'status' => false,
-                'message' => 'No fue posible actualizar el reparto'
+                'message' => 'No fue posible actualizar el reparto y/o servicio'
             ];
         }
 
