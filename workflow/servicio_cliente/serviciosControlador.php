@@ -196,6 +196,7 @@ class serviciosControlador
 
                 'nombre_razon' => $servicio['nombre_razon'],
                 'eco' => $servicio['eco'],
+                'config_vehicular' => $servicio['config_vehicular'],
                 'nombreOperador' => $servicio['nombreOperador'],
                 'nombreUsuarioAlta' => $servicio['nombreUsuarioAlta'],
             ];
@@ -387,5 +388,74 @@ class serviciosControlador
         ];
 
         return $this->db->execute($SQL, $params);
+    }
+    public function buscarShipment(string $term)
+    {
+        $term = $this->db->escape_string($term);
+
+        $query = "SELECT 
+                s.shipment,
+                s.id_unidad,
+                s.tracking,
+                cu.id,
+                cu.eco,
+                cu.placas
+            FROM servicios s
+            JOIN cat_unidades cu 
+                ON cu.id = s.id_unidad
+            WHERE s.shipment LIKE '%$term%'
+            LIMIT 5";
+
+        $result = $this->db->consulta($query);
+
+        $unidad = [];
+
+        while ($row = $result->fetch_assoc()) {
+
+            $unidad[] = [
+                'id' => $row['id'],
+                'shipment' => $row['shipment'],
+                'id_unidad' => $row['id_unidad'],
+                'eco' => $row['eco'],
+                'placas' => $row['placas'],
+                'tracking' => $row['tracking'],
+            ];
+        }
+
+        return $unidad;
+    }
+    public function buscarServicioOperador(int $idOperador)
+    {
+        $idOperador = (int) $idOperador;
+
+        $query = "SELECT 
+                s.id_operador,
+                s.id_unidad,
+                s.tracking,
+                cu.id AS id_unidad_catalogo,
+                cu.eco
+            FROM servicios s
+            JOIN cat_unidades cu 
+                ON cu.id = s.id_unidad
+            WHERE s.id_operador = $idOperador AND s.tracking = 'En ruta'
+            ORDER BY s.id DESC
+            LIMIT 1";
+
+        $result = $this->db->consulta($query);
+
+        $unidad = [];
+
+        if ($row = $result->fetch_assoc()) {
+
+            $unidad = [
+                'id' => $row['id_unidad_catalogo'],
+                'id_operador' => $row['id_operador'],
+                'id_unidad' => $row['id_unidad'],
+                'eco' => $row['eco'],
+                'tracking' => $row['tracking'],
+            ];
+        }
+
+        return $unidad;
     }
 }

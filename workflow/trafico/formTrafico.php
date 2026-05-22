@@ -134,12 +134,12 @@ $config_vehicular = $_POST['config_vehicular'] ?? null;
             </div>
 
             <!-- Configuracion vehicular — oculto por defecto -->
-            <!-- <div id="conf_vehicular" class="col-md-6">
+            <div id="conf_vehicular" class="col-md-6">
                 <label class="form-label">
                     Coniguración vehicular <span class="text-danger">*</span>
                 </label>
                 <input class="form-control" type="text" name="config_vehicular" id="config_vehicular" value="<?= $config_vehicular ?>" placeholder="Configuración vehicular...">
-            </div> -->
+            </div>
         </div>
 
         <!-- modal -->
@@ -262,7 +262,11 @@ $config_vehicular = $_POST['config_vehicular'] ?? null;
             }
         });
     }
-
+    // Listener que controla qué campos de remolque se muestran
+    document.getElementById('numero_remolques').addEventListener('input', function() {
+        const cantidad = parseInt(this.value);
+        toggleRemolque(cantidad);
+    });
     /* Buscar unidades */
     initBuscador({
         inputId: 'eco_busqueda',
@@ -276,7 +280,8 @@ $config_vehicular = $_POST['config_vehicular'] ?? null;
         onSelect: (item) => {
             const campoRemolques = document.getElementById('input_num_remolques');
             const inputRemolques = document.getElementById('numero_remolques');
-            const tiposConRemolque = ['5a Rueda', 'Full'];
+            const tiposConRemolque = ["5ta Rueda", "Full"];
+            const configuracion = document.getElementById('config_vehicular');
 
             if (tiposConRemolque.includes(item.tipo_unidad)) {
                 campoRemolques.style.display = 'block';
@@ -287,6 +292,17 @@ $config_vehicular = $_POST['config_vehicular'] ?? null;
                 inputRemolques.value = '';
                 toggleRemolque(0);
             }
+            
+            onfiguracionC2 = ['Camioneta 3.5','Rabón'];
+            onfiguracionC3 = ['5ta Rueda','Torton','Full'];
+            if(onfiguracionC2.includes(item.tipo_unidad))
+            {
+                configuracion.value = 'C2';
+            }
+            else if(onfiguracionC3.includes(item.tipo_unidad))
+            {
+                configuracion.value = 'C3';             
+            }            
         }
     });
 
@@ -300,12 +316,7 @@ $config_vehicular = $_POST['config_vehicular'] ?? null;
         labelKey: 'nombreOperador',
         apiUrl: '../usuarios/usuarios.api.php'
     });
-
-    // Listener que controla qué campos de remolque se muestran
-    document.getElementById('numero_remolques').addEventListener('input', function() {
-        const cantidad = parseInt(this.value);
-        toggleRemolque(cantidad);
-    });
+    
 
     function toggleRemolque(cantidad) {
         const campo1 = document.getElementById('campo_remolque1');
@@ -317,11 +328,14 @@ $config_vehicular = $_POST['config_vehicular'] ?? null;
         const busq1 = document.getElementById('remolque1_busqueda');
         const busq2 = document.getElementById('remolque2_busqueda');
         const busq3 = document.getElementById('dolly_busqueda');
+        const configuracion = document.getElementById('config_vehicular');
+        
 
         if (cantidad >= 1) {
             campo1.style.display = 'block';
             input1.setAttribute('required', 'required');
             input1.removeAttribute('disabled');
+            configuracion.value = 'T3S2';   
         } else {
             campo1.style.display = 'none';
             input1.removeAttribute('required');
@@ -334,6 +348,7 @@ $config_vehicular = $_POST['config_vehicular'] ?? null;
             campo2.style.display = 'block';
             input2.setAttribute('required', 'required');
             input2.removeAttribute('disabled');
+            configuracion.value = 'T3S2R4';   
             /* Mostrar campos de dolly */
             campo3.style.display = 'block';
             input3.setAttribute('required', 'required');
