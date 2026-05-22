@@ -31,7 +31,7 @@ switch ($action) {
             ]);
         } else {
             echo json_encode([
-                'data' => $null,
+                'data' => null,
                 'success' => false,
                 'messague' => 'Unidad no encontrada'
             ]);

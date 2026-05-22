@@ -11,9 +11,9 @@ export function DeliveryCard(container, deliveries) {
             <div class="row p-3 my-3">
                 <div class="col-md-12 border bg-light p-3 rounded-4">
                     <div class="d-flex justify-content-between align-items-center">
-                        <button class="btn btn-secondary"> Reparto ${delivery.numero_reparto} </button>
+                        <button class="btn btn-secondary btn-sm"> Reparto ${delivery.numero_reparto} </button>
                         <button 
-                            class="btn btn-dark rounded-pill open-products-modal"
+                            class="btn btn-dark btn-sm rounded-pill open-products-modal"
                             data-prod-delivery-id="${delivery.id_reparto}"> 
                                 Productos a entregar 
                         </button>

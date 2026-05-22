@@ -21,6 +21,7 @@
     $nombre_razon     = $servicio['nombre_razon'] ?? 'N/A';
     $eco              = $servicio['eco'] ?? 'N/A';
     $nombreOperador   = $servicio['nombreOperador'] ?? 'N/A';
+    $config_vehicular = $servicio['config_vehicular'] ?? 'N/A';
 
     $badge = match($status) {
         'activo'    => 'success',
@@ -94,13 +95,17 @@
                     </div>
                     <div class="section-content">
                         <div class="info-field">
+                            <div class="info-label">Operador</div>
+                            <div class="info-value"><?= $nombreOperador ?></div>
+                        </div>
+                        <div class="info-field">
                             <div class="info-label">Eco unidad</div>
                             <div class="info-value"><?= $eco ?></div>
                         </div>
                         <div class="info-field">
-                            <div class="info-label">Operador</div>
-                            <div class="info-value"><?= $nombreOperador ?></div>
-                        </div>
+                            <div class="info-label">Configuración vehicular</div>
+                            <div class="info-value"><?= $config_vehicular ?></div>
+                        </div>                        
                         <div class="info-field">
                             <div class="info-label">Tipo de servicio</div>
                             <div class="info-value"><?= ucfirst($tipo_servicio) ?></div>

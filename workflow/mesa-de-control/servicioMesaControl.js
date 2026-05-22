@@ -2,6 +2,7 @@ const MesaControl = (() => {
     let paginaActual         = 1;
     const registrosPorPagina = 15;
     let timeout              = null;
+    let statusFilter = "";
 
     const MODAL_ID         = "mesaControlModal";
     const MODAL_CONTENT_ID = "mesaControlModalContent";
@@ -17,6 +18,20 @@ const MesaControl = (() => {
                     clearTimeout(timeout);
                     timeout = setTimeout(() => cargar(), 300);
                 });
+
+        const dropdown = document.getElementById("dropdownFiltroEstatusMesaControl");
+
+        dropdown.addEventListener("click", (e) => {
+
+            e.preventDefault();
+
+            const item = e.target.closest(".dropdown-item");
+            if (!item) return;
+            
+            statusFilter = item.dataset.estatus;
+            actualizarTextoDropdown(item);
+            cargar(1);
+        });
     }
 
     function pintarTabla(data) {
@@ -125,6 +140,7 @@ const MesaControl = (() => {
         fd.append("limit",   registrosPorPagina);
         fd.append("filtroIdServicioMesaControl", idServicio);
         fd.append("context", "mesaControl");
+        fd.append("estatusMesaControl", statusFilter);
         
         fetch("servicio_cliente/servicios.api.php", { method: "POST", body: fd })
             .then((r) => r.json())
@@ -230,6 +246,19 @@ const MesaControl = (() => {
                 text: "Ocurrió un error al guardar"
             });
         });
+    }
+
+    function actualizarTextoDropdown(item) {
+
+        const btn = document.getElementById("btnFiltroEstatusMesaControl");
+
+        btn.innerHTML = `<i class="bi bi-funnel"></i> ${item.textContent.trim()}`;
+
+        document
+            .querySelectorAll("#dropdownFiltroEstatusMesaControl .dropdown-item")
+            .forEach(el => el.classList.remove("active"));
+
+        item.classList.add("active");
     }
 
     init();

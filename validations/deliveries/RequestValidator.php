@@ -21,7 +21,7 @@ class RequestValidator
 
     private static function validateFields(array $post): array
     {
-        $allowedstatus = ["Pendiente", "Completado", "Rechazado"];
+        $allowedstatus = ["Aceptado", "Rechazado", "Detenido", "Traslapado"];
 
         // campo status, vacio y string
         if (empty($post['status']) || !is_string($post['status'])) {
