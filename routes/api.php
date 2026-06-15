@@ -9,6 +9,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/CartaPorteController.php'
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryReassignmentController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryOperatorController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/OperatorController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/FileManagerController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/UserController.php';
 
 /** Product Routes */
 $router->get('/api/products', function () {
@@ -68,3 +70,26 @@ $router->get('/api/carta-porte/{service_id}', function($id) {
     });
 /** Termina Operadores */
 
+/** Gestor de archivos */
+    $router->get('/api/file-manager', function() {
+        return (new FileManagerController())->index($_GET);
+    });
+
+    $router->get('/api/file-manager/{mediaId}', function($id) {
+        return (new FileManagerController())->show((int) $id);
+    });
+
+    $router->post('/api/file-manager', function() {
+        return (new FileManagerController())->sendRequestPermission($_POST);
+    });
+
+    $router->get('/api/file-manager/solicitudes/{token}/{status}', function($token, $status) {
+        return (new FileManagerController())->statusRequestPermission($token, $status);
+    });
+/** Termina Gestor de archivos */
+
+/** Usuarios */
+    $router->get('/api/users', function() {
+        return (new UserController())->index($_GET);
+    });
+/** Termina Usuarios */

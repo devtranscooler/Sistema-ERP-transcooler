@@ -199,6 +199,22 @@ switch ($action) {
             ]);
         }
     break;
+
+    case 'buscar_shipments':
+        $term = $_POST['term'] ?? '';
+        
+        echo json_encode([
+            'data' => $controlador->buscarShipment($term)
+        ]);
+        break;
+
+    case 'buscar_servicio_operador':
+        $idOperador = $_POST['id_operador'] ?? '';
+        
+        echo json_encode([
+            'data' => $controlador->buscarServicioOperador($idOperador)
+        ]);
+        break;
         
     default:
         echo json_encode([
