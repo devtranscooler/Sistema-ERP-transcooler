@@ -2,6 +2,7 @@
 *.ini
 *.csv
 *.pdf
+.env
 
 /system/agentes/
 /config/storage/*.json
