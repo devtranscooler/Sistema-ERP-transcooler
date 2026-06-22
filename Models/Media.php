@@ -230,7 +230,7 @@ class Media
      * occurs, the array will have a "status" key set to false and a "message" key with the error
      * message.
      */
-    public function findById(int $mediaFileId): array
+    public function findById(int $mediaFileId): ?array
     {
         try {
             
@@ -255,7 +255,7 @@ class Media
 
             $data = $result->fetch_assoc();
 
-            return $data;
+            return $data ?? null;
 
         } catch (\Throwable $e) {
 
@@ -310,6 +310,175 @@ class Media
             ];
 
         } catch (\Throwable $e) {
+            return [
+                "status" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+    }
+
+    public function filesManager(array $filters = [], array $pagination = []): array
+    {
+        $connection = $this->db->getConexion();
+
+        $where = [
+            "mda.tipo_recurso = 'GESTOR_ARCHIVOS' 
+            AND mda.deleted_at IS NULL"
+        ];
+
+        $params = [];
+        $types = "";
+
+        if (!empty($filters['extension'])) {
+            if($filters['extension'] === "image"){
+                $where[] = "mda.extension IN ('png', 'jpg', 'jpeg', 'gif', 'webp')";
+            } else {
+                $where[] = "mda.extension = ?";
+                $params[] = $filters['extension'];
+                $types .= "s";
+            }
+        }
+
+        if (!empty($filters['nombre_origen'])) {
+            $where[] = "mda.nombre_origen LIKE ?";
+            $params[] = '%' . trim($filters['nombre_origen']) . '%';
+            $types .= "s";
+        }
+
+        $countSql = "SELECT COUNT(*) as total
+        FROM media as mda
+        LEFT JOIN media_solicitudes as mss
+            ON mda.id = mss.media_id
+        WHERE " . implode(" AND ", $where);
+
+        $countStmt = $connection->prepare($countSql);
+
+        if (!empty($params)) {
+
+            $countStmt->bind_param(
+                $types,
+                ...$params
+            );
+        }
+
+        $countStmt->execute();
+
+        $total = (int) (
+            $countStmt
+                ->get_result()
+                ->fetch_assoc()['total']
+            ?? 0
+        );
+
+        $page = max(1, (int) ($pagination['page'] ?? 1));
+
+        $perPage = max(1, (int) ($pagination['per_page'] ?? 10));
+
+        $offset = ($page - 1) * $perPage;
+
+        $sql = "SELECT 
+                mda.id as media_id,
+                mda.nombre_origen,
+                mda.ruta,
+                mda.extension,
+                mda.id_usuario_creador,
+                mda.created_at as fecha_carga,
+                mss.id as media_solicitud_id,
+                mss.usuario_solicitante_id,
+                mss.usuario_aprobador_id,
+                mss.estatus as media_solicitud_estatus,
+                mss.fecha_aprobacion,
+                mss.comentario,
+                mss.token,
+                mss.created_at as media_solicitud_fecha
+            FROM media as mda
+            LEFT JOIN media_solicitudes as mss
+                ON mda.id = mss.media_id
+            WHERE " . implode(" AND ", $where) . "
+            ORDER BY mda.id DESC
+            LIMIT ? OFFSET ?";
+
+
+        $stmt = $connection->prepare($sql);
+
+        $selectParams = $params;
+        $selectTypes = $types;
+
+        $selectParams[] = $perPage;
+        $selectParams[] = $offset;
+
+        $selectTypes .= "ii";
+
+        $stmt->bind_param(
+            $selectTypes,
+            ...$selectParams
+        );
+
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $data = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return [
+            'data' => $data,
+            'total' => $total
+        ];
+    }
+
+    public function fileManagerById(int $mediaFileId): ?array
+    {
+        try {
+            
+            $connection = $this->db->getConexion();
+
+            $sql = "SELECT 
+                md.id,
+                md.nombre_origen,
+                md.extension,
+                CONCAT(usrsupl.nombre, ' ', usrsupl.apellidoP, ' ', usrsupl.apellidoM) as nombre_usuario_carga,
+                md.ruta,
+                md.estatus, 
+                md.created_at,
+                md.deleted_at,
+                mss.id as media_solicitud_id,
+                mss.usuario_solicitante_id,
+                CONCAT(usrslt.nombre, ' ', usrslt.apellidoP, ' ', usrslt.apellidoM) as nombre_solicitante,
+                mss.usuario_aprobador_id,
+                CONCAT(usrsabdr.nombre, ' ', usrsabdr.apellidoP, ' ', usrsabdr.apellidoM) as nombre_aprobador,
+                mss.fecha_aprobacion,
+                mss.estatus,
+                mss.comentario
+            FROM {$this->table} as md
+            LEFT JOIN media_solicitudes as mss
+                ON md.id = mss.media_id
+            LEFT JOIN usuarios as usrsupl
+                ON usrsupl.id = md.id_usuario_creador
+            LEFT JOIN usuarios as usrslt
+                ON usrslt.id = mss.usuario_solicitante_id
+            LEFT JOIN usuarios as usrsabdr
+                ON usrsabdr.id = mss.usuario_aprobador_id
+            WHERE md.id = ? 
+            AND md.tipo_recurso = 'GESTOR_ARCHIVOS'
+            AND md.estatus = 1
+            LIMIT 1";
+
+            $stmt = $connection->prepare($sql);
+            $stmt->bind_param("i", $mediaFileId);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+
+            $data = $result->fetch_assoc();
+
+            return $data ?? null;
+
+        } catch (\Throwable $e) {
+
             return [
                 "status" => false,
                 "message" => $e->getMessage()

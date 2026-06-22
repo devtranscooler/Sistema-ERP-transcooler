@@ -44,13 +44,23 @@ const Trafico = (() => {
                     <td>${s.num_repartos}</td>
                     <td>${s.fec_alta}</td>
                     <td class="text-center">
-                        <div class="d-flex justify-content-between gap-2 gap-md-1">
-                            <button type="button" class="btn btn-sm btn-primary"
+                        <div class="d-flex justify-content-center gap-2 gap-md-2">
+                            <button type="button" class="btn btn-sm btn-primary p-2 rounded-circle"
                                     onclick="Trafico.setEcoAndOperator(${s.id})"
                                     title="Asignar Eco y operador">
                                 <i class="bi bi-truck"></i>
                             </button>
-                            <button type="button" class="btn btn-sm btn-success"
+                            ${
+                                s.status_operativo === 'traslapado'
+                                    ? `<button 
+                                            type="button"
+                                            onclick="Trafico.deliveryReassignment(${s.id})"
+                                            class="btn btn-sm btn-dark p-2 rounded-circle">
+                                                <i class="bi bi-arrow-left-right"></i>
+                                        </button>`
+                                    : ''
+                            }
+                            <button type="button" class="btn btn-sm btn-success p-2 rounded-circle"
                                     onclick="Trafico.ver(${s.id})"
                                     title="Ver detalles">
                                 <i class="bi bi-eye-fill"></i>
@@ -168,6 +178,19 @@ const Trafico = (() => {
         .catch((err) => console.error("Trafico.ver error:", err));
     }
 
+    function deliveryReassignment(id) {
+        fetch("servicio_cliente/servicios.api.php", {
+            method:  "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body:    `action=find&id=${id}`,
+        })
+        .then((r) => r.json())
+        .then((res) => {
+            if (res.success) abrirModal("/workflow/components/DeliveryReassignmentModal.php", res.data);
+        })
+        .catch((err) => console.error("Trafico.deliveryAssignment error:", err));
+    }
+
     function guardar() {
         const form = document.getElementById("formServiciosTrafico");
         if (!form) return;
@@ -260,5 +283,5 @@ const Trafico = (() => {
 
     init();
 
-    return { cargar, setEcoAndOperator, ver, guardar, abrirModal };
+    return { cargar, setEcoAndOperator, ver, deliveryReassignment, guardar, abrirModal };
 })();
