@@ -1,4 +1,4 @@
-import { filesNotFound } from "../../js/components/file-manager/filesNotFound.js";
+import { filesNotFound } from "../../js/components/file-manager/FilesNotFound.js";
 import { fileItemCard } from "../../js/components/file-manager/FileItemCard.js";
 import { paginationComponent } from "../../js/components/file-manager/PaginationContainer.js";
 import { fetchMediaFileManager } from "./api.js";
