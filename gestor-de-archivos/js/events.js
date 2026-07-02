@@ -8,7 +8,7 @@ import {
     sendRequestPermission, 
     deletefile 
 } from "./api.js";
-import { filesNotFound } from "../../js/components/file-manager/filesNotFound.js";
+import { filesNotFound } from "../../js/components/file-manager/FilesNotFound.js";
 
 export function initializeEvents(elements) {
 
