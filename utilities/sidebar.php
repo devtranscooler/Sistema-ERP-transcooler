@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/system/connection.php';
 
 $db = new MySQL();
 

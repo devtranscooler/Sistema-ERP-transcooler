@@ -1,9 +1,22 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/utilities/head.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/utilities/sidebar.php';
-
-Sidebar::render("Asistencia Operadores");
+<?php 
+require_once __DIR__ . '/../system/connection.php';
+require '../system/constants.php'; 
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php include_once($_SERVER['DOCUMENT_ROOT'] . '../utilities/head.php'); ?>
+</head>
+
+<body>
+
+
+
+
+<?php require_once '../utilities/sidebar.php'; 
+Sidebar::render("Asistencia Operadores"); ?>
 
 <div style="margin-left: 250px; padding: 20px; padding-top: 80px;">
 
@@ -15,6 +28,7 @@ Sidebar::render("Asistencia Operadores");
     <div id="listaOperadores"></div>
 
 </div>
+
 
 
 <script>
@@ -127,6 +141,19 @@ function toggleMenu() {
 
 }
 
+function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
 
+        function closeMenu(event) {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('open') && !sidebar.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        }
 
 </script>
+
+</body>
+</html>
