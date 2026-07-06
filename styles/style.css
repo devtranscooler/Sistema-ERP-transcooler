@@ -1,0 +1,325 @@
+/* =====================================================
+    VARIABLES CSS - Paleta de colores y configuración
+   ===================================================== */
+:root {
+  /* --- Colores principales --- */
+  --color-primary: #063a61;
+  --color-primary-hover: #29a0b1;
+  --color-accent: #d92b2b;
+  --color-accent-hover: #29a0b1;
+  --color-white: #ffffff;
+  --color-text-dark: #000000;
+
+  /* --- Sombras --- */
+  --shadow-card: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  --shadow-btn: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --shadow-fab: 2px 2px 10px rgba(0, 0, 0, 0.3);
+
+  /* --- Sidebar --- */
+  --sidebar-width-closed: 55px;
+  --sidebar-width-open: 225px;
+  --sidebar-top: 40px;
+
+  /* --- Transiciones --- */
+  --transition-base: 0.3s ease;
+  --transition-sidebar: width 0.3s;
+
+  /* --- Bordes redondeados --- */
+  --radius-sm: 10px;
+  --radius-full: 50%;
+  --radius-pill: 20px;
+
+  /* Bordes */
+  --border-color: #e3e6ea;
+
+  /* --- Espaciado general --- */
+  --spacing-xs: 5px;
+  --spacing-sm: 8px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+}
+
+/* =====================================================
+    RESET Y BASE
+   ===================================================== */
+body {
+  margin: 0;
+  padding-left: 55px;
+  margin-top: 55px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =====================================================
+  TOPBAR - Barra superior fija
+  ===================================================== */
+.topbar {
+  height: 50px; /* Altura fija para calcular espacios */
+  background-color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  position: fixed;
+  top: 0;
+  left: 0; /* En Desktop, el sidebar pisará esto visualmente si es necesario */
+  right: 0;
+  z-index: 1001; /* Mayor que el sidebar para que la sombra caiga sobre todo */
+  transition: left 0.3s ease; /* Animación suave si decidimos empujarlo */
+}
+
+/* Logo en el topbar */
+.logo {
+  height: 40px;
+}
+
+/* Nombre del usuario en el topbar */
+.user-info span {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.user-info i {
+  font-size: 22px;
+  color: var(--color-primary);
+}
+
+/* =====================================================
+  SIDEBAR - Menú lateral
+===================================================== */
+.sidebar {
+  background-color: var(--color-primary);
+  width: 55px; /* Cerrado por defecto */
+  height: calc(100vh - 40px);
+  position: fixed;
+  color: var(--color-white);
+  top: 50px;
+  left: 0;
+  z-index: 1003;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Estado abierto del sidebar */
+.sidebar.open {
+  width: var(--sidebar-width-open);
+}
+
+/* Lista de items del menú */
+.sidebar ul {
+  list-style: none;
+  padding: 0 var(--spacing-xs);
+  margin: 0;
+}
+
+/* Cada item del menú */
+.sidebar li {
+  padding: var(--spacing-xs) 10px;
+  display: none; /* Oculto cuando el sidebar está cerrado */
+  transition:
+    background-color var(--transition-base),
+    border var(--transition-base);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+/* Mostrar items solo cuando el sidebar está abierto */
+.sidebar.open li {
+  display: block;
+}
+
+/* Hover en items del menú */
+.sidebar li:hover {
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-white);
+}
+
+/* Botón de hamburguesa (☰) para abrir/cerrar el sidebar */
+.menu-toggle {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 28px;
+  cursor: pointer;
+  padding: var(--spacing-md);
+}
+
+/* =====================================================
+  SUBMENÚS - Menús anidados dentro del sidebar
+===================================================== */
+
+/* Primer nivel de submenú */
+.submenu {
+  display: none;
+  padding-left: var(--spacing-md);
+}
+
+/* Mostrar submenu al hacer hover en el item padre (sidebar abierto) */
+.sidebar.open .has-submenu:hover .submenu {
+  display: block;
+}
+
+/* Segundo nivel de submenú (sub-submenú) */
+.sub-submenu {
+  display: none;
+  padding-left: var(--spacing-md);
+}
+
+/* Mostrar sub-submenu al hacer hover */
+.submenu li:hover .sub-submenu {
+  display: block;
+}
+
+.btn-logout {
+  background-color: var(--color-accent);
+  margin-top: auto;
+}
+
+.btn-logout:hover {
+  background-color: #c0392b;
+  border-left: none !important;
+}
+
+/* =====================================================
+  ÁREA DE CONTENIDO PRINCIPAL
+===================================================== */
+
+/* =====================================================
+  TABLAS 
+===================================================== */
+/* Mejora visual de la tabla con sombras sutiles */
+.table-responsive {
+  border-radius: 5px;
+  height: calc(100vh - 275px);
+}
+
+/* Header de la tabla con mejor contraste */
+.table thead th {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-weight: 600;
+  border: none;
+  padding: var(--spacing-sm);
+  cursor: pointer;
+}
+
+/* Filas de la tabla con mejor hover */
+.table tbody tr {
+  transition: all 0.3s ease;
+}
+
+/* Card para los filtros */
+.filter-card {
+  padding: var(--spacing-sm);
+  margin-bottom: 5px;
+}
+
+/* Badge personalizado para roles */
+.role-badge {
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* =====================================================
+   MÓDULO RH
+===================================================== */
+
+.main-content {
+  padding: var(--spacing-lg);
+  width: 100%;
+}
+
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.module-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.btn-primary-custom {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-btn);
+  transition: var(--transition-base);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-secondary-custom {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-base);
+  cursor: pointer;
+}
+
+.btn-secondary-custom:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* Filtros */
+.filters-container {
+  background-color: var(--color-white);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.filters-container input,
+.filters-container select {
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+/* Tabla RH */
+.rh-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.rh-table th {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 10px;
+  text-align: left;
+}
+
+.rh-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.rh-table tr:hover {
+  background-color: #f5f7fa;
+}

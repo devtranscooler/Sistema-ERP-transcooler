@@ -1,0 +1,29 @@
+Array
+(
+    [id] => 69
+    [nombre] => JOSE ARMANDO
+    [apellido_paterno] => MORALES
+    [apellido_materno] => LOPEZ
+    [curp] => MOLA740817HDFRPR07
+    [rfc] => MOLA7408176L2
+    [nss] => 
+    [fecha_nacimiento] => 1974-08-17
+    [id_estado_nacimiento] => 1
+    [sexo] => M
+    [correo] => moralitoslopez323@gmail.com
+    [telefono] => 5636890714
+    [telefono_emergencia] => 
+    [numero_empleado] => 1065
+    [id_departamento] => 1
+    [id_puesto] => 3
+    [fecha_ingreso] => 2023-01-18
+    [codigo_postal] => 07010
+    [dom_estado] => CIUDAD DE MÉXICO
+    [dom_municipio] => GUSTAVO A. MADERO
+    [id_cp] => 550
+    [calle] => CERRADA DE LAS TORRES
+    [numero_exterior] => 3
+    [numero_interior] => 
+    [referencia] => 
+    [action] => actualizar
+)
