@@ -14,7 +14,7 @@ require '../system/constants.php';
 <body>
 
 <?php require_once '../utilities/sidebar.php'; 
-Sidebar::render("Gestión de Operadores"); ?>
+Sidebar::render("Gestión de Operadores") ?>
 
 <div class="container-fluid">
 
