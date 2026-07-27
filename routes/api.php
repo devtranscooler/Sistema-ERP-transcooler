@@ -11,6 +11,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryOperatorControlle
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/OperatorController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/FileManagerController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/UserController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/ControlConsoleController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/StageServiceController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/StatusStageServiceController.php';
 
 /** Product Routes */
 $router->get('/api/products', function () {
@@ -93,3 +96,32 @@ $router->get('/api/carta-porte/{service_id}', function($id) {
         return (new UserController())->index($_GET);
     });
 /** Termina Usuarios */
+
+/** Mesa de control */
+    $router->get('/api/control-console', function() {
+        return (new ControlConsoleController())->index($_GET);
+    });
+
+    $router->get('/api/control-console/{serviceId}', function($serviceId) {
+        return (new ControlConsoleController())->show((int) $serviceId);
+    });
+
+    $router->post('/api/control-console/email', function() {
+        return (new ControlConsoleController())->sendEmailAlert($_POST);
+    });
+
+    $router->get('/api/control-console/status/{serviceId}', function($serviceId) {
+        return (new ControlConsoleController())->getStageStatusByService((int) $serviceId);
+    });
+/** Termina Mesa de control */
+
+/** Estatus y Etapas servicios */
+    $router->get('/api/stage-services', function() {
+        return (new StageServiceController())->index($_GET);
+    });
+
+    $router->get('/api/status-stage-services/{stageId}', function($stageId) {
+        return (new StatusStageServiceController())->getStatusStageById((int) $stageId);
+    });
+/** Termina Estatus y Etapas servicios */
+

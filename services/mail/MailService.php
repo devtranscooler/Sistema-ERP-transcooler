@@ -11,7 +11,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class MailService
 {
-    public static function send(string $email, string $html): bool
+    public static function send(string $email, string $html, string $subject = 'Email Transcooler'): bool
     {
         try {
 
@@ -31,7 +31,7 @@ class MailService
 
             $mail->addAddress($email);
             $mail->isHTML(true);
-            $mail->Subject = 'Solicitud de descarga de archivo';
+            $mail->Subject = $subject;
             $mail->Body = $html;
             $mail->send();
             return true;
