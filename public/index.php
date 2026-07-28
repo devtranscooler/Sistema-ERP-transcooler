@@ -8,10 +8,6 @@ $router = new Router();
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/routes/api.php';
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/app/Env.php';
-
-Env::load($_SERVER['DOCUMENT_ROOT'] . '/.env');
-
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 $requestUri = $_SERVER['REQUEST_URI'];
