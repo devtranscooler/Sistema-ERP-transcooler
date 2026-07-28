@@ -3,6 +3,7 @@ require_once '../system/connection.php';
 
 class UsuarioControlador
 {
+
     private $db;
 
     public function __construct()
@@ -41,19 +42,20 @@ class UsuarioControlador
             $types .= "s";
         }
 
-        $sql = "SELECT u.id,
-            CONCAT(u.nombre,' ',u.apellidoP,' ',u.apellidoM) AS nombreCompleto,
-            u.email,
-            u.movil,
-            u.cedis,
-            u.puesto,
-            cr.rol_descripcion
-            FROM usuarios u
-            LEFT JOIN cat_rol cr ON u.idRol = cr.id
-            $where
-            ORDER BY u.id DESC
-            LIMIT ?, ?
-        ";
+        $sql = "
+        SELECT u.id,
+        CONCAT(u.nombre,' ',u.apellidoP,' ',u.apellidoM) AS nombreCompleto,
+        u.email,
+        u.movil,
+        u.cedis,
+        u.puesto,
+        cr.rol_descripcion
+        FROM usuarios u
+        LEFT JOIN cat_rol cr ON u.idRol = cr.id_rol
+        $where
+        ORDER BY u.id DESC
+        LIMIT ?, ?
+    ";
 
         $params[] = $offset;
         $params[] = $limit;
@@ -80,6 +82,8 @@ class UsuarioControlador
 
         return $data;
     }
+
+
     public function show($id)
     {
         $conexion = $this->db->getConexion();
@@ -99,6 +103,7 @@ class UsuarioControlador
 
         return $usuario;
     }
+
     public function totalRegistros($filtros = [])
     {
         $conexion = $this->db->getConexion();
@@ -128,9 +133,10 @@ class UsuarioControlador
             $types .= "s";
         }
 
-        $sql = "SELECT COUNT(*) as total
+        $sql = "
+        SELECT COUNT(*) as total
         FROM usuarios u
-        LEFT JOIN cat_rol cr ON u.idRol = cr.id
+        LEFT JOIN cat_rol cr ON u.idRol = cr.id_rol
         $where
     ";
 
@@ -176,6 +182,7 @@ class UsuarioControlador
             $data['estatus'],            //19
         ]);
     }
+
     public function actualizar($id, $data)
     {
         $campos = [
@@ -230,31 +237,10 @@ class UsuarioControlador
 
         return $this->db->execute($sql, $params);
     }
+
     public function eliminar($id)
     {
         $sql = "UPDATE usuarios SET estatus='eliminado' WHERE id=?";
         return $this->db->execute($sql, [$id]);
-    }
-
-    public function buscarOperadores($term)
-    {
-        $term = $this->db->escape_string($term);
-
-        $query = "SELECT id, nombre, apellidoP, apellidoM 
-                FROM usuarios u  
-                WHERE area = 'OPERACIONES' AND nombre LIKE '%$term%' 
-                LIMIT 10";
-
-        $result = $this->db->consulta($query);
-
-        $operadores = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $operadores[] = [
-                'id' => $row['id'],
-                'nombreOperador' => $row['nombre'] . ' ' . $row['apellidoP'] . ' ' . $row['apellidoM']
-            ];
-        }
-        return $operadores;
     }
 }

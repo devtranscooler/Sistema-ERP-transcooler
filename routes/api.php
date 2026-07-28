@@ -6,11 +6,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/ProductController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/MediaController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/CartaPorteController.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryReassignmentController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryOperatorController.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/OperatorController.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/FileManagerController.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/UserController.php';
 
 /** Product Routes */
 $router->get('/api/products', function () {
@@ -49,47 +45,11 @@ $router->get('/api/carta-porte/{service_id}', function($id) {
 /** Carta Porte Routes */
 
 /** Repartos */
-    $router->get('/api/reasignacion-repartos', function() {
-        return (new DeliveryReassignmentController())->index();
-    });
+$router->get('/api/operator-deliveries/{opetaorId}', function($id) {
+    return (new DeliveryOperatorController())->index((int) $id);
+});
 
-    /** Repartos operador  */
-    $router->get('/api/operator-deliveries/{opetaorId}', function($id) {
-        return (new DeliveryOperatorController())->index((int) $id);
-    });
-
-    /** Productos por reparto */
-    $router->get('/api/products-delivery/{deliveryId}', function($id) {
-        return (new DeliveryOperatorController())->productByDelivery((int) $id);
-    });
+$router->get('/api/products-delivery/{deliveryId}', function($id) {
+    return (new DeliveryOperatorController())->productByDelivery((int) $id);
+});
 /** End Repartos  */
-
-/** Operadores */
-    $router->get('/api/operators', function() {
-        return (new OperatorController())->index($_GET);
-    });
-/** Termina Operadores */
-
-/** Gestor de archivos */
-    $router->get('/api/file-manager', function() {
-        return (new FileManagerController())->index($_GET);
-    });
-
-    $router->get('/api/file-manager/{mediaId}', function($id) {
-        return (new FileManagerController())->show((int) $id);
-    });
-
-    $router->post('/api/file-manager', function() {
-        return (new FileManagerController())->sendRequestPermission($_POST);
-    });
-
-    $router->get('/api/file-manager/solicitudes/{token}/{status}', function($token, $status) {
-        return (new FileManagerController())->statusRequestPermission($token, $status);
-    });
-/** Termina Gestor de archivos */
-
-/** Usuarios */
-    $router->get('/api/users', function() {
-        return (new UserController())->index($_GET);
-    });
-/** Termina Usuarios */

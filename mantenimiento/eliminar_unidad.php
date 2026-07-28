@@ -1,18 +1,12 @@
 <?php
 require '../system/connection.php';
 
-if (!isset($_GET['id'])) {
-    die("ID no especificado");
-}
+$db = new MySQL();
 
 $id = intval($_GET['id']);
 
-$query = "DELETE FROM unidades_detenidas WHERE id = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $id);
+$sql = "DELETE FROM catalogo_unidades WHERE id = $id";
+$db->consulta($sql);
 
-if ($stmt->execute()) {
-    header("Location: base_unidades_detenidas.php");
-} else {
-    echo "Error al eliminar";
-}
+header("Location: parque_vehicular.php");
+exit;

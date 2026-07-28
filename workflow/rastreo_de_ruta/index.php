@@ -115,15 +115,11 @@
 </script>
 
 <script>
-    const iconoPreload = new Image();
-    iconoPreload.src = "../../img/trailer.png";
     const URL_GEKO = "https://ws.geckotech.com.mx/api/get_devices?lang=es&user_api_hash=$2y$10$XMS86OQIbVLsSn9RFUchy.ztxdBa2AGuVIJqO9YtYK2pLonC3R8HO";
 
     let unidades = [];
     let map;
     let ecoSeleccionado = null;
-    const markersMap = new Map();
-    let autoRefreshRunning = false;
 
     let center = {
         lat: 19.61818379047129,
@@ -159,80 +155,58 @@
     /* The `async function initMap(eco = null) { ... }` function is responsible for initializing the
     Google Map on the webpage. Here is a breakdown of what the function does: */
     async function initMap(eco = null) {
-        const { Map } = await google.maps.importLibrary("maps");
-        await google.maps.importLibrary("marker");
-        const { AdvancedMarkerElement } = google.maps.marker;
+        await getUnits(eco);
+
+        const {
+            Map
+        } = await google.maps.importLibrary("maps");
+        const {
+            AdvancedMarkerElement
+        } = await google.maps.importLibrary("marker");
 
         map = new Map(document.getElementById("map"), {
             center,
             zoom: 6,
-            mapId: "172b2970e28e4b885dc8a378",
+            mapId: "172b2970e28e4b885dc8a378", 
         });
 
-        await refreshMarkers(eco, AdvancedMarkerElement);
-
-        startAutoRefresh(AdvancedMarkerElement, eco);
+        addMarkers(AdvancedMarkerElement);
     }
 
-    async function refreshMarkers(eco, AdvancedMarkerElement) {
-        await getUnits(eco);
-        syncMarkers(AdvancedMarkerElement);
-    }
+    /**
+    * The function `addMarkers` adds markers to a map for each unit with specified latitude and
+    * longitude coordinates.
+    * 
+    * @return If there are no units to display, a warning message "No hay unidades para mostrar" will
+    * be logged to the console, and the function will return without adding any markers.
+    */
+    function addMarkers(AdvancedMarkerElement) {
 
-    startAutoRefresh();
-    
-    function syncMarkers(AdvancedMarkerElement) {
-        if (!unidades.length) return;
-
-        const idsActuales = new Set(unidades.map(u => u.id ?? u.name));
-
-        // 1. Eliminar markers que ya no están en la respuesta
-        for (const [id, marker] of markersMap) {
-            if (!idsActuales.has(id)) {
-                marker.map = null; // AdvancedMarkerElement usa .map, no .setMap()
-                markersMap.delete(id);
-            }
+        if (!unidades.length) {
+            console.warn("No hay unidades para mostrar");
+            return;
         }
 
-        // 2. Actualizar o crear
         unidades.forEach(unidad => {
             if (!unidad.lat || !unidad.lng) return;
 
-            const id = unidad.id ?? unidad.name;
-            const pos = {
-                lat: parseFloat(unidad.lat),
-                lng: parseFloat(unidad.lng)
-            };
+            const icono = document.createElement("img");
+            icono.src = "../../img/trailer.png";
+            icono.style.width = "auto";
+            icono.style.height = "35px";
 
-            if (markersMap.has(id)) {
-                // Solo mover — sin parpadeo
-                markersMap.get(id).position = pos;
-            } else {
-                // Crear nuevo marker
-                const icono = document.createElement("img");
-                icono.src = "../../img/trailer.png";
-                icono.style.width = "auto";
-                icono.style.height = "35px";
 
-                const marker = new AdvancedMarkerElement({
-                    map,
-                    position: pos,
-                    content: icono,
-                    title: unidad.name || "Unidad"
-                });
-
-                markersMap.set(id, marker);
-            }
+            new AdvancedMarkerElement({
+                map: map,
+                position: {
+                    lat: parseFloat(unidad.lat),
+                    lng: parseFloat(unidad.lng)
+                },
+                content: icono,
+                title: unidad.name || "Unidad"
+                
+            }); 
         });
-    }
-
-    async function startAutoRefresh(AdvancedMarkerElement, eco) {
-        if (autoRefreshRunning) return;
-        autoRefreshRunning = true;
-        while (true) {
-            await new Promise(r => setTimeout(r, 30000));
-            await refreshMarkers(eco, AdvancedMarkerElement);
-        }
     }
 
     initMap();
