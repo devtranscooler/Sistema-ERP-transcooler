@@ -157,48 +157,8 @@
                                 </button>
                                 <ul class="dropdown-menu px-1" id="dropdownFiltroEstatusMesaControl">
                                     <li>
-                                        <a class="dropdown-item active rounded" href="#" data-estatus="">
+                                        <a class="dropdown-item active rounded" href="#" data-unit-type="">
                                             Todo
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded" href="#" data-estatus="aceptado">
-                                            5ta Rueda
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded" href="#" data-estatus="rechazado">
-                                            Torton
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded" href="#" data-estatus="detenido">
-                                            Camioneta 3.5
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded" href="#" data-estatus="traslapado">
-                                            Rabón
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded" href="#" data-estatus="traslapado">
-                                            Full
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded" href="#" data-estatus="traslapado">
-                                            Dolly
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded" href="#" data-estatus="traslapado">
-                                            Rem. REF 53 FT
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded" href="#" data-estatus="traslapado">
-                                            Rem. SECO 53 FT
                                         </a>
                                     </li>
                                 </ul>
@@ -236,7 +196,6 @@
                                             Extranjero
                                         </a>
                                     </li>
-
                                 </ul>
                             </div>
                         </div>

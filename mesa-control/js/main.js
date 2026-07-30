@@ -1,4 +1,4 @@
-import { fetchConsoleControlServices } from "./api.js"
+import { fetchConsoleControlServices, fetchControlConsoleUnitType } from "./api.js"
 import { getElements } from "./elements.js"
 import { initializeEvents } from "./events.js"
 import { handleDetailLogService } from "./handleDetailLogServiceModal.js"
@@ -6,12 +6,17 @@ import { handleReminderEmailService } from "./handleReminderEmailService.js"
 import { loadServices } from "./handleRenderServices.js"
 import { stateVars } from "./state.js"
 import { handleStageServiceUpdate } from './handleStageServiceUpdate.js'
+import { renderUnitTypeOptions } from "./helper.js"
+
 
 let elements = null
 
 document.addEventListener('DOMContentLoaded', async() => {
 
     elements = getElements();
+
+    const unitTypes = await fetchControlConsoleUnitType();
+    renderUnitTypeOptions(unitTypes);
 
     initializeEvents(elements);
 

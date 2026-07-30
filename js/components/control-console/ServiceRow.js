@@ -75,7 +75,11 @@ export const fileItemService = (itemService) => {
                     data-stage-service-service-id="${itemService?.id_servicio ?? 0}"
                     data-stage-service-nombre-operador="${itemService?.nombre_operador ?? 'S/I'}"
                     data-stage-service-placas-unidad="${itemService?.placas_unidad ?? 'S/I'}"
-                    data-stage-service-tipo-unidad="${itemService?.tipo_unidad ?? 'S/I'}">
+                    data-stage-service-tipo-unidad="${itemService?.tipo_unidad ?? 'S/I'}"
+                    data-stage-service-etapa-servicio-id="${itemService?.etapa_servicio_id ?? ''}"
+                    data-stage-service-etapa-servicio-estatus-id="${itemService?.etapa_servicio_estatus_id ?? ''}"
+                    data-stage-service-nombre-etapa-servicio="${itemService?.nombre_etapa_servicio ?? ''}"
+                    data-stage-service-nombre-estatus-etapa-servicio="${itemService?.nombre_estatus_etapa_servicio ?? ''}">
                         <i class="bi bi-ui-checks"></i>
                 </button>
             </div>

@@ -1,4 +1,4 @@
-export const fetchConsoleControlServices = async(page = 1, perPage = 15, customerType = '') => {
+export const fetchConsoleControlServices = async(page = 1, perPage = 15, customerType = '', unitType = '') => {
     try {
 
         const urlDomain = window.location.origin;
@@ -9,6 +9,10 @@ export const fetchConsoleControlServices = async(page = 1, perPage = 15, custome
 
         if (customerType) {
             params.append('tipo_cliente', customerType);
+        }
+
+        if(unitType){
+            params.append('tipo_unidad', unitType);
         }
 
         const url = `${urlDomain}/public/index.php/api/control-console?${params}`;
@@ -27,6 +31,26 @@ export const fetchConsoleControlServices = async(page = 1, perPage = 15, custome
         console.error(error)
     }
 }
+
+    export const fetchControlConsoleUnitType = async() => {
+        try {
+
+            const urlDomain = window.location.origin
+
+            const response = await fetch(`${urlDomain}/public/index.php/api/control-console/units`)
+
+            const data = await response.json()
+
+            if(!response.ok) {
+                throw new Error(data.message ?? 'Error al obtener las unidades')
+            }
+
+            return data.data
+                
+            } catch (error) {
+                console.error(error)
+            }
+        }
 
 export const fetchConsoleControlServiceById = async(serviceId) => {
     try {
@@ -86,4 +110,41 @@ export const sendEmailReminder = async(formData) => {
     }
 
     return data
+}
+
+export const updateStatusService = async(formData) => {
+    const urlDomain = window.location.origin
+
+    const response = await fetch(`${urlDomain}/public/index.php/api/control-console/status`, {
+        method: 'POST',
+        body: formData
+    }) 
+
+    const data = await response.json()
+
+    if(!response.ok) {
+        throw new Error(data.message ?? 'Error al enviar el recordatorio');
+    }
+
+    return data
+}
+
+export const fecthConsoleControlStageServices = async() => {
+     try {
+
+        const urlDomain = window.location.origin
+
+        const response = await fetch(`${urlDomain}/public/index.php/api/control-console/stages`)
+
+        const data = await response.json()
+
+        if(!response.ok) {
+            throw new Error(data.message ?? 'Error al obtener los estados')
+        }
+
+        return data.data
+        
+    } catch (error) {
+        console.error(error)
+    }
 }

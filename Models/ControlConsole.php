@@ -144,6 +144,28 @@ class ControlConsole
         ];
     }
 
+    public function getAllUnits(){
+        try {
+            $connection = $this->db->getConexion();
+            $query = "SELECT DISTINCT(tipo_unidad) FROM cat_unidades WHERE tipo_unidad != ''";
+            $stmt = $connection->prepare($query);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            $data = [];
+
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+            return array_column($data, 'tipo_unidad');
+        }catch(Exception $e){
+             return [
+                "status" => false,
+                "message" => $e->getMessage()
+            ];
+        }
+    }
+
     public function getById(int $serviceId): ?array
     {
         try {
@@ -217,7 +239,6 @@ class ControlConsole
     public function getLastServiceStageByServiceId(int $serviceId): ?array
     {
         try {
-            
             $connection = $this->db->getConexion();
 
             $sql = "SELECT 
@@ -286,5 +307,82 @@ class ControlConsole
                 "message" => $e->getMessage()
             ];
         }
+    }
+
+    public function getAllStages(){
+        try {
+        $connection = $this->db->getConexion();
+        $query = "SELECT 
+		stages.id AS etapa_id,
+        stages.orden AS etapas_orden,
+        stages.nombre AS nombre_etapa, 
+        e_status.id AS estatus_id, 
+        e_status.orden AS estatus_orden,
+        e_status.etapa_servicio_id,
+        e_status.nombre AS nombre_estatus, 
+        e_status.color 
+        FROM etapas_servicios stages
+        INNER JOIN etapas_servicios_estatus AS e_status ON stages.id = e_status.etapa_servicio_id
+        ORDER BY stages.orden, e_status.orden";
+           $stmt = $connection->prepare($query);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data = [];
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+            return $data;
+        }catch (\Throwable $e) {
+             return [
+                "status" => false,
+                "message" => 'errror'
+            ];
+        }
+
+    }
+
+    public function insertStatusLog(array $data) : array{
+        try {
+            $connection = $this->db->getConexion();
+            
+            $query = "INSERT INTO etapas_servicios_logs (
+                servicio_id,
+                etapa_servicio_id,
+                etapa_servicio_estatus_id,
+                comentarios,
+                creado_por,
+                created_at
+            ) VALUES (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                NOW()
+            )";
+
+            $params = [
+                $data['serviceId'],
+                $data['stageServiceId'],
+                $data['statusServiceStatusId'],
+                $data['comments'],
+                $data['userId'],
+            ];
+
+            $stmt = $connection->prepare($query);
+            $execute = $stmt->execute($params);
+
+            return [
+                 "status" => true,
+                "message" => "Log de estatus insertado"
+            ];
+
+        }catch (\Throwable $e) {
+            return [
+                "status" => false,
+                "message" => 'errror'
+            ];
+        }
+
     }
 }

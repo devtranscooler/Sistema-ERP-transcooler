@@ -102,6 +102,15 @@ $router->get('/api/carta-porte/{service_id}', function($id) {
         return (new ControlConsoleController())->index($_GET);
     });
 
+    $router->get('/api/control-console/units', function() {
+        return (new ControlConsoleController())->getAllUnits();
+    });
+
+    $router->get('/api/control-console/stages', function() {
+        return (new ControlConsoleController())->getAllStages();
+    });
+
+
     $router->get('/api/control-console/{serviceId}', function($serviceId) {
         return (new ControlConsoleController())->show((int) $serviceId);
     });
@@ -110,9 +119,15 @@ $router->get('/api/carta-porte/{service_id}', function($id) {
         return (new ControlConsoleController())->sendEmailAlert($_POST);
     });
 
+    
+    $router->post('/api/control-console/status', function() {
+        return (new ControlConsoleController())->updateStatus($_POST);
+    });
+
     $router->get('/api/control-console/status/{serviceId}', function($serviceId) {
         return (new ControlConsoleController())->getStageStatusByService((int) $serviceId);
     });
+
 /** Termina Mesa de control */
 
 /** Estatus y Etapas servicios */

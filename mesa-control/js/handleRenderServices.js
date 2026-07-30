@@ -29,7 +29,8 @@ export const loadServices = async(elements) => {
     const response = await fetchConsoleControlServices(
         stateVars.currentPage,
         stateVars.perPage,
-        stateVars.extensionFilterCustomerType
+        stateVars.extensionFilterCustomerType,
+        stateVars.extensionFilterUnitType
     );
 
     handleRenderServices(

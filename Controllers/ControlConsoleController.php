@@ -46,6 +46,15 @@ class ControlConsoleController
         ];
     }
 
+    public function getAllUnits(){
+        $controlConsoleModel = new ControlConsole();
+        $unitsType = $controlConsoleModel->getAllUnits();
+         http_response_code(200);
+        return [
+            'data' => $unitsType
+        ];
+    }
+
     public function show(int $serviceId)
     {
         $controlConsoleModel = new ControlConsole();
@@ -127,6 +136,42 @@ class ControlConsoleController
         http_response_code(200);
         return [
             'data' => $data
+        ];
+    }
+
+    public function getAllStages(){
+        $controlConsoleModel = new ControlConsole();
+        $service = $controlConsoleModel->getAllStages();
+         http_response_code(200);
+        return [
+            'data' => $service
+        ];
+    }
+
+    public function updateStatus(array $data){
+        
+
+        $controlConsoleModel = new ControlConsole();
+            $log = $controlConsoleModel->insertStatusLog([
+                'userId'=> $data['userId'],
+                'serviceId'=> $data['serviceId'],
+                'stageServiceId' => $data['stageServiceId'],
+                'statusServiceStatusId' => $data['statusServiceStatusId'],
+                'comments' => $data['comments'],
+            ]);
+
+        if(!$log['status']){
+            http_response_code(404);
+            return [
+                "status" => false,
+                "message" => "Error log insert",
+            ];
+        }
+
+        http_response_code(200);
+        return [
+            // 'data' => $data,
+            'log' => $log
         ];
     }
 }
