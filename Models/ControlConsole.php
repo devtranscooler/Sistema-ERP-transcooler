@@ -157,7 +157,7 @@ class ControlConsole
             while ($row = $result->fetch_assoc()) {
                 $data[] = $row;
             }
-            return array_column($data, 'tipo_unidad');
+            return $data;
         }catch(Exception $e){
              return [
                 "status" => false,
