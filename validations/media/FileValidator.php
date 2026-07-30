@@ -7,12 +7,7 @@ class FileValidator
     private const ALLOWED_EXTENSIONS = [
         'image/jpeg',
         'image/jpg',
-        'image/png',
-        'application/pdf', 
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.documen',
-        'application/msword'
+        'image/png'
     ];
 
     private const MAX_SIZE = 3 * 1024 * 1024;

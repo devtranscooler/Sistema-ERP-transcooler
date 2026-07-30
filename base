@@ -1,0 +1,92 @@
+<div class="container-fluid mt-4">
+
+    <!-- ENCABEZADO -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Catálogo de Unidades</h3>
+
+        <!-- BOTÓN AL FORMULARIO -->
+        <a href="formulario_unidad.html" class="btn btn-success">
+            + Registrar Nueva Unidad
+        </a>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>No. ECO</th>
+                    <th>Razón Social</th>
+                    <th>Placas</th>
+                    <th>Folio TC</th>
+                    <th>NIV</th>
+                    <th>No. Motor</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Capacidad</th>
+                    <th>Tipo Unidad</th>
+                    <th>Año</th>
+                    <th>Color</th>
+                    <th>Aseguradora</th>
+                    <th>Cobertura</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>1001</td>
+                    <td>TRANSCOOLER</td>
+                    <td>LG63556</td>
+                    <td>CA-C-15678776</td>
+                    <td>JHHTES0F3SK003784</td>
+                    <td>N04CUS61999</td>
+                    <td>Hino</td>
+                    <td>816 SEMI LONG 2025 EURO 5</td>
+                    <td>15 tons</td>
+                    <td>Camioneta 3.5</td>
+                    <td>2025</td>
+                    <td>Blanco</td>
+                    <td>INNOVAZIONE</td>
+                    <td>AMPLIA</td>
+                </tr>
+
+                <tr>
+                    <td>212</td>
+                    <td>ARRENDADORA</td>
+                    <td>890FB4</td>
+                    <td>1327539</td>
+                    <td>3BKMLZ9X33F303623</td>
+                    <td>46225104</td>
+                    <td>Kenworth</td>
+                    <td>4400-250</td>
+                    <td>12 tons</td>
+                    <td>Torton</td>
+                    <td>2003</td>
+                    <td>Rojo</td>
+                    <td>INNOVAZIONE</td>
+                    <td>AMPLIA</td>
+                </tr>
+
+                <tr>
+                    <td>215</td>
+                    <td>TRANSCOOLER</td>
+                    <td>LH17018</td>
+                    <td>1135877</td>
+                    <td>3HJFC6JJ9ASS12008</td>
+                    <td>J05DTG13132</td>
+                    <td>Hino</td>
+                    <td>SERIE 500 1018</td>
+                    <td>6 tons</td>
+                    <td>Rabón</td>
+                    <td>2010</td>
+                    <td>Blanco</td>
+                    <td>INNOVAZIONE</td>
+                    <td>LIMITADA</td>
+                </tr>
+
+                <!-- AGREGA MÁS FILAS SIGUIENDO EL MISMO FORMATO -->
+            </tbody>
+        </table>
+    </div>
+
+</div>

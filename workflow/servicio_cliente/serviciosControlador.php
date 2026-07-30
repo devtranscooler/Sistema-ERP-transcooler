@@ -88,8 +88,8 @@ class serviciosControlador
             s.status,
             s.id_operador,
             s.id_unidad,
-            s.tracking,
-            s.status_operativo
+            s.tracking
+
             FROM servicios s
             $where
             ORDER BY s.id DESC
@@ -125,7 +125,6 @@ class serviciosControlador
                 'id_operador' => $row['id_operador'] ?? 'N/A',
                 'id_unidad' => $row['id_unidad'] ?? 'N/A',
                 'tracking' => $row['tracking'] ?? 'N/A',
-                'status_operativo' => $row['status_operativo'] ?? 'N/A',
             ];
         }
         return $data;

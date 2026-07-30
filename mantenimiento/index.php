@@ -56,7 +56,7 @@ Sidebar::render("Unidades Detenidas");
                 Base de Unidades Detenidas
             </h2>
         </div>
-
+        
         <div class="col-md-6 text-md-end">
             <a href="form_unidades_detenidas.php?id=1" class="btn btn-success shadow-sm">
                 <i class="bi bi-plus-circle me-2"></i>
@@ -120,12 +120,11 @@ Sidebar::render("Unidades Detenidas");
                         <div class="btn-group">
 
                             <!-- VER -->
-                            <a href="ver_unidad.php?id=<?= $unidad['id']; ?>"
-                               class="btn btn-info btn-sm shadow-sm"
-                               title="Ver">
+                            <button class="btn btn-info btn-sm shadow-sm verUnidad"
+                                data-id="<?= $unidad['id']; ?>"
+                                title="Ver">
                                 <i class="bi bi-eye"></i>
-                            </a>
-
+                            </button>
                             <!-- EDITAR -->
                             <a href="editar_unidad.php?id=<?= $unidad['id']; ?>"
                                class="btn btn-warning btn-sm shadow-sm"
@@ -162,7 +161,24 @@ Sidebar::render("Unidades Detenidas");
 
 
 </div>
+<div class="modal fade" id="modalUnidad" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
 
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Detalle de Unidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="contenidoModal">
+                <div class="text-center">
+                    <div class="spinner-border text-info"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 </body>
 </html>
 
@@ -184,4 +200,38 @@ function closeMenu(event) {
         sidebar.classList.remove('open');
     }
 }
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".verUnidad").forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            let id = this.getAttribute("data-id");
+
+            let modal = new bootstrap.Modal(
+                document.getElementById('modalUnidad')
+            );
+
+            modal.show();
+
+            // Simulación sin base de datos
+            document.getElementById("contenidoModal").innerHTML = `
+                <div class="row">
+                    <div class="col-md-6"><strong>ECO:</strong> 3002</div>
+                    <div class="col-md-6"><strong>Taller:</strong> SEMADISA</div>
+                    <div class="col-md-6"><strong>Falla:</strong> Balatas / Escape</div>
+                    <div class="col-md-6"><strong>Status:</strong> EN PROCESO</div>
+                    <div class="col-md-6"><strong>Días:</strong> 46</div>
+                    <div class="col-md-6"><strong>Prioridad:</strong> Alta</div>
+                </div>
+            `;
+
+        });
+
+    });
+
+});
 </script>

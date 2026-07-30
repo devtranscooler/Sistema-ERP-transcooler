@@ -6,7 +6,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/ProductController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/MediaController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/CartaPorteController.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryReassignmentController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryOperatorController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/OperatorController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/FileManagerController.php';
@@ -52,19 +51,13 @@ $router->get('/api/carta-porte/{service_id}', function($id) {
 /** Carta Porte Routes */
 
 /** Repartos */
-    $router->get('/api/reasignacion-repartos', function() {
-        return (new DeliveryReassignmentController())->index();
-    });
+$router->get('/api/operator-deliveries/{opetaorId}', function($id) {
+    return (new DeliveryOperatorController())->index((int) $id);
+});
 
-    /** Repartos operador  */
-    $router->get('/api/operator-deliveries/{opetaorId}', function($id) {
-        return (new DeliveryOperatorController())->index((int) $id);
-    });
-
-    /** Productos por reparto */
-    $router->get('/api/products-delivery/{deliveryId}', function($id) {
-        return (new DeliveryOperatorController())->productByDelivery((int) $id);
-    });
+$router->get('/api/products-delivery/{deliveryId}', function($id) {
+    return (new DeliveryOperatorController())->productByDelivery((int) $id);
+});
 /** End Repartos  */
 
 /** Operadores */

@@ -20,7 +20,6 @@ $q=$q."         CONCAT(nombre,' ',apellidoP,' ',apellidoM) as name ";
 //$q=$q."         idTipoUsuario ";
 //$q=$q."         ,id_sucursal ";
 $q=$q."         FROM usuarios ";
-$name = $db->escape_string($name);
 $q=$q." WHERE email='$name'";
 //$q=$q." and estatus = 'ACTIVO'";
 

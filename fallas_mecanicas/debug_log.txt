@@ -1,0 +1,28 @@
+2026-07-27 22:37:43 - ECO solicitado: 2015
+HTTP Code: 302
+Response: <HTML>
+<HEAD>
+<TITLE>Moved Temporarily</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+<!-- GSE Default Error -->
+<H1>Moved Temporarily</H1>
+The document has moved <A HREF="https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnTCP29kLfRSkMJ92X0b3FatEJIo1R5PoZGe1_Aw1B5l6aZW9J8ZJDyiq683-3P8LYQuSLGkLfYSZNNw_3kZ1wsFvsdP4boI9rJI_-ap4keDaHBfVL7ARAmkMBXY_JWUh_x8q8JSEUY0neYFwyal7TVvR2XA6CEkGMEy98zVJRx021QbqMoY2QYpjZmf6NQaf9T-a3USYhSuiA9hrHhgiZWsOdg1XdQHxOSrbNfgrtozfThCsn5CeChfXAggkevbI7m-KrdNWhThGMbA8J2OLoE1Yyb1PWU76Pxj1maC&amp;lib=MOlc084KjqheSTLLLCu_woDwhRC99bsPV">here</A>.
+</BODY>
+</HTML>
+
+CURL Error: 
+2026-07-27 22:38:38 - ECO solicitado: 2015
+HTTP Code: 302
+Response: <HTML>
+<HEAD>
+<TITLE>Moved Temporarily</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+<!-- GSE Default Error -->
+<H1>Moved Temporarily</H1>
+The document has moved <A HREF="https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnTPKdGhFPCVLKsWYO9LtjO85XjcY7TZGfI9dCnL_U_JNta_fMvbyCQOaIAPLTLDPMaXpzo2oxe34VQIxsNFzIx1AKEUQaMkfQgC_WIyqABnmcUc58EnMS6r2PlOdv1-sVE4L184dAP-yc8vQEGIG6is1Q9jhkbqqOM6N_Ruxdp2ogPbDPqKO5WMJNzSFVQVF021tVjENZO6OtLtXxALKCd8iKqioNLDqlY1_GnjXv4vqgQhn5XK7ggEwmCchDNUv1x5oqkLnNfTrC6J8dTkN0HchSNjksjvzhVa6CQI&amp;lib=MOlc084KjqheSTLLLCu_woDwhRC99bsPV">here</A>.
+</BODY>
+</HTML>
+
+CURL Error: 
