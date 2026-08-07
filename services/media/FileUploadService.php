@@ -23,9 +23,12 @@ class FileUploadService
 
             $strategy = match (true) {
 
-                str_starts_with($file['type'], 'image/') => new ImageStorageStrategy($this->bucket, $this->credentials),
-                $file['type'] === 'application/pdf' => new DocumentStorageStrategy($this->bucket, $this->credentials),
-                $file['type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => new DocumentStorageStrategy($this->bucket, $this->credentials),
+                str_starts_with($file['type'], 'image/') =>
+                    new ImageStorageStrategy($this->bucket, $this->credentials),
+
+                $file['type'] === 'application/pdf' =>
+                    new DocumentStorageStrategy($this->bucket, $this->credentials),
+
                 default => null
             };
 

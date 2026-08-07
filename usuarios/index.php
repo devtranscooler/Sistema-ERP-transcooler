@@ -1,7 +1,12 @@
-<?php require '../system/connection.php'; require '../system/constants.php';; ?>
+<?php
+require '../system/connection.php';
+require '../system/constants.php';
 
-<!DOCTYPE html>
+$page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+?>
+
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,15 +26,56 @@
             }
         }
     </script>
+
+    <style>
+        /* Mejora visual de la tabla con sombras sutiles */
+        .table-responsive {
+            border-radius: 5px;
+        }
+
+        /* Header de la tabla con mejor contraste */
+        .table thead th {
+            background-color: #063a61;
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 15px;
+        }
+
+        /* Filas de la tabla con mejor hover */
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        /* Card para los filtros */
+        .filter-card {
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        /* Badge personalizado para roles */
+        .role-badge {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+    </style>
 </head>
 
 <body onclick="closeMenu(event)">
-    <?php require_once '../utilities/sidebar.php'; Sidebar::render("Gestión de Usuarios"); ?>
+
+    <?php
+    //Cambiar Ruta;
+    require_once '../utilities/sidebar.php';
+    Sidebar::render("Usuarios");
+    ?>
 
     <div class="container-fluid">
-        <!-- Breadcrumb mejorado con íconos -->
+
+        <!-- 📍 Breadcrumb mejorado con íconos -->
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-1">
+            <ol class="breadcrumb ">
                 <li class="breadcrumb-item">
                     <i class="bi bi-house-door me-1"></i>Inicio
                 </li>
@@ -39,7 +85,7 @@
             </ol>
         </nav>
 
-        <!-- Encabezado con mejor espaciado y diseño -->
+        <!-- 🎯 Encabezado con mejor espaciado y diseño -->
         <div class="row align-items-center">
             <div class="col-md-6">
                 <h2 class="fw-bold mb-0">
@@ -139,7 +185,8 @@
         <!-- MODAL GLOBAL -->
         <div class="modal fade" id="globalModal" tabindex="-1">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content" id="globalModalContent" style="overflow-y: auto;">
+                <div class="modal-content shadow-lg" id="globalModalContent">
+                    <!-- Aquí se inyecta el contenido dinámico -->
                 </div>
             </div>
         </div>
@@ -163,8 +210,8 @@
     document.getElementById("filtroNombre").addEventListener("keyup", function() {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            cargarUsuarios();
-        }, 500)
+            cargarUsuarios()
+        }, 300)
     });
 
     // Filtros instantáneos para rol y fecha
@@ -256,24 +303,23 @@
                     <td class="text-center">
                         <div>
                             <button type="button" 
-                                    class="btn btn-sm btn-primary" 
+                                    class="btn btn-primary" 
                                     onclick="editar(${usuario.id})"
                                     title="Editar usuario">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
                             <button type="button" 
-                                    class="btn btn-sm btn-success"
-                                    title="Ver detalles"
-                                    onclick="ver(${usuario.id})">
+                                    class="btn btn-success"
+                                    title="Ver detalles">
                                 <i class="bi bi-eye-fill"></i>
                             </button>
                             <button type="button" 
-                                    class="btn btn-sm btn-warning"
+                                    class="btn  btn-warning"
                                     title="Cambiar estado">
                                 <i class="bi bi-toggles"></i>
                             </button>
                             <button type="button" 
-                                    class="btn btn-sm btn-danger" 
+                                    class="btn btn-danger" 
                                     onclick="eliminar(${usuario.id})"
                                     title="Eliminar usuario">
                                 <i class="bi bi-trash-fill"></i>
@@ -298,7 +344,7 @@
         const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
         let html = "";
 
-        // Cálculo de rango mostrado
+        // 🔢 Cálculo de rango mostrado
         const inicio = (paginaActual - 1) * registrosPorPagina + 1;
         let fin = paginaActual * registrosPorPagina;
 
@@ -306,17 +352,17 @@
             fin = totalRegistros;
         }
 
-        // Texto informativo
+        // 📝 Texto informativo
         let info = `
         <p>
             <i class="bi bi-info-circle me-1"></i>
             Mostrando <strong>${inicio}</strong> - <strong>${fin}</strong> de <strong>${totalRegistros}</strong> registros
         </p>`;
 
-        // Botones de paginación
+        // 🔢 Botones de paginación
         for (let i = 1; i <= totalPaginas; i++) {
             html += `
-            <li class="page-item ${i === paginaActual ? "active" : ""}" onclick="cargarUsuarios(${i})" style="cursor: pointer" >
+            <li class="page-item ${i === paginaActual ? "active" : ""}" onclick="cargarUsuarios(${i})">
                 <span class="page-link">${i}</span>
             </li>
         `;
@@ -377,31 +423,6 @@
             .then(response => {
                 if (response.success) {
                     abrirModal('formUsuario.php', response.data);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'No se pudo cargar el usuario'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error("Error al editar:", error);
-            });
-    }
-
-    function ver(id) {
-        fetch("usuarios.api.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: `action=find&id=${id}`
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (response.success) {
-                    abrirModal('verUsuario.php', response.data);
                 } else {
                     Swal.fire({
                         icon: 'error',

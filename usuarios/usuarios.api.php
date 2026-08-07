@@ -18,6 +18,7 @@ switch ($action) {
             'fecContratacion' => $_POST['fecContratacion'] ?? null 
         ];
 
+
         echo json_encode([
             "data" => $controlador->listar($page, $limit, $filtros),
             "total" => $controlador->totalRegistros($filtros)
@@ -38,7 +39,7 @@ switch ($action) {
             echo json_encode([
                 'data' => null,
                 'success' => false,
-                'message' => 'usuario no encontrado'
+                'message' => 'controlador no encontrado'
             ]);
         }
         break;
@@ -63,26 +64,6 @@ switch ($action) {
         $id = $_POST['id'];
         echo json_encode([
             "success" => $controlador->eliminar($id)
-        ]);
-        break;
-
-    case 'buscar_operadores':
-        
-        $term = $_POST['term'] ?? '';
-
-        echo json_encode([
-            'data' => $controlador->buscarOperadores($term)
-        ]);
-        break;
-
-    case 'find_operador':
-        $id = $_POST['id'];
-        $usuario = $controlador->show($id);
-        echo json_encode([
-            'data' => [
-                'id'  => $usuario['id'],
-                'nombreOperador' => $usuario['nombre'] . ' ' . $usuario['apellidoP'] . ' ' . $usuario['apellidoM']
-            ]
         ]);
         break;
 

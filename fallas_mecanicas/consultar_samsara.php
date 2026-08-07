@@ -23,6 +23,7 @@ API GOOGLE
 =========================*/
 
 $google_api = $_ENV['GOOGLE_API'] ?? '';
+$google_api = $_ENV['GOOGLE_API'];
 
 /*=========================
 OBTENER ECO
