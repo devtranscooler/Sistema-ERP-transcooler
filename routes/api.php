@@ -6,11 +6,13 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/ProductController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/MediaController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/CartaPorteController.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryReassignmentController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/DeliveryOperatorController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/OperatorController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/FileManagerController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/UserController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/ControlConsoleController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/StageServiceController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Controllers/StatusStageServiceController.php';
 
 /** Product Routes */
 $router->get('/api/products', function () {
@@ -49,19 +51,13 @@ $router->get('/api/carta-porte/{service_id}', function($id) {
 /** Carta Porte Routes */
 
 /** Repartos */
-    $router->get('/api/reasignacion-repartos', function() {
-        return (new DeliveryReassignmentController())->index();
-    });
+$router->get('/api/operator-deliveries/{opetaorId}', function($id) {
+    return (new DeliveryOperatorController())->index((int) $id);
+});
 
-    /** Repartos operador  */
-    $router->get('/api/operator-deliveries/{opetaorId}', function($id) {
-        return (new DeliveryOperatorController())->index((int) $id);
-    });
-
-    /** Productos por reparto */
-    $router->get('/api/products-delivery/{deliveryId}', function($id) {
-        return (new DeliveryOperatorController())->productByDelivery((int) $id);
-    });
+$router->get('/api/products-delivery/{deliveryId}', function($id) {
+    return (new DeliveryOperatorController())->productByDelivery((int) $id);
+});
 /** End Repartos  */
 
 /** Operadores */
@@ -93,3 +89,47 @@ $router->get('/api/carta-porte/{service_id}', function($id) {
         return (new UserController())->index($_GET);
     });
 /** Termina Usuarios */
+
+/** Mesa de control */
+    $router->get('/api/control-console', function() {
+        return (new ControlConsoleController())->index($_GET);
+    });
+
+    $router->get('/api/control-console/units', function() {
+        return (new ControlConsoleController())->getAllUnits();
+    });
+
+    $router->get('/api/control-console/stages', function() {
+        return (new ControlConsoleController())->getAllStages();
+    });
+
+
+    $router->get('/api/control-console/{serviceId}', function($serviceId) {
+        return (new ControlConsoleController())->show((int) $serviceId);
+    });
+
+    $router->post('/api/control-console/email', function() {
+        return (new ControlConsoleController())->sendEmailAlert($_POST);
+    });
+
+    
+    $router->post('/api/control-console/status', function() {
+        return (new ControlConsoleController())->updateStatus($_POST);
+    });
+
+    $router->get('/api/control-console/status/{serviceId}', function($serviceId) {
+        return (new ControlConsoleController())->getStageStatusByService((int) $serviceId);
+    });
+
+/** Termina Mesa de control */
+
+/** Estatus y Etapas servicios */
+    $router->get('/api/stage-services', function() {
+        return (new StageServiceController())->index($_GET);
+    });
+
+    $router->get('/api/status-stage-services/{stageId}', function($stageId) {
+        return (new StatusStageServiceController())->getStatusStageById((int) $stageId);
+    });
+/** Termina Estatus y Etapas servicios */
+
