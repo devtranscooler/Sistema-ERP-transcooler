@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../system/connection.php';
+require '../system/connection.php';
 
 class AsistenciaControlador {
 
@@ -104,7 +104,7 @@ class AsistenciaControlador {
         
         $asistencia = $this->asistenciaHoy($usuario['id']);
 
-        3. Decidir acción
+        //3. Decidir acción
         if(!$asistencia){
             $this->registrarEntrada($usuario['id']);
 

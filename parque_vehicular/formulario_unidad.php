@@ -112,7 +112,7 @@ require '../system/constants.php';
 
         <!-- BOTONES -->
         <div class="mt-4 d-flex justify-content-end gap-2">
-            <a href="parque_vehicular.php" class="btn btn-secondary">
+            <a href="/parque_vehicular" class="btn btn-secondary">
                 Cancelar
             </a>
             <button type="submit" class="btn btn-primary">

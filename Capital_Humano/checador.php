@@ -1,5 +1,5 @@
 <?php 
-require_once __DIR__ . '/../system/connection.php';
+require '../system/connection.php';
 require '../system/constants.php'; 
 ?>
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ require '../system/constants.php';
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<?php include_once($_SERVER['DOCUMENT_ROOT'] . '../utilities/head.php'); ?>
+<?php require '../utilities/head.php'; ?>
 </head>
 
 <body>
@@ -15,7 +15,7 @@ require '../system/constants.php';
 
 
 
-<?php require_once '../utilities/sidebar.php'; 
+<?php require '../utilities/sidebar.php'; 
 Sidebar::render("Asistencia Operadores"); ?>
 
 <div style="margin-left: 250px; padding: 20px; padding-top: 80px;">
